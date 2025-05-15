@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>RBSE 10th Result</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src='//solseewuthi.net/sdk.js' data-zone='9336786' data-sdk='show_9336786'></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -123,10 +124,9 @@
         return;
       }
 
-      btn.innerText = "Please wait... Sponsored ad running (15s)";
+      btn.innerText = "Please wait... Sponsored ad running (15s)";                     
       btn.disabled = true;
-      ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
-
+      show_9336786().then(() => {})
       setTimeout(() => {
         const dataToSend = {
           board: "RBSE10",
