@@ -1,177 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RBSE 10th Result</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src='//solseewuthi.net/sdk.js' data-zone='9336786' data-sdk='show_9336786'></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="//solseewuthi.net/sdk.js" data-zone="9336786" data-sdk="show_9336786"></script>
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(145deg, #e0f7fa, #e1bee7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      padding: 20px;
+      color: #111827;
     }
-    .card {
-      background: #fff;
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      width: 90%;
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       max-width: 400px;
+      margin: auto;
     }
-    .title {
-      font-size: 22px;
-      font-weight: 600;
-      margin-bottom: 10px;
+    h2 {
       text-align: center;
-      color: #4a148c;
-    }
-    .subtitle {
-      font-size: 14px;
-      text-align: center;
-      margin-bottom: 15px;
-      color: #666;
-    }
-    .instructions {
-      background: #f3e5f5;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 14px;
-      margin-bottom: 20px;
-      color: #4a148c;
-    }
-    label {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #333;
+      color: #1f2937;
     }
     input {
       width: 100%;
       padding: 12px;
-      margin-top: 5px;
+      margin: 15px 0;
       border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 14px;
-      outline: none;
+      border-radius: 8px;
+      font-size: 16px;
     }
     button {
-      margin-top: 20px;
       width: 100%;
-      padding: 14px;
-      background: #7b1fa2;
-      color: #fff;
-      font-size: 16px;
+      padding: 12px;
+      background: #2563eb;
+      color: white;
       border: none;
-      border-radius: 12px;
+      border-radius: 8px;
+      font-size: 16px;
       cursor: pointer;
-      transition: background 0.3s;
     }
-    button:hover {
-      background: #6a1b9a;
+    button:disabled {
+      background: #9ca3af;
     }
-    .ad-message {
+    #adMsg {
       text-align: center;
-      font-size: 13px;
       margin-top: 15px;
-      color: #999;
+      font-weight: bold;
+    }
+    .note {
+      font-size: 14px;
+      color: #6b7280;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="title" id="welcome">Welcome, Student</div>
-    <div class="subtitle">RBSE Class 10th Result - 2025</div>
+  <div class="container">
+    <h2>RBSE 10th Result 2025</h2>
+    <p class="note">Enter your Roll Number to check your result.<br>Result PDF will be sent to your Telegram after a short sponsored ad.</p>
 
-    <div class="instructions">
-      <strong>Result कैसे देखें:</strong><br>
-      1. नीचे अपना रोल नंबर दर्ज करें<br>
-      2. "Check Result" बटन पर क्लिक करें<br>
-      3. बोट आपको मार्कशीट की PDF भेजेगा
-    </div>
-
-    <label for="roll">Roll Number:</label>
-    <input type="text" id="roll" placeholder="e.g. 1234567">
-
+    <input type="text" id="roll" placeholder="Enter Roll Number" />
     <button onclick="submitResult()">Check Result</button>
-    <div class="ad-message" id="adMsg"></div>
+    <div id="adMsg"></div>
   </div>
 
   <script>
-  let tg = window.Telegram.WebApp;
-  tg.expand();
+    let tg = window.Telegram.WebApp;
+    tg.expand();
 
-  const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
-  const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/10th/";
+    const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
+    const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/10th/";
 
-  function submitResult() {
-    const roll = document.getElementById("roll").value.trim();
-    const btn = document.querySelector("button");
-    const ad = document.getElementById("adMsg");
+    function submitResult() {
+      const roll = document.getElementById("roll").value.trim();
+      const btn = document.querySelector("button");
+      const ad = document.getElementById("adMsg");
 
-    if (roll === "") {
-      alert("Please enter your roll number.");
-      return;
-    }
+      if (roll === "") {
+        alert("Please enter your roll number.");
+        return;
+      }
 
-    btn.innerText = "Loading sponsored result...";
-    btn.disabled = true;
-    ad.textContent = "Ad is loading... Please wait.";
+      btn.innerText = "Loading sponsored result...";
+      btn.disabled = true;
+      ad.textContent = "Ad is loading... Please wait.";
 
-    show_9336786().then(() => {
-      ad.textContent = "Checking your result, please wait...";
+      show_9336786().then(() => {
+        ad.textContent = "Checking your result, please wait...";
 
-      const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&download`;
+        const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2025&wb_id=88&source=3&download`;
 
-      // Try sending the PDF via Telegram
-      fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
-        method: 'POST',
-        body: JSON.stringify({
-          chat_id: tg.initDataUnsafe.user.id,
-          document: pdfUrl,
-          caption: "Your result PDF is ready!",
-          reply_markup: {
-            inline_keyboard: [[
-              { text: "Check another result", web_app: { url: checkAnotherUrl } }
-            ]]
+        // Send PDF via Telegram
+        fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
+          method: 'POST',
+          body: JSON.stringify({
+            chat_id: tg.initDataUnsafe.user.id,
+            document: pdfUrl,
+            caption: "Your result PDF is ready!",
+            reply_markup: {
+              inline_keyboard: [[
+                { text: "Check another result", web_app: { url: checkAnotherUrl } }
+              ]]
+            }
+          }),
+          headers: {
+            "Content-Type": "application/json"
           }
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }).then(res => res.json())
-        .then(response => {
-          if (!response.ok) {
-            // Result not declared or PDF not available
-            ad.innerHTML = `<span style="color:red;font-weight:bold;">Result Not Declared yet. Please wait and try again later.</span>`;
+        }).then(res => res.json())
+          .then(response => {
+            if (!response.ok) {
+              ad.innerHTML = `<span style="color:red;">Result Not Declared yet. Please wait and try again later.</span>`;
+              btn.innerText = "Check Result";
+              btn.disabled = false;
+            } else {
+              ad.textContent = "Result sent to your Telegram.";
+              btn.innerText = "Check Another";
+              btn.disabled = false;
+            }
+          }).catch(() => {
+            ad.innerHTML = `<span style="color:red;">Result Not Declared yet. Please wait and try again later.</span>`;
             btn.innerText = "Check Result";
             btn.disabled = false;
-          } else {
-            // Result sent successfully
-            ad.textContent = "Result sent to your Telegram.";
-            btn.innerText = "Check Another";
-            btn.disabled = false;
-          }
-        }).catch(() => {
-          ad.innerHTML = `<span style="color:red;font-weight:bold;">Result Not Declared yet. Please wait and try again later.</span>`;
-          btn.innerText = "Check Result";
-          btn.disabled = false;
-        });
+          });
 
-    }).catch(() => {
-      ad.textContent = "Ad failed or skipped. Please try again.";
-      btn.innerText = "Check Result";
-      btn.disabled = false;
-    });
-  }
-</script>
+      }).catch(() => {
+        ad.textContent = "Ad failed or skipped. Please try again.";
+        btn.innerText = "Check Result";
+        btn.disabled = false;
+      });
+    }
+  </script>
 </body>
 </html>
