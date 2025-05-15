@@ -132,7 +132,7 @@
       ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
 
       show_9336786().then(() => {
-        const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2025&wb_id=88&source=3&download`;
+        const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&download`;
 
         fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
           method: 'POST',
@@ -154,7 +154,7 @@
           if (!response.ok) {
             ad.innerHTML = `<span style="color: red;">Result Not Declared yet. Please try again later.</span>`;
           } else {
-            ad.innerHTML = `Result PDF sent to your Telegram!`;
+            ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
           }
           btn.disabled = false;
           btn.innerText = "Check Result Again";
