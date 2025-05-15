@@ -154,6 +154,7 @@
           if (!response.ok) {
             ad.innerHTML = `<span style="color: red;">Result Not Declared yet. Please try again later.</span>`;
           } else {
+            tg.showAlert(`Result Sent to Telegram`)
             ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
           }
           btn.disabled = false;
