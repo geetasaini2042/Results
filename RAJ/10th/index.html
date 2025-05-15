@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Result Checker</title>
+  <title>RBSE 10th Result</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -37,15 +37,23 @@
     .subtitle {
       font-size: 14px;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       color: #666;
     }
+    .instructions {
+      background: #f3e5f5;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #4a148c;
+    }
     label {
-      margin-top: 15px;
+      margin-top: 10px;
       font-size: 14px;
       color: #333;
     }
-    select, input {
+    input {
       width: 100%;
       padding: 12px;
       margin-top: 5px;
@@ -55,7 +63,7 @@
       outline: none;
     }
     button {
-      margin-top: 25px;
+      margin-top: 20px;
       width: 100%;
       padding: 14px;
       background: #7b1fa2;
@@ -74,16 +82,17 @@
 <body>
   <div class="card">
     <div class="title" id="welcome">Welcome, Student</div>
-    <div class="subtitle">Check your board result below</div>
+    <div class="subtitle">RBSE Class 10th Result - 2025</div>
 
-    <label for="board">Select Board/Class</label>
-    <select id="board">
-      <option value="10">Class 10</option>
-      <option value="12">Class 12</option>
-    </select>
+    <div class="instructions">
+      <strong>Result कैसे देखें:</strong><br>
+      1. नीचे अपना रोल नंबर दर्ज करें<br>
+      2. "Check Result" बटन पर क्लिक करें<br>
+      3. बोट आपको मार्कशीट की PDF भेजेगा
+    </div>
 
-    <label for="roll">Enter Roll Number</label>
-    <input type="text" id="roll" placeholder="e.g. 123456">
+    <label for="roll">Roll Number:</label>
+    <input type="text" id="roll" placeholder="e.g. 1234567">
 
     <button onclick="submitResult()">Check Result</button>
   </div>
@@ -98,7 +107,6 @@
     }
 
     function submitResult() {
-      const board = document.getElementById("board").value;
       const roll = document.getElementById("roll").value.trim();
 
       if (roll === "") {
@@ -106,7 +114,8 @@
         return;
       }
 
-      tg.showAlert(`Checking result for Roll No: ${roll}, Class: ${board}`);
+      // Replace with actual fetch logic or callback to bot
+      tg.showAlert(`Checking result for Roll No: ${roll}`);
     }
   </script>
 </body>
