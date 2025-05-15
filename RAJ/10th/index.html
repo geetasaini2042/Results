@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Check Your Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background-color: #0088cc;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 id="welcome">Welcome, Student</h2>
+    
+    <label for="board">Select Board/Class:</label>
+    <select id="board">
+      <option value="10">Class 10</option>
+      <option value="12">Class 12</option>
+    </select>
+    
+    <label for="roll">Enter Roll Number:</label>
+    <input type="text" id="roll" placeholder="Your Roll Number">
+    
+    <button onclick="submitResult()">Check Result</button>
+  </div>
+
+  <script>
+    let tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const user = tg.initDataUnsafe.user;
+    if (user && user.first_name) {
+      document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
+    }
+
+    function submitResult() {
+      const board = document.getElementById("board").value;
+      const roll = document.getElementById("roll").value.trim();
+
+      if (roll === "") {
+        alert("Please enter your roll number.");
+        return;
+      }
+
+      // Replace with your own logic, like sending to a server
+      alert(`Checking result for Roll No: ${roll}, Class: ${board}`);
+    }
+  </script>
+</body>
+</html>
