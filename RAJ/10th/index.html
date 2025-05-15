@@ -77,6 +77,12 @@
     button:hover {
       background: #6a1b9a;
     }
+    .ad-message {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 15px;
+      color: #999;
+    }
   </style>
 </head>
 <body>
@@ -95,6 +101,7 @@
     <input type="text" id="roll" placeholder="e.g. 1234567">
 
     <button onclick="submitResult()">Check Result</button>
+    <div class="ad-message" id="adMsg"></div>
   </div>
 
   <script>
@@ -108,14 +115,26 @@
 
     function submitResult() {
       const roll = document.getElementById("roll").value.trim();
+      const btn = document.querySelector("button");
+      const ad = document.getElementById("adMsg");
 
       if (roll === "") {
         alert("Please enter your roll number.");
         return;
       }
 
-      // Replace with actual fetch logic or callback to bot
-      tg.showAlert(`Checking result for Roll No: ${roll}`);
+      btn.innerText = "Please wait... Sponsored ad running (15s)";
+      btn.disabled = true;
+      ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
+
+      setTimeout(() => {
+        const dataToSend = {
+          board: "RBSE10",
+          roll: roll
+        };
+
+        tg.sendData(JSON.stringify(dataToSend));
+      }, 15000);
     }
   </script>
 </body>
