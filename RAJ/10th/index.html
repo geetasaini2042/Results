@@ -126,16 +126,14 @@
 
       btn.innerText = "Please wait... Sponsored ad running (15s)";                     
       btn.disabled = true;
-      show_9336786().then(() => {})
-      setTimeout(() => {
+      show_9336786().then(() => {
         const dataToSend = {
           board: "RBSE10",
           roll: roll
         };
 
         tg.sendData(JSON.stringify(dataToSend));
-      }, 15000);
-    }
+      })
   </script>
 </body>
 </html>
