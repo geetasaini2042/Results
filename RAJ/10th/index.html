@@ -106,45 +106,72 @@
   </div>
 
   <script>
-    let tg = window.Telegram.WebApp;
-    tg.expand();
+  let tg = window.Telegram.WebApp;
+  tg.expand();
 
-    const user = tg.initDataUnsafe.user;
-    if (user && user.first_name) {
-      document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
+  const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
+  const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/10th/";
+
+  function submitResult() {
+    const roll = document.getElementById("roll").value.trim();
+    const btn = document.querySelector("button");
+    const ad = document.getElementById("adMsg");
+
+    if (roll === "") {
+      alert("Please enter your roll number.");
+      return;
     }
 
-    function submitResult() {
-  const roll = document.getElementById("roll").value.trim();
-  const btn = document.querySelector("button");
-  const ad = document.getElementById("adMsg");
+    btn.innerText = "Loading sponsored result...";
+    btn.disabled = true;
+    ad.textContent = "Ad is loading... Please wait.";
 
-  if (roll === "") {
-    alert("Please enter your roll number.");
-    return;
+    show_9336786().then(() => {
+      ad.textContent = "Checking your result, please wait...";
+
+      const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2025&wb_id=88&source=3&download`;
+
+      // Try sending the PDF via Telegram
+      fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
+        method: 'POST',
+        body: JSON.stringify({
+          chat_id: tg.initDataUnsafe.user.id,
+          document: pdfUrl,
+          caption: "Your result PDF is ready!",
+          reply_markup: {
+            inline_keyboard: [[
+              { text: "Check another result", web_app: { url: checkAnotherUrl } }
+            ]]
+          }
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => res.json())
+        .then(response => {
+          if (!response.ok) {
+            // Result not declared or PDF not available
+            ad.innerHTML = `<span style="color:red;font-weight:bold;">Result Not Declared yet. Please wait and try again later.</span>`;
+            btn.innerText = "Check Result";
+            btn.disabled = false;
+          } else {
+            // Result sent successfully
+            ad.textContent = "Result sent to your Telegram.";
+            btn.innerText = "Check Another";
+            btn.disabled = false;
+          }
+        }).catch(() => {
+          ad.innerHTML = `<span style="color:red;font-weight:bold;">Result Not Declared yet. Please wait and try again later.</span>`;
+          btn.innerText = "Check Result";
+          btn.disabled = false;
+        });
+
+    }).catch(() => {
+      ad.textContent = "Ad failed or skipped. Please try again.";
+      btn.innerText = "Check Result";
+      btn.disabled = false;
+    });
   }
-
-  btn.innerText = "Loading sponsored result...";
-  btn.disabled = true;
-  ad.textContent = "Ad is loading... Please wait.";
-
-  // Show rewarded ad
-  show_9336786().then(() => {
-    ad.textContent = "Thanks for watching the ad! Fetching your result...";
-
-    const dataToSend = {
-      board: "RBSE10",
-      roll: roll
-    };
-
-    // Send data to Telegram bot
-    tg.sendData(JSON.stringify(dataToSend));
-  }).catch(() => {
-    ad.textContent = "Ad failed to load or was skipped. Please try again.";
-    btn.innerText = "Check Result";
-    btn.disabled = false;
-  });
-}
-  </script>
+</script>
 </body>
 </html>
