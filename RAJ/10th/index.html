@@ -117,7 +117,7 @@
               btn.innerText = "Check Result";
               btn.disabled = false;
             } else {
-              ad.textContent = "Result sent to your Telegram.";
+              ad.innerHTML = `<span style="color:green;">Result sent to your Telegram.</span>`;
               btn.innerText = "Check Another";
               btn.disabled = false;
             }
