@@ -42,7 +42,7 @@ function submitResult() {
 }
 
 function sendResultToTelegram(roll, btn, ad) {
-  const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2023&wb_id=88&source=3&download`;
+  const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2022&wb_id=89&source=3&download`;
 
   fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
     method: 'POST',
@@ -64,7 +64,7 @@ function sendResultToTelegram(roll, btn, ad) {
   .then(response => {
     if (!response || response.ok !== true) {
       // Telegram fail hua — HTML show karo
-      fetch(`https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2023&wb_id=88&source=3&see`)
+      fetch(`https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2022&wb_id=89&source=3&see`)
         .then(res => res.text())
         .then(html => {
           ad.innerHTML = `<div style="color: red; font-weight: bold;">${html}</div>`;
