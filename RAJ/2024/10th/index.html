@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RBSE 10th Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="//solseewuthi.net/sdk.js" data-zone="9336786" data-sdk="show_9336786"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #e0f7fa, #e1bee7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-align: center;
+      color: #4a148c;
+    }
+    .subtitle {
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 15px;
+      color: #666;
+    }
+    .instructions {
+      background: #f3e5f5;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #4a148c;
+    }
+    label {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      background: #7b1fa2;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #6a1b9a;
+    }
+    .ad-message {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 15px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title" id="welcome">Welcome, Student</div>
+    <div class="subtitle">RBSE Class 10th Result - 2024</div>
+
+    <div class="instructions">
+      <strong>Result कैसे देखें:</strong><br>
+      1. नीचे अपना रोल नंबर दर्ज करें<br>
+      2. "Check Result" बटन पर क्लिक करें<br>
+      3. बोट आपको मार्कशीट की PDF भेजेगा
+    </div>
+
+    <label for="roll">Roll Number:</label>
+    <input type="text" id="roll" placeholder="e.g. 1234567">
+
+    <button onclick="submitResult()">Check Result</button>
+    <div class="ad-message" id="adMsg"></div>
+  </div>
+
+  <script>
+    let tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
+    const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2024/10th/";
+    const user = tg.initDataUnsafe.user;
+
+    if (user && user.first_name) {
+      document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
+    }
+
+    function submitResult() {
+      const roll = document.getElementById("roll").value.trim();
+      const btn = document.querySelector("button");
+      const ad = document.getElementById("adMsg");
+
+      if (roll === "") {
+        alert("Please enter your roll number.");
+        return;
+      }
+
+      btn.innerText = "Please wait... Sponsored ad running (15s)";
+      btn.disabled = true;
+      ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
+
+      show_9336786().then(() => {
+        const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&download`;
+        const roll = document.getElementById("roll").value.trim();
+        fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
+          method: 'POST',
+          body: JSON.stringify({
+            chat_id: user.id,
+            document: pdfUrl,
+            caption: `*Rajasthan Board* \n *Year* : 2024 \n*Roll Number:* ${roll} `,
+            reply_markup: {
+              inline_keyboard: [[
+                { text: "Check another Old Result", web_app: { url: checkAnotherUrl } }
+              ]]
+            },
+            parse_mode: "Markdown"
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }).then(res => res.json())
+        .then(response => {
+          if (!response.ok) {
+            ad.innerHTML = `<span style="color: red;">Please Enter a Valid Roll Number</span>`;
+          } else {
+            tg.showAlert(`Result Sent to Telegram`)
+            ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
+          }
+          btn.disabled = false;
+          btn.innerText = "Check Result Again";
+        })
+        .catch(() => {
+          ad.innerHTML = `<span style="color: red;">Please Enter a Valid Roll Number</span>`;
+          btn.disabled = false;
+          btn.innerText = "Check Result";
+        });
+      }).catch(() => {
+        ad.textContent = "Ad skipped or failed. Please try again.";
+        btn.disabled = false;
+        btn.innerText = "Check Result";
+      });
+    }
+  </script>
+</body>
+</html>
