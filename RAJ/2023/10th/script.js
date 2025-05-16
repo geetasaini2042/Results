@@ -13,7 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("button").addEventListener("click", submitResult);
 });
 
+let resultSent = false;
+
 function submitResult() {
+  resultSent = false; // <-- FIXED: reset every time user submits
+
   const roll = document.getElementById("roll").value.trim();
   const btn = document.querySelector("button");
   const ad = document.getElementById("adMsg");
@@ -27,17 +31,25 @@ function submitResult() {
   btn.disabled = true;
   ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
 
+  const trySendResult = () => {
+    if (!resultSent) {
+      resultSent = true;
+      sendResultToTelegram(roll, btn, ad);
+    }
+  };
+
   if (typeof show_9336786 === "function") {
-    show_9336786().then(() => {
-      sendResultToTelegram(roll, btn, ad);
-    }).catch(() => {
-      sendResultToTelegram(roll, btn, ad);
-      
-    });
+    show_9336786()
+      .catch((err) => {
+        console.warn("Ad failed:", err);
+      })
+      .finally(() => {
+        trySendResult();
+      });
   } else {
-    console.error("show_9336786 function not found");
-    ad.textContent = "Unable to show ad. Try again.";
-    resetButton(btn);
+    console.warn("show_9336786 function not found");
+    ad.textContent = "Ad not available, proceeding without ad.";
+    trySendResult();
   }
 }
 
@@ -74,17 +86,20 @@ function sendResultToTelegram(roll, btn, ad) {
         })
         .finally(() => resetButton(btn));
     } else {
-      tg.showAlert(`Result Sent to Telegram`);
-      ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
+      alert(`Result Sent to Telegram`);
+      ad.innerHTML = `<span style="color: green;">Result Sent on your Telegram Account!</span>`;
       resetButton(btn, true);
     }
   })
-  .catch(() => {
-    ad.innerHTML = `<span style="color: red; font-weight: bold;">Failed to send result. Try again later.</span>`;
-    resetButton(btn);
-  });
+  .catch((error) => {
+  
+
+    ad.innerHTML = `<span style="color: red; font-weight: bold;">Failed to send result. Error: ${error.message || error}</span>`;
+
+  resetButton(btn);
+});
 }
 function resetButton(button, again = false) {
   button.disabled = false;
-  button.innerText = again ? "Check Result Again" : "Check Result";
+  button.innerText = again ? "Check Result" : "Check Result";
 }
