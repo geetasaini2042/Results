@@ -74,7 +74,7 @@ function sendResultToTelegram(roll, btn, ad) {
         })
         .finally(() => resetButton(btn));
     } else {
-      tg.showAlert(`Result Sent to Telegram`);
+      alert(`Result Sent to Telegram`);
       ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
       resetButton(btn, true);
     }
