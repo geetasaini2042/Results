@@ -2,7 +2,7 @@ let tg = window.Telegram.WebApp;
 tg.expand();
 
 const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";  // इसे backend में रखना चाहिए
-const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2023/10th/";
+const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2022/12th/";
 const user = tg.initDataUnsafe.user;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -13,7 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("button").addEventListener("click", submitResult);
 });
 
+let resultSent = false;
+
 function submitResult() {
+  resultSent = false; // <-- FIXED: reset every time user submits
+
   const roll = document.getElementById("roll").value.trim();
   const btn = document.querySelector("button");
   const ad = document.getElementById("adMsg");
@@ -27,17 +31,25 @@ function submitResult() {
   btn.disabled = true;
   ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
 
+  const trySendResult = () => {
+    if (!resultSent) {
+      resultSent = true;
+      sendResultToTelegram(roll, btn, ad);
+    }
+  };
+
   if (typeof show_9336786 === "function") {
-    show_9336786().then(() => {
-      sendResultToTelegram(roll, btn, ad);
-    }).catch(() => {
-      sendResultToTelegram(roll, btn, ad);
-      
-    });
+    show_9336786()
+      .catch((err) => {
+        console.warn("Ad failed:", err);
+      })
+      .finally(() => {
+        trySendResult();
+      });
   } else {
-    console.error("show_9336786 function not found");
-    ad.textContent = "Unable to show ad. Try again.";
-    resetButton(btn);
+    console.warn("show_9336786 function not found");
+    ad.textContent = "Ad not available, proceeding without ad.";
+    trySendResult();
   }
 }
 
@@ -75,7 +87,7 @@ function sendResultToTelegram(roll, btn, ad) {
         .finally(() => resetButton(btn));
     } else {
       alert(`Result Sent to Telegram`);
-      ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
+      ad.innerHTML = `<span style="color: green;">Result Sent on your Telegram Account!</span>`;
       resetButton(btn, true);
     }
   })
@@ -89,5 +101,5 @@ function sendResultToTelegram(roll, btn, ad) {
 }
 function resetButton(button, again = false) {
   button.disabled = false;
-  button.innerText = again ? "Check Result Again" : "Check Result";
+  button.innerText = again ? "Check Result" : "Check Result";
 }
