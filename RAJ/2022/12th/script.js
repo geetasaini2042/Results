@@ -79,10 +79,13 @@ function sendResultToTelegram(roll, btn, ad) {
       resetButton(btn, true);
     }
   })
-  .catch(() => {
-    ad.innerHTML = `<span style="color: red; font-weight: bold;">Failed to send result. Try again later.</span>`;
-    resetButton(btn);
-  });
+  .catch((error) => {
+  
+
+    ad.innerHTML = `<span style="color: red; font-weight: bold;">Failed to send result. Error: ${error.message || error}</span>`;
+
+  resetButton(btn);
+});
 }
 function resetButton(button, again = false) {
   button.disabled = false;
