@@ -63,7 +63,7 @@ function sendResultToTelegram(roll, btn, ad) {
   .then(res => res.json())
   .then(response => {
     if (!response.ok) {
-      ad.innerHTML = `<span style="color: red;">Please Enter a Valid Roll Number</span>`;
+      ad.innerHTML = `<span style="color: red;">Please Enter a Valid Roll Number ${pdfUrl}</span>`;
     } else {
       tg.showAlert(`Result Sent to Telegram`);
       ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
