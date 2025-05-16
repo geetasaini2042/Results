@@ -54,7 +54,7 @@ function submitResult() {
 }
 
 function sendResultToTelegram(roll, btn, ad) {
-  const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2024/mrollresult.asp`;
+  const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2025/mrollresult.asp`;
   const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
 
   fetch(getUrl)
@@ -63,21 +63,22 @@ function sendResultToTelegram(roll, btn, ad) {
         const savePdfUrl = `https://sainipankaj12.serv00.net/savepdf.php?url=${encodeURIComponent(getUrl)}`;
         
         return fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
-          method: 'POST',
-          body: JSON.stringify({
-            chat_id: user.id,
-            document: savePdfUrl,
-            caption: "Your result is here!",
-            reply_markup: {
-              inline_keyboard: [[
-                { text: "Check another result", web_app: { url: checkAnotherUrl } }
-              ]]
-            }
-          }),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        });
+  method: 'POST',
+  body: JSON.stringify({
+    chat_id: user.id,
+    document: savePdfUrl,
+    caption: `*Board:* Rajasthan\n*Class:* 10th\n*Roll No:* \`${roll}\``,
+    parse_mode: "Markdown",
+    reply_markup: {
+      inline_keyboard: [[
+        { text: "Check another result", web_app: { url: checkAnotherUrl } }
+      ]]
+    }
+  }),
+  headers: {
+    "Content-Type": "application/json"
+  }
+});
       } else if (response.status === 400) {
         return response.text().then(text => {
           ad.innerHTML = `<div style="color: red; font-weight: bold;">${text}</div>`;
