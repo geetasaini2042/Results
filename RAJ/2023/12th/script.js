@@ -13,7 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("button").addEventListener("click", submitResult);
 });
 
+let resultSent = false;
+
 function submitResult() {
+  resultSent = false; // <-- FIXED: reset every time user submits
+
   const roll = document.getElementById("roll").value.trim();
   const btn = document.querySelector("button");
   const ad = document.getElementById("adMsg");
@@ -27,19 +31,26 @@ function submitResult() {
   btn.disabled = true;
   ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
 
-  if (typeof show_9336786 === "function") {
-  show_9336786()
-    .catch((err) => {
-      console.warn("Ad failed:", err);
-    })
-    .finally(() => {
+  const trySendResult = () => {
+    if (!resultSent) {
+      resultSent = true;
       sendResultToTelegram(roll, btn, ad);
-    });
-} else {
-  console.error("show_9336786 function not found");
-  ad.textContent = "Unable to show ad. Try again.";
-  resetButton(btn);
-}
+    }
+  };
+
+  if (typeof show_9336786 === "function") {
+    show_9336786()
+      .catch((err) => {
+        console.warn("Ad failed:", err);
+      })
+      .finally(() => {
+        trySendResult();
+      });
+  } else {
+    console.warn("show_9336786 function not found");
+    ad.textContent = "Ad not available, proceeding without ad.";
+    trySendResult();
+  }
 }
 
 function sendResultToTelegram(roll, btn, ad) {
