@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>RBSE 12th Result</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="script.js" defer></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="//solseewuthi.net/sdk.js" data-zone="9336786" data-sdk="show_9336786"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -99,78 +100,10 @@
     </div>
 
     <label for="roll">Roll Number:</label>
-    <input type="text" id="roll" placeholder="e.g. 1234567">
+    <input type="tel" id="roll" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 1234567">
 
     <button onclick="submitResult()">Check Result</button>
     <div class="ad-message" id="adMsg"></div>
   </div>
-
-  <script>
-    let tg = window.Telegram.WebApp;
-    tg.expand();
-
-    const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
-    const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/12th/";
-    const user = tg.initDataUnsafe.user;
-
-    if (user && user.first_name) {
-      document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
-    }
-
-    function submitResult() {
-      const roll = document.getElementById("roll").value.trim();
-      const btn = document.querySelector("button");
-      const ad = document.getElementById("adMsg");
-
-      if (roll === "") {
-        alert("Please enter your roll number.");
-        return;
-      }
-
-      btn.innerText = "Please wait... Sponsored ad running (15s)";
-      btn.disabled = true;
-      ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
-
-      show_9336786().then(() => {
-        const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2025&wb_id=89&source=3&download`;
-
-        fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
-          method: 'POST',
-          body: JSON.stringify({
-            chat_id: user.id,
-            document: pdfUrl,
-            caption: "Your result is here!",
-            reply_markup: {
-              inline_keyboard: [[
-                { text: "Check another result", web_app: { url: checkAnotherUrl } }
-              ]]
-            }
-          }),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }).then(res => res.json())
-        .then(response => {
-          if (!response.ok) {
-            ad.innerHTML = `<span style="color: red;">Result Not Declared yet. Please try again later.</span>`;
-          } else {
-            tg.showAlert(`Result Sent to Telegram`)
-            ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
-          }
-          btn.disabled = false;
-          btn.innerText = "Check Result Again";
-        })
-        .catch(() => {
-          ad.innerHTML = `<span style="color: red;">Result Not Declared yet. Please try again later.</span>`;
-          btn.disabled = false;
-          btn.innerText = "Check Result";
-        });
-      }).catch(() => {
-        ad.textContent = "Ad skipped or failed. Please try again.";
-        btn.disabled = false;
-        btn.innerText = "Check Result";
-      });
-    }
-  </script>
 </body>
 </html>
