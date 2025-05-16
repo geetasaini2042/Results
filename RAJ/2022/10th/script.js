@@ -28,17 +28,18 @@ function submitResult() {
   ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
 
   if (typeof show_9336786 === "function") {
-    show_9336786().then(() => {
+  show_9336786()
+    .catch((err) => {
+      console.warn("Ad failed:", err);
+    })
+    .finally(() => {
       sendResultToTelegram(roll, btn, ad);
-    }).catch(() => {
-      sendResultToTelegram(roll, btn, ad);
-      
     });
-  } else {
-    console.error("show_9336786 function not found");
-    ad.textContent = "Unable to show ad. Try again.";
-    resetButton(btn);
-  }
+} else {
+  console.error("show_9336786 function not found");
+  ad.textContent = "Unable to show ad. Try again.";
+  resetButton(btn);
+}
 }
 
 function sendResultToTelegram(roll, btn, ad) {
