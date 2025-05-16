@@ -1,7 +1,7 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";  // इसे सुरक्षा के लिए backend पर ले जाना चाहिए
+const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";  // इसे backend में रखना चाहिए
 const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/10th/";
 const user = tg.initDataUnsafe.user;
 
@@ -63,18 +63,25 @@ function sendResultToTelegram(roll, btn, ad) {
   .then(res => res.json())
   .then(response => {
     if (!response.ok) {
-      ad.innerHTML = `<span style="color: red;">Please Enter a Valid Roll Number ${pdfUrl}</span>`;
-      window.location.href = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&download`;
-
+      // Agar Telegram par document fail ho gaya, to PHP result ko raw HTML me show karein
+      fetch(`https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&see`)
+        .then(res => res.text())
+        .then(html => {
+          ad.innerHTML = `<div style="color: red; font-weight: bold;">${html}</div>`;
+        })
+        .catch(() => {
+          ad.innerHTML = `<span style="color: red; font-weight: bold;">Server Error: Unable to load result.</span>`;
+        })
+        .finally(() => resetButton(btn));
     } else {
       tg.showAlert(`Result Sent to Telegram`);
       ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
       window.location.href = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&see`;
+      resetButton(btn, true);
     }
-    resetButton(btn, true);
   })
   .catch(() => {
-    ad.innerHTML = `<span style="color: red;">Failed to send result. Try again later.</span>`;
+    ad.innerHTML = `<span style="color: red; font-weight: bold;">Failed to send result. Try again later.</span>`;
     resetButton(btn);
   });
 }
