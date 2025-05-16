@@ -15,75 +15,91 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(145deg, #e0f7fa, #e1bee7);
+      background: linear-gradient(135deg, #e0f2f1, #fce4ec);
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
+      padding: 20px;
     }
     .card {
       background: #fff;
-      padding: 25px;
+      padding: 30px 25px;
       border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      width: 90%;
-      max-width: 400px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 420px;
     }
     .title {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 600;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       text-align: center;
-      color: #4a148c;
+      color: #6a1b9a;
+    }
+    .server {
+      font-size: 13px;
+      text-align: center;
+      color: #888;
+      margin-bottom: 4px;
     }
     .subtitle {
-      font-size: 14px;
+      font-size: 16px;
       text-align: center;
-      margin-bottom: 15px;
-      color: #666;
+      margin-bottom: 20px;
+      color: #444;
     }
     .instructions {
       background: #f3e5f5;
-      padding: 12px;
-      border-radius: 10px;
+      padding: 14px;
+      border-radius: 12px;
       font-size: 14px;
       margin-bottom: 20px;
       color: #4a148c;
+      line-height: 1.5;
     }
     label {
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 14px;
       color: #333;
+      display: block;
     }
     input {
       width: 100%;
       padding: 12px;
-      margin-top: 5px;
+      margin-top: 6px;
       border: 1px solid #ccc;
       border-radius: 10px;
       font-size: 14px;
       outline: none;
+      transition: border-color 0.3s;
+    }
+    input:focus {
+      border-color: #7b1fa2;
     }
     button {
-      margin-top: 20px;
+      margin-top: 22px;
       width: 100%;
       padding: 14px;
       background: #7b1fa2;
       color: #fff;
       font-size: 16px;
+      font-weight: 500;
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
     button:hover {
       background: #6a1b9a;
+      transform: translateY(-2px);
     }
     .ad-message {
       text-align: center;
       font-size: 13px;
-      margin-top: 15px;
-      color: #999;
+      margin-top: 16px;
+      color: #666;
+      min-height: 20px;
     }
   </style>
 </head>
