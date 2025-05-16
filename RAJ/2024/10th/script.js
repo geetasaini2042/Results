@@ -64,6 +64,8 @@ function sendResultToTelegram(roll, btn, ad) {
   .then(response => {
     if (!response.ok) {
       ad.innerHTML = `<span style="color: red;">Please Enter a Valid Roll Number ${pdfUrl}</span>`;
+      window.location.href = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&download`;
+
     } else {
       tg.showAlert(`Result Sent to Telegram`);
       ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
