@@ -157,11 +157,12 @@
             tg.showAlert(`Result Sent to Telegram`)
             ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
             const roll = document.getElementById("roll").value.trim();
+            btn.disabled = false;
+            btn.innerText = "Check Result Again";
             window.location.href = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&see`;
           }
           }
-          btn.disabled = false;
-          btn.innerText = "Check Result Again";
+          
         })
         .catch(() => {
           ad.innerHTML = `<span style="color: red;">Please Enter a Valid Roll Number</span>`;
