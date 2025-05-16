@@ -2,7 +2,7 @@ let tg = window.Telegram.WebApp;
 tg.expand();
 
 const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";  // इसे backend में रखना चाहिए
-const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2022/10th/";
+const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2023/12th/";
 const user = tg.initDataUnsafe.user;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -54,7 +54,7 @@ function submitResult() {
 }
 
 function sendResultToTelegram(roll, btn, ad) {
-  const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2022&wb_id=88&source=3&download`;
+  const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2023&wb_id=89&source=3&download`;
 
   fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
     method: 'POST',
@@ -76,7 +76,7 @@ function sendResultToTelegram(roll, btn, ad) {
   .then(response => {
     if (!response || response.ok !== true) {
       // Telegram fail hua — HTML show karo
-      fetch(`https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2022&wb_id=88&source=3&see`)
+      fetch(`https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2023&wb_id=89&source=3&see`)
         .then(res => res.text())
         .then(html => {
           ad.innerHTML = `<div style="color: red; font-weight: bold;">${html}</div>`;
@@ -87,7 +87,7 @@ function sendResultToTelegram(roll, btn, ad) {
         .finally(() => resetButton(btn));
     } else {
       alert(`Result Sent to Telegram`);
-      ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
+      ad.innerHTML = `<span style="color: green;">Result Sent on your Telegram Account!</span>`;
       resetButton(btn, true);
     }
   })
@@ -101,5 +101,5 @@ function sendResultToTelegram(roll, btn, ad) {
 }
 function resetButton(button, again = false) {
   button.disabled = false;
-  button.innerText = again ? "Check Result Again" : "Check Result";
+  button.innerText = again ? "Check Result" : "Check Result";
 }
