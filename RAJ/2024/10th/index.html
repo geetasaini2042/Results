@@ -89,7 +89,7 @@
 <body>
   <div class="card">
     <div class="title" id="welcome">Welcome, Student</div>
-    <div class="subtitle">RBSE Class 10th Result - 2024</div>
+    <div class="subtitle">RBSE Class 10th Result - 2025</div>
 
     <div class="instructions">
       <strong>Result कैसे देखें:</strong><br>
@@ -110,7 +110,7 @@
     tg.expand();
 
     const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
-    const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2024/10th/";
+    const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/10th/";
     const user = tg.initDataUnsafe.user;
 
     if (user && user.first_name) {
@@ -132,20 +132,19 @@
       ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
 
       show_9336786().then(() => {
-        const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&download`;
-        const roll = document.getElementById("roll").value.trim();
+        const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2025&wb_id=88&source=3&download`;
+
         fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
           method: 'POST',
           body: JSON.stringify({
             chat_id: user.id,
             document: pdfUrl,
-            caption: `*Rajasthan Board* \n *Year* : 2024 \n*Roll Number:* ${roll} `,
+            caption: "Your result is here!",
             reply_markup: {
               inline_keyboard: [[
-                { text: "Check another Old Result", web_app: { url: checkAnotherUrl } }
+                { text: "Check another result", web_app: { url: checkAnotherUrl } }
               ]]
-            },
-            parse_mode: "Markdown"
+            }
           }),
           headers: {
             "Content-Type": "application/json"
@@ -153,7 +152,7 @@
         }).then(res => res.json())
         .then(response => {
           if (!response.ok) {
-            ad.innerHTML = `<span style="color: red;">Please Enter a Valid Roll Number</span>`;
+            ad.innerHTML = `<span style="color: red;">Result Not Declared yet. Please try again later.</span>`;
           } else {
             tg.showAlert(`Result Sent to Telegram`)
             ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
@@ -162,7 +161,7 @@
           btn.innerText = "Check Result Again";
         })
         .catch(() => {
-          ad.innerHTML = `<span style="color: red;">Please Enter a Valid Roll Number</span>`;
+          ad.innerHTML = `<span style="color: red;">Result Not Declared yet. Please try again later.</span>`;
           btn.disabled = false;
           btn.innerText = "Check Result";
         });
