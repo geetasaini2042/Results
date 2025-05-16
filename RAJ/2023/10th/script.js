@@ -76,7 +76,7 @@ function sendResultToTelegram(roll, btn, ad) {
     } else {
       tg.showAlert(`Result Sent to Telegram`);
       ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
-      window.location.href = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2023&wb_id=88&source=3&see`;
+      //window.location.href = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2023&wb_id=88&source=3&see`;
       resetButton(btn, true);
     }
   })
