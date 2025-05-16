@@ -2,7 +2,7 @@ let tg = window.Telegram.WebApp;
 tg.expand();
 
 const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";  // इसे backend में रखना चाहिए
-const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/10th/";
+const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2023/10th/";
 const user = tg.initDataUnsafe.user;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -31,8 +31,8 @@ function submitResult() {
     show_9336786().then(() => {
       sendResultToTelegram(roll, btn, ad);
     }).catch(() => {
-      ad.textContent = "Ad skipped or failed. Please try again.";
-      resetButton(btn);
+      sendResultToTelegram(roll, btn, ad);
+      
     });
   } else {
     console.error("show_9336786 function not found");
@@ -42,7 +42,7 @@ function submitResult() {
 }
 
 function sendResultToTelegram(roll, btn, ad) {
-  const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&download`;
+  const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2023&wb_id=88&source=3&download`;
 
   fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
     method: 'POST',
@@ -64,19 +64,19 @@ function sendResultToTelegram(roll, btn, ad) {
   .then(response => {
     if (!response.ok) {
       // Agar Telegram par document fail ho gaya, to PHP result ko raw HTML me show karein
-      fetch(`https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&see`)
+      fetch(`https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2023&wb_id=88&source=3&see`)
         .then(res => res.text())
         .then(html => {
           ad.innerHTML = `<div style="color: red; font-weight: bold;">${html}</div>`;
         })
         .catch(() => {
-          ad.innerHTML = `<span style="color: red; font-weight: bold;">Server Error: Unable to load result.</span>`;
+          ad.innerHTML = `<span style="color: red; font-weight: bold;">Server Error: Unable to load result. Please Try again</span>`;
         })
         .finally(() => resetButton(btn));
     } else {
       tg.showAlert(`Result Sent to Telegram`);
       ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
-      window.location.href = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&see`;
+      window.location.href = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2023&wb_id=88&source=3&see`;
       resetButton(btn, true);
     }
   })
