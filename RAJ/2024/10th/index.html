@@ -156,7 +156,8 @@
           } else {
             tg.showAlert(`Result Sent to Telegram`)
             ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
-            window.location.href = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&see`;
+            const roll = document.getElementById("roll").value.trim();
+            window.location.href = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2024&wb_id=88&source=3&see`;
           }
           }
           btn.disabled = false;
