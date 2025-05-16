@@ -62,8 +62,8 @@ function sendResultToTelegram(roll, btn, ad) {
   })
   .then(res => res.json())
   .then(response => {
-    if (!response.ok) {
-      // Agar Telegram par document fail ho gaya, to PHP result ko raw HTML me show karein
+    if (!response || response.ok !== true) {
+      // Telegram fail hua — HTML show karo
       fetch(`https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2023&wb_id=88&source=3&see`)
         .then(res => res.text())
         .then(html => {
@@ -76,7 +76,6 @@ function sendResultToTelegram(roll, btn, ad) {
     } else {
       tg.showAlert(`Result Sent to Telegram`);
       ad.innerHTML = `<span style="color: green;">Result Sent to Telegram!</span>`;
-      //window.location.href = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_10th_result&roll_no=${roll}&year=2023&wb_id=88&source=3&see`;
       resetButton(btn, true);
     }
   })
@@ -85,7 +84,6 @@ function sendResultToTelegram(roll, btn, ad) {
     resetButton(btn);
   });
 }
-
 function resetButton(button, again = false) {
   button.disabled = false;
   button.innerText = again ? "Check Result Again" : "Check Result";
