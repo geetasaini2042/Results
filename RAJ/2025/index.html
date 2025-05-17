@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your Info</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <h1>User Info</h1>
+  <p id="name"></p>
+  <p id="tgid"></p>
+
+  <script>
+    // Telegram WebApp object
+    const tg = window.Telegram.WebApp;
+
+    // Expand WebApp if not already
+    tg.expand();
+
+    // Get user info
+    const user = tg.initDataUnsafe.user;
+
+    if (user) {
+      document.getElementById("name").innerText = "Name: " + user.first_name + (user.last_name ? " " + user.last_name : "");
+      document.getElementById("tgid").innerText = "Telegram ID: " + user.id;
+    } else {
+      document.getElementById("name").innerText = "User not found.";
+      document.getElementById("tgid").innerText = "";
+    }
+  </script>
+</body>
+</html>
