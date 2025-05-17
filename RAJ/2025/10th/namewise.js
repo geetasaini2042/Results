@@ -34,7 +34,7 @@ function submitResult() {
   const trySendResult = () => {
     if (!resultSent) {
       resultSent = true;
-      sendResultToTelegram(name, btn, ad);
+      sendResult(name, btn, ad);
     }
   };
 
@@ -56,29 +56,11 @@ function submitResult() {
 function sendResult(name, btn, ad) {
   const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2024/mname-results.aspx`;
   const getUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result.php?name=${name}&page=1&url=${encodeURIComponent(sourceUrl)}`;
-
+  const targetUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result.php?name=${name}&page=1&user_id=${user.id}url=${encodeURIComponent(sourceUrl)}`;
   fetch(getUrl)
     .then(response => {
       if (response.status === 200) {
-        const savePdfUrl = `https://sainipankaj12.serv00.net/savepdf.php?url=${encodeURIComponent(getUrl)}`;
-        
-        return fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
-  method: 'POST',
-  body: JSON.stringify({
-    chat_id: user.id,
-    document: savePdfUrl,
-    caption: `*Board:* Rajasthan\n*Class:* 10th\n*Roll No:* \`${roll}\``,
-    parse_mode: "Markdown",
-    reply_markup: {
-      inline_keyboard: [[
-        { text: "Check another result", web_app: { url: checkAnotherUrl } }
-      ]]
-    }
-  }),
-  headers: {
-    "Content-Type": "application/json"
-  }
-});
+        window.location.href = targetUrl;
       } else if (response.status === 400) {
         return response.text().then(text => {
           ad.innerHTML = `<div style="color: red; font-weight: bold;">${text}</div>`;
@@ -89,20 +71,9 @@ function sendResult(name, btn, ad) {
         throw new Error(`Unexpected status: ${response.status}`);
       }
     })
-    .then(res => res.json())
-    .then(response => {
-      if (!response || response.ok !== true) {
-        ad.innerHTML = `<span style="color: red; font-weight: bold;">Telegram Error: Could not send result.</span>`;
-        resetButton(btn);
-      } else {
-        alert(`Result Sent to Telegram`);
-        ad.innerHTML = `<span style="color: green;">Result Sent on your Telegram Account!</span>`;
-        resetButton(btn, true);
-      }
-    })
     .catch((error) => {
       if (error.message !== "Handled 400 error") {
-        ad.innerHTML = `<span style="color: red; font-weight: bold;">Failed to send result. Error: ${error.message || error}</span>`;
+        ad.innerHTML = `<span style="color: red; font-weight: bold;">Failed to get result. Error: ${error.message || error}</span>`;
         resetButton(btn);
       }
     });
