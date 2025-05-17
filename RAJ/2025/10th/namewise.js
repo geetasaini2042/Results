@@ -80,5 +80,5 @@ function sendResult(name, btn, ad) {
 }
 function resetButton(button, again = false) {
   button.disabled = false;
-  button.innerText = again ? "Check Result" : "Check Result";
+  button.innerText = "Check Result";
 }
