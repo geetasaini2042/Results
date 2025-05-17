@@ -28,7 +28,7 @@ function submitResult() {
 
   btn.innerText = "Please wait...";
   btn.disabled = true;
-  ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
+  ad.textContent = "I am working...";
 
   const trySendResult = () => {
     if (!resultSent) {
@@ -53,7 +53,7 @@ function submitResult() {
 }
 
 function sendResult(name, btn, ad) {
-  const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2024/mname-results.aspx`;
+  const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2025/mname-results.aspx`;
   const getUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result-1.php?name=${encodeURIComponent(name)}&page=1&url=${encodeURIComponent(sourceUrl)}`;
   const targetUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result-1.php?name=${encodeURIComponent(name)}&page=1&user_id=${user.id}&url=${encodeURIComponent(sourceUrl)}`;
 
@@ -73,7 +73,7 @@ function sendResult(name, btn, ad) {
     })
     .catch((error) => {
       if (error.message !== "Handled 400 error") {
-        ad.innerHTML = `<span style="color: red; font-weight: bold;">Failed to get result. Error: ${error.message || error}</span>`;
+        ad.innerHTML = `<span style="color: red; font-weight: bold;">Failed to get result => Please chack your Internet connection</span>`;
         resetButton(btn);
       }
     });
