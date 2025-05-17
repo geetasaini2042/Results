@@ -56,7 +56,7 @@ function submitResult() {
 function sendResult(name, btn, ad) {
   const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2024/mname-results.aspx`;
   const getUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result.php?name=${name}&page=1&url=${encodeURIComponent(sourceUrl)}`;
-  const targetUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result.php?name=${name}&page=1&user_id=${user.id}url=${encodeURIComponent(sourceUrl)}`;
+  const targetUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result.php?name=${name}&page=1&user_id=${user.id}&url=${encodeURIComponent(sourceUrl)}`;
   fetch(getUrl)
     .then(response => {
       if (response.status === 200) {
