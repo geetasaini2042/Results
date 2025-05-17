@@ -1,7 +1,7 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/10th/index2.html";
+const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/10th/NameWise/";
 const user = tg.initDataUnsafe.user;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -63,7 +63,7 @@ function sendResult(name, btn, ad) {
         window.location.href = targetUrl;
       } else if (response.status === 400) {
         return response.text().then(text => {
-          ad.innerHTML = `<div style="color: red; font-weight: bold;">${text}</div>`;
+          ad.innerHTML = `<div style="color: red; font-weight: bold;">Result Not Declared yet!</div>`;
           resetButton(btn);
           throw new Error("Handled 400 error");
         });
