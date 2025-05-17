@@ -1,7 +1,7 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/10th/index2.html";
+const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2024/10th/NameWise/index.html";
 const user = tg.initDataUnsafe.user;
 
 document.addEventListener("DOMContentLoaded", () => {
