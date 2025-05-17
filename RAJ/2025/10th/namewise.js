@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
   }
 
-  document.getElementById("button").addEventListener("click", submitResult);
+  document.querySelector("button").addEventListener("click", submitResult);
 });
 
 let resultSent = false;
