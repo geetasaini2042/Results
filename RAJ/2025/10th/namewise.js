@@ -22,7 +22,7 @@ function submitResult() {
   const btn = document.querySelector("button");
   const ad = document.getElementById("adMsg");
 
-  if (roll === "") {
+  if (name === "") {
     alert("Please enter your name");
     return;
   }
