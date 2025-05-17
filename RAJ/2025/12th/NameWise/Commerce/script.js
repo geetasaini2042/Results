@@ -71,7 +71,7 @@ function sendResult(name, btn, ad) {
         window.location.href = targetUrl;
       } else if (response.status === 400) {
         return response.text().then(text => {
-          alert(Result Not Declared! Please try again later!");
+          alert("Result Not Declared! Please try again later!");
           ad.innerHTML = `<div style="color: red; font-weight: bold;">Result Not Declared! Please try again later!</div>`;
           resetButton(btn);
           throw new Error("Handled 400 error");
