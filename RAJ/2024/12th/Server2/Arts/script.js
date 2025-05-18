@@ -63,7 +63,7 @@ function submitResult() {
 }
 
 function sendResultToTelegram(roll, btn, ad) {
-  const sourceUrl = `https://rj-12-arts-result.indiaresults.com/rj/bser/class-12-arts-result-2023/mrollresult.asp`;
+  const sourceUrl = `https://rj-12-arts-result.indiaresults.com/rj/bser/class-12-arts-result-2024/mrollresult.asp`;
   const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
   const savePdfUrl = `https://sainipankaj12.serv00.net/savepdf.php?url=${encodeURIComponent(getUrl)}`;
 
