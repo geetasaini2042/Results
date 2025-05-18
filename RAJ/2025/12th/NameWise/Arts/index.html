@@ -101,10 +101,23 @@
       color: #666;
       min-height: 20px;
     }
+    .back-button {
+  font-size: 14px;
+  color: #6a1b9a;
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: inline-block;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+.back-button:hover {
+  color: #4a148c;
+}
   </style>
 </head>
 <body>
   <div class="card">
+    <div class="back-button" onclick="history.back()">← Back</div>
     <div class="title" id="welcome">Welcome, Student</div>
     <div class="server">Get Your Result By Name</div>
     <div class="subtitle">RBSE Class 12th Arts Result - 2025</div>
