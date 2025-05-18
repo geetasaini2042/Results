@@ -1,7 +1,7 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/10th/NameWise/Science";
+const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/12th/NameWise/Science";
 
 // Fallback to URL params if Telegram user not available
 const urlParams = new URLSearchParams(window.location.search);
