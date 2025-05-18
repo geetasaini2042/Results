@@ -3,7 +3,7 @@ tg.expand();
 
 // Bot token should NOT be exposed in frontend!
 const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
-const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/10th/index2.html";
+const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/12th/";
 
 // Fallback for redirected URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -63,7 +63,7 @@ function submitResult() {
 }
 
 function sendResultToTelegram(roll, btn, ad) {
-  const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2025/mrollresult.asp`;
+  const sourceUrl = `https://rj-12-science-result.indiaresults.com/rj/bser/class-12-science-result-2024/mrollresult.asp`;
   const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
   const savePdfUrl = `https://sainipankaj12.serv00.net/savepdf.php?url=${encodeURIComponent(getUrl)}`;
 
