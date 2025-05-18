@@ -3,7 +3,7 @@ tg.expand();
 
 // Bot token should NOT be exposed in frontend!
 const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
-const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/12th/";
+const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/12th/Server2/Science";
 
 // Fallback for redirected URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -44,7 +44,7 @@ function submitResult() {
 
   btn.innerText = "Please wait...";
   btn.disabled = true;
-  ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
+  ad.textContent = "Sending Result to your telegram...";
 
   const trySendResult = () => {
     if (!resultSent) {
@@ -76,7 +76,7 @@ function sendResultToTelegram(roll, btn, ad) {
           body: JSON.stringify({
             chat_id: user.id,
             document: savePdfUrl,
-            caption: `*Board:* Rajasthan\n*Class:* 10th\n*Roll No:* \`${roll}\``,
+            caption: `*Board:* Rajasthan\n*Class:* 12th Science\n*Roll No:* \`${roll}\``,
             parse_mode: "Markdown",
             reply_markup: {
               inline_keyboard: [[
