@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RBSE 12th Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #fce4ec);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1565c0;
+    }
+    .subtitle {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .instructions {
+      background: #e1f5fe;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #01579b;
+      line-height: 1.5;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #1976d2;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-bottom: 12px;
+    }
+    button:hover {
+      background: #1565c0;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title" id="title">Welcome, Student</div>
+    <div class="subtitle">RBSE Class 12th Result - 2022</div>
+
+    <div class="instructions">
+      अपनी स्ट्रीम का चयन करें और अपना परिणाम देखें।
+    </div>
+
+    <button onclick="goToStream('Science')">Science</button>
+    <button onclick="goToStream('Arts')">Arts</button>
+    <button onclick="goToStream('Commerce')">Commerce</button>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+
+    const user = tg.initDataUnsafe.user || {};
+    const firstName = encodeURIComponent(user.first_name || 'Student');
+    const userId = encodeURIComponent(user.id || '');
+
+    // Optional: Show user's name
+    if (user.first_name) {
+      document.getElementById("title").textContent = `Welcome, ${user.first_name}`;
+    }
+
+    function goToStream(stream) {
+      const url = `./${stream}/index.html?first_name=${firstName}&user_id=${userId}`;
+      window.location.href = url;
+    }
+  </script>
+</body>
+</html>
