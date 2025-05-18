@@ -1,7 +1,7 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/10th/NameWise/Arts";
+const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2023/12th/NameWise/Arts";
 
 // Fallback to URL params if Telegram user not available
 const urlParams = new URLSearchParams(window.location.search);
@@ -61,7 +61,7 @@ function submitResult() {
 }
 
 function sendResult(name, btn, ad) {
-  const sourceUrl = `https://rj-12-arts-result.indiaresults.com/rj/bser/class-12-arts-result-2025/mname-results.aspx`;
+  const sourceUrl = `https://rj-12-arts-result.indiaresults.com/rj/bser/class-12-arts-result-2023/mname-results.aspx`;
   const getUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result-1.php?name=${encodeURIComponent(name)}&page=1&url=${encodeURIComponent(sourceUrl)}`;
   const targetUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result-1.php?name=${encodeURIComponent(name)}&page=1&user_id=${user.id}&url=${encodeURIComponent(sourceUrl)}`;
 
