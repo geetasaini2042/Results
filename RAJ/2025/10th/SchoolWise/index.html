@@ -1,162 +1,246 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Result Report</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    #inputSection { text-align: center; padding: 20px; }
-    #resultsTable, th, td { border: 1px solid black; border-collapse: collapse; }
-    #resultsTable { width: 100%; margin-top: 20px; }
-    th, td { padding: 8px; text-align: center; }
-    th { background-color: #f2f2f2; }
-    .green { color: green; font-weight: bold; }
-    .red { color: red; }
-    #loading { text-align: center; font-size: 18px; margin-top: 20px; display: none; }
-    #backIcon { display: none; position: fixed; top: 10px; left: 10px; font-size: 24px; color: blue; cursor: pointer; }
-    #schoolTitle { text-align: center; font-size: 24px; font-weight: bold; margin-top: 10px; }
-  </style>
-</head>
-<body><div id="backIcon" onclick="location.reload()">←</div>
-<div id="inputSection">
-  <div id="loading">Loading<span id="dots"></span><br><span id="progress"></span></div>
-</div><div id="schoolTitle"></div>
-<div id="tableContainer"></div><script>
-const subjects = ['Hindi', 'English', 'Science', 'S.S.T', 'Maths', 'Sanskrit'];
-const roll_no1 = new URLSearchParams(window.location.search).get("roll_no1");
-const roll_no2 = new URLSearchParams(window.location.search).get("roll_no2");
-const year = new URLSearchParams(window.location.search).get("year");
-const wb_id = "88";
-const source = "1";
-
-const tableContainer = document.getElementById("tableContainer");
-const inputSection = document.getElementById("inputSection");
-const loading = document.getElementById("loading");
-const progressText = document.getElementById("progress");
-const schoolTitle = document.getElementById("schoolTitle");
-
-let subjectSums = Object.fromEntries(subjects.map(s => [s, 0]));
-let maxSubjectMarks = Object.fromEntries(subjects.map(s => [s, 0]));
-let students = [];
-let totalMarksSum = 0;
-let studentCount = 0;
-
-async function fetchResult(roll) {
-  let url = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll}&year=${year}&wb_id=${wb_id}&source=${source}`;
-  try {
-    let response = await fetch(url);
-    let data = await response.json();
-    if (data.status === 'success') return data.data.board_result;
-  } catch {}
-  return null;
-}
-
-function updateDots() {
-  const dots = document.getElementById("dots");
-  dots.innerText = dots.innerText.length < 3 ? dots.innerText + '.' : '';
-}
-
-function setProgress(done, total) {
-  progressText.innerText = `Processing: ${done}/${total} (${Math.round((done/total)*100)}%)`;
-}
-
-async function loadResults() {
-  loading.style.display = "block";
-  let dotInterval = setInterval(updateDots, 500);
-  let total = parseInt(roll_no2) - parseInt(roll_no1) + 1;
-  let rankMap = {};
-  let rollStart = parseInt(roll_no1);
-  let rollEnd = parseInt(roll_no2);
-
-  for (let roll = rollStart; roll <= rollEnd; roll++) {
-    let result = await fetchResult(roll);
-    setProgress(roll - rollStart + 1, total);
-    if (result) {
-      if (!schoolTitle.innerText) schoolTitle.innerText = `School Name: ${result.candidate_info["School Name"]}`;
-      let studentMarks = {};
-      let marks = result.subjects.map(s => s.theory_seasional || "");
-      let practicals = result.subjects.map(s => s.practical || "");
-      let totalObtained = 0;
-      let maxMarks = 0;
-      subjects.forEach((sub, idx) => {
-        let theory = marks[idx];
-        let practical = practicals[idx];
-        let finalMark = 0;
-        if (theory === "") {
-          studentMarks[sub] = "Absent";
-        } else {
-          finalMark = parseInt(theory);
-          if (["Physics", "Chemistry"].includes(sub)) {
-            finalMark += parseInt(practical || 0);
-          }
-          studentMarks[sub] = finalMark;
-          subjectSums[sub] += finalMark;
-          maxSubjectMarks[sub] = Math.max(maxSubjectMarks[sub], finalMark);
-          totalObtained += finalMark;
-          maxMarks += 100;
+    <title>Live School Result Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
         }
-      });
 
-      let percent = result.result.percent || "Failed";
-      students.push({
-        name: result.candidate_info["Candidate Name"],
-        roll_no: result.candidate_info["Roll No."],
-        marks: studentMarks,
-        total: result.result["Total Marks"] || totalObtained,
-        max: maxMarks,
-        percentage: percent
-      });
-      totalMarksSum += totalObtained;
-      studentCount++;
+        #inputSection, #loading, #resultSection {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .green {
+            color: green;
+            font-weight: bold;
+        }
+
+        .dot {
+            animation: blink 1s infinite;
+            font-size: 24px;
+            color: blue;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes blink {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        #backBtn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: blue;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="inputSection">
+    <h2>Check School Results</h2>
+    Roll No. Start: <input type="number" id="roll1"><br><br>
+    Roll No. End: <input type="number" id="roll2"><br><br>
+    Year: <input type="text" id="year" value="2024"><br><br>
+    WB ID: <input type="text" id="wb_id" value="88"><br><br>
+    Source: <input type="text" id="source" value="app"><br><br>
+    <button onclick="checkResult()">Check Result</button>
+</div>
+
+<div id="loading" style="display:none;">
+    <p><span id="progressText">Processing: 0%</span></p>
+    <p><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></p>
+</div>
+
+<div id="resultSection" style="display:none;">
+    <button id="backBtn" onclick="goBack()">←</button>
+    <h3 id="schoolName" style="color: #007bff;"></h3>
+    <div id="result"></div>
+</div>
+<div id="print"style="display:none; text-align: center; margin-top: 20px;">
+    <button onclick="printResult()" style="background-color: #28a745; color: white; font-size: 16px; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+        Print Result
+    </button>
+<script>
+async function fetchResult(roll, year, wb_id, source) {
+    const url = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll}&year=${year}&wb_id=${wb_id}&source=${source}`;
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        return data.status !== "fail" ? data : null;
+    } catch {
+        return null;
     }
-  }
-
-  clearInterval(dotInterval);
-  inputSection.style.display = "none";
-  document.getElementById("backIcon").style.display = "block";
-  generateTable();
 }
 
-function generateTable() {
-  students.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
-  let ranks = {};
-  let rank = 1;
-  students.forEach(s => {
-    if (!ranks[s.percentage]) ranks[s.percentage] = rank;
-    rank++;
-  });
-  students.sort((a, b) => parseInt(a.roll_no) - parseInt(b.roll_no));
+async function checkResult() {
+    const roll1 = parseInt(document.getElementById('roll1').value);
+    const roll2 = parseInt(document.getElementById('roll2').value);
+    const year = document.getElementById('year').value;
+    const wb_id = document.getElementById('wb_id').value;
+    const source = document.getElementById('source').value;
 
-  let html = `<table id='resultsTable'><tr><th>Rank</th><th>S.N.</th><th>Name</th><th>Roll No</th>`;
-  subjects.forEach(sub => html += `<th>${sub}</th>`);
-  html += `<th>Total</th><th>Max Marks</th><th>Percentage</th></tr>`;
+    const subjects = wb_id === "88"
+        ? ['Hindi', 'English', 'Science', 'S.S.T', 'Maths', 'Sanskrit']
+        : ['Hindi (Comp.)', 'English (Comp.)', 'Physics', 'Chemistry', 'Mathematics'];
 
-  let sn = 1;
-  students.forEach(s => {
-    html += `<tr><td>${ranks[s.percentage]}</td><td>${sn++}</td><td>${s.name}</td><td>${s.roll_no}</td>`;
-    subjects.forEach(sub => {
-      let val = s.marks[sub];
-      let display = val === undefined || val === "" ? "-" : val;
-      if (display === "Absent") display = `<span class='red'>Absent</span>`;
-      html += `<td>${display}</td>`;
+    const students = [];
+    const subjectSums = Object.fromEntries(subjects.map(s => [s, 0]));
+    const maxSubjectMarks = Object.fromEntries(subjects.map(s => [s, 0]));
+    let totalMarksSum = 0;
+    let studentCount = 0;
+
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('inputSection').style.display = 'none';
+    document.getElementById('resultSection').style.display = 'none';
+
+    for (let roll = roll1; roll <= roll2; roll++) {
+        const percentDone = Math.round(((roll - roll1 + 1) / (roll2 - roll1 + 1)) * 100);
+        document.getElementById('progressText').innerText = `Processing: ${percentDone}%`;
+
+        const data = await fetchResult(roll, year, wb_id, source);
+        if (!data) continue;
+
+        const result = data.data.board_result;
+        const subjectsData = result.subjects;
+        const student = {
+            name: result.candidate_info["Candidate Name"],
+            roll_no: result.candidate_info["Roll No."],
+            school: result.candidate_info["School Name"] || "",
+            marks: {},
+            total: parseInt(result.result["Total Marks"] || "0"),
+            percentage: result.result["percent"] || "Failed"
+        };
+
+        subjects.forEach((subject, i) => {
+            const sub = subjectsData[i] || {};
+            let theory = sub.theory_seasional;
+            let practical = sub.practical;
+            let finalMark;
+
+            if (theory === "" || theory === undefined) {
+                finalMark = "Absent";
+            } else {
+                theory = parseInt(theory);
+                practical = parseInt(practical || "0");
+                finalMark = (subject === 'Physics' || subject === 'Chemistry') ? theory + practical : theory;
+
+                subjectSums[subject] += finalMark;
+                maxSubjectMarks[subject] = Math.max(maxSubjectMarks[subject], finalMark);
+            }
+
+            student.marks[subject] = finalMark;
+        });
+
+        totalMarksSum += student.total;
+        students.push(student);
+        studentCount++;
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('resultSection').style.display = 'block';
+    document.getElementById('backBtn').style.display = 'block';
+    document.getElementById('print').style.display = 'block';
+
+    if (students.length > 0) {
+        document.getElementById('schoolName').innerText = students[0].school;
+    }
+
+    document.getElementById('result').innerHTML = generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMarksSum, studentCount);
+}
+
+function goBack() {
+    document.getElementById('inputSection').style.display = 'block';
+    document.getElementById('resultSection').style.display = 'none';
+    document.getElementById('backBtn').style.display = 'none';
+    document.getElementById('schoolName').innerText = "";
+    document.getElementById('print').style.display = 'none';
+}
+
+function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMarksSum, studentCount) {
+    let html = "<table><tr><th>Rank</th><th>S.N.</th><th>Name</th><th>Roll No</th>";
+    subjects.forEach(sub => html += `<th>${sub}</th>`);
+    html += "<th>Total</th><th>Max</th><th>%</th></tr>";
+
+    students.sort((a, b) => parseFloat(b.percentage || 0) - parseFloat(a.percentage || 0));
+    const rankMap = {};
+    let rank = 1;
+    students.forEach(stu => {
+        const p = stu.percentage;
+        if (!rankMap[p]) rankMap[p] = rank;
+        rank++;
     });
-    html += `<td>${s.total || "-"}</td><td>${s.max || "-"}</td><td>${s.percentage}</td></tr>`;
-  });
 
-  html += `<tr style='font-weight:bold;'><td colspan='4'>Subject Total</td>`;
-  subjects.forEach(sub => html += `<td>${subjectSums[sub]}</td>`);
-  html += `<td>${totalMarksSum}</td><td>-</td><td>-</td></tr>`;
+    students.sort((a, b) => a.roll_no - b.roll_no);
+    let sn = 1;
+    students.forEach(stu => {
+        html += `<tr><td>${rankMap[stu.percentage]}</td><td>${sn++}</td><td>${stu.name}</td><td>${stu.roll_no}</td>`;
+        subjects.forEach(sub => {
+            const m = stu.marks[sub];
+            const highlight = (typeof m === "number" && m === maxSubjectMarks[sub]) ? "class='green'" : "";
+            html += `<td ${highlight}>${m === "Absent" ? "<span style='color:red;'>Absent</span>" : m}</td>`;
+        });
+        html += `<td>${stu.total}</td><td>600</td><td>${stu.percentage === "Failed" ? "<span style='color:red;'>Failed</span>" : stu.percentage + "%"}</td></tr>`;
+    });
 
-  html += `<tr style='font-weight:bold;'><td colspan='4'>Subject Percentage</td>`;
-  subjects.forEach(sub => {
-    let percent = ((subjectSums[sub] / (studentCount * 100)) * 100).toFixed(2);
-    html += `<td>${percent}%</td>`;
-  });
-  html += `<td colspan='3'>School Overall: ${(totalMarksSum / (studentCount * subjects.length)).toFixed(2)}%</td></tr>`;
-  html += `</table>`;
-  tableContainer.innerHTML = html;
+    html += `<tr style='font-weight:bold;'><td colspan='4'>Total Marks</td>`;
+    subjects.forEach(sub => html += `<td>${subjectSums[sub]}</td>`);
+    html += `<td>${totalMarksSum}</td><td>-</td><td>-</td></tr>`;
+
+    html += `<tr style='font-weight:bold;'><td colspan='4'>Max Marks</td>`;
+    subjects.forEach(() => html += `<td>100</td>`);
+    html += `<td>600</td><td>-</td><td>-</td></tr>`;
+
+    html += `<tr style='background-color:#d9edf7; font-weight:bold;'><td colspan='4'>Subject %</td>`;
+    subjects.forEach(sub => {
+        const percent = (subjectSums[sub] / (studentCount * 100)) * 100;
+        html += `<td>${percent.toFixed(2)}%</td>`;
+    });
+    const overall = (totalMarksSum / (studentCount * subjects.length * 100)) * 100;
+    html += `<td colspan='3'><strong>Overall: ${overall.toFixed(2)}%</strong></td></tr></table>`;
+    return html;
 }
-
-loadResults();
-</script></body>
+function printResult() {
+    const printContent = document.getElementById('resultSection').innerHTML;
+    const win = window.open('', '', 'height=700,width=900');
+    win.document.write('<html><head><title>Print Result</title><style>body{font-family:Arial;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #333;padding:8px;text-align:center;} th{background-color:#f2f2f2;} .green{color:green;font-weight:bold;}</style></head><body>');
+    win.document.write(printContent);
+    win.document.write('</body></html>');
+    win.document.close();
+    win.print();
+}
+</script>
+</body>
 </html>
