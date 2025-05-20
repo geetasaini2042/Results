@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live School Result Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #loading, #resultSection { text-align: center; margin-top: 40px; }
+        .dot { animation: blink 1s infinite; font-size: 24px; color: blue; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+        .table-container { overflow-x: auto; width: 100%; margin-top: 20px; }
+        table.enhancedTable {
+            min-width: 1000px; border-collapse: collapse; font-size: 12px; margin: auto;
+        }
+        table.enhancedTable th, table.enhancedTable td {
+            border: 1px solid #ccc; padding: 6px; text-align: center; white-space: nowrap;
+        }
+        table.enhancedTable th { background-color: #007bff; color: white; }
+        table.enhancedTable tr:nth-child(even) { background-color: #f9f9f9; }
+        table.enhancedTable tr:hover { background-color: #f1f1f1; }
+        .green { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #resultSection, #resultSection * { visibility: visible; }
+            #resultSection { position: absolute; left: 0; right: 0; margin: auto; width: fit-content; }
+            #backBtn, #printBtn { display: none !important; }
+        }
+
+        #backBtn {
+            position: fixed; top: 10px; left: 10px; font-size: 24px; color: blue;
+            background: none; border: none; cursor: pointer; display: none;
+        }
+
+        #printBtn {
+            text-align: center; margin-top: 20px;
+        }
+
+        #printBtn button {
+            background-color: #007bff; color: white; font-size: 16px;
+            padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loading" style="display:none;">
+    <p><span id="progressText">Processing: 0%</span></p>
+    <p><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></p>
+</div>
+
+<div id="resultSection" style="display:none;">
+    <button id="backBtn" onclick="goBack()">←</button>
+    <h3 id="schoolName" style="color: #007bff; text-align: center;"></h3>
+    <div id="result"></div>
+</div>
+<div id="errorMsg" style="display:none; color: red; text-align: center; margin-top: 20px;"></div>
+<div id="printBtn" style="display:none;">
+    <button onclick="window.print()">Print</button>
+</div>
+
+<!-- Hidden inputs populated via URL -->
+<input type="hidden" id="roll1">
+<input type="hidden" id="roll2">
+<input type="hidden" id="year">
+<input type="hidden" id="wb_id">
+<input type="hidden" id="source">
+
+<script>
+async function fetchResult(roll, year, wb_id, source) {
+    const url = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll}&year=${year}&wb_id=${wb_id}&source=${source}`;
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        return data.status !== "fail" ? data : null;
+    } catch {
+        return null;
+    }
+}
+
+async function checkResult() {
+    const roll1 = parseInt(document.getElementById('roll1').value);
+    const roll2 = parseInt(document.getElementById('roll2').value);
+    const year = document.getElementById('year').value;
+    const wb_id = document.getElementById('wb_id').value;
+    const source = document.getElementById('source').value;
+
+    const subjects = wb_id === "88"
+        ? ['Hindi', 'English', 'Science', 'S.S.T', 'Maths', 'Sanskrit']
+        : ['Hindi (Comp.)', 'English (Comp.)', 'Physics', 'Chemistry', 'Mathematics'];
+
+    const students = [];
+    const subjectSums = Object.fromEntries(subjects.map(s => [s, 0]));
+    const maxSubjectMarks = Object.fromEntries(subjects.map(s => [s, 0]));
+    let totalMarksSum = 0;
+    let studentCount = 0;
+
+    document.getElementById('loading').style.display = 'block';
+
+    for (let roll = roll1; roll <= roll2; roll++) {
+        const percentDone = Math.round(((roll - roll1 + 1) / (roll2 - roll1 + 1)) * 100);
+        document.getElementById('progressText').innerText = `Processing: ${percentDone}%`;
+
+        const data = await fetchResult(roll, year, wb_id, source);
+        if (!data) continue;
+
+        const result = data.data.board_result;
+        const subjectsData = result.subjects;
+        const student = {
+            name: result.candidate_info["Candidate Name"],
+            roll_no: result.candidate_info["Roll No."],
+            school: result.candidate_info["School Name"] || "",
+            marks: {},
+            total: parseInt(result.result["Total Marks"] || "0"),
+            percentage: result.result["percent"] || "Failed"
+        };
+
+        subjects.forEach((subject, i) => {
+            const sub = subjectsData[i] || {};
+            let theory = sub.theory_seasional;
+            let practical = sub.practical;
+            let finalMark;
+
+            if (theory === "" || theory === undefined) {
+                finalMark = "Absent";
+            } else {
+                theory = parseInt(theory);
+                practical = parseInt(practical || "0");
+                finalMark = (subject === 'Physics' || subject === 'Chemistry') ? theory + practical : theory;
+
+                subjectSums[subject] += finalMark;
+                maxSubjectMarks[subject] = Math.max(maxSubjectMarks[subject], finalMark);
+            }
+
+            student.marks[subject] = finalMark;
+        });
+
+        totalMarksSum += student.total;
+        students.push(student);
+        studentCount++;
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('resultSection').style.display = 'block';
+    document.getElementById('backBtn').style.display = 'block';
+    document.getElementById('printBtn').style.display = 'block';
+
+    if (students.length > 0) {
+        document.getElementById('schoolName').innerText = students[0].school;
+    }
+
+    document.getElementById('result').innerHTML = generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMarksSum, studentCount);
+}
+
+function goBack() {
+    window.history.back();
+}
+
+function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMarksSum, studentCount) {
+    let html = "<table class='enhancedTable'><tr><th>Rank</th><th>S.N.</th><th>Name</th><th>Roll No</th>";
+    subjects.forEach(sub => html += `<th>${sub}</th>`);
+    html += "<th>Total</th><th>Max</th><th>%</th></tr>";
+
+    students.sort((a, b) => b.total - a.total);
+    const rankMap = {};
+    let rank = 1;
+    students.forEach(stu => {
+        const t = stu.total;
+        if (!rankMap[t]) rankMap[t] = rank;
+        rank++;
+    });
+
+    students.sort((a, b) => a.roll_no - b.roll_no);
+    let sn = 1;
+    students.forEach(stu => {
+        html += `<tr><td>${rankMap[stu.total]}</td><td>${sn++}</td><td>${stu.name}</td><td>${stu.roll_no}</td>`;
+        subjects.forEach(sub => {
+            const m = stu.marks[sub];
+            const highlight = (typeof m === "number" && m === maxSubjectMarks[sub]) ? "class='green'" : "";
+            html += `<td ${highlight}>${m === "Absent" ? "<span class='fail'>Absent</span>" : m}</td>`;
+        });
+        html += `<td>${stu.total}</td><td>${subjects.length * 100}</td><td>${stu.percentage === "Failed" ? "<span class='fail'>Failed</span>" : stu.percentage + "%"}</td></tr>`;
+    });
+
+    html += `<tr style='font-weight:bold;'><td colspan='4'>Total Marks</td>`;
+    subjects.forEach(sub => html += `<td>${subjectSums[sub]}</td>`);
+    html += `<td>${totalMarksSum}</td><td>-</td><td>-</td></tr>`;
+
+    html += `<tr style='font-weight:bold;'><td colspan='4'>Max Marks</td>`;
+    subjects.forEach(() => html += `<td>${studentCount * 100}</td>`);
+    html += `<td>${studentCount * subjects.length * 100}</td><td>-</td><td>-</td></tr>`;
+
+    html += `<tr style='background-color:#d9edf7; font-weight:bold;'><td colspan='4'>Subject %</td>`;
+    subjects.forEach(sub => {
+        const percent = (subjectSums[sub] / (studentCount * 100)) * 100;
+        html += `<td>${percent.toFixed(2)}%</td>`;
+    });
+    const overall = (totalMarksSum / (studentCount * subjects.length * 100)) * 100;
+    html += `<td colspan='3'><strong>Overall: ${overall.toFixed(2)}%</strong></td></tr></table>`;
+
+    return `<div class="table-container">${html}</div>`;
+}
+
+// Auto-fetch from URL
+window.onload = async function () {
+    const params = new URLSearchParams(window.location.search);
+    const roll1 = parseInt(params.get('roll_no1'));
+    const roll2 = parseInt(params.get('roll_no2'));
+    const year = params.get('year') || '2024';
+    const wb_id = params.get('wb_id') || '88';
+    const source = params.get('source') || 'app';
+    const printFlag = params.has('print');
+
+    const errorMsg = document.getElementById('errorMsg');
+    errorMsg.style.display = 'none';
+
+    // Check for valid range
+    if (isNaN(roll1) || isNaN(roll2) || (roll2 - roll1 > 80)) {
+        errorMsg.innerText = "Roll number range must be 80 or less.";
+        errorMsg.style.display = 'block';
+        return;
+    }
+
+    // Check if API has data for first roll number
+    const testUrl = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll1}&year=${year}&wb_id=${wb_id}&source=${source}`;
+    try {
+        const res = await fetch(testUrl);
+        const data = await res.json();
+
+        if (!data || data.status === "fail") {
+            errorMsg.innerText = `No data found for Roll No. ${roll1}`;
+            errorMsg.style.display = 'block';
+            return;
+        }
+    } catch {
+        errorMsg.innerText = "Failed to connect to server.";
+        errorMsg.style.display = 'block';
+        return;
+    }
+
+    // Proceed if all checks pass
+    document.getElementById('roll1').value = roll1;
+    document.getElementById('roll2').value = roll2;
+    document.getElementById('year').value = year;
+    document.getElementById('wb_id').value = wb_id;
+    document.getElementById('source').value = source;
+
+    await checkResult();
+
+    if (printFlag) {
+        window.print();
+    }
+};
+</script>
+</body>
+</html>
