@@ -28,15 +28,13 @@
             body * { visibility: hidden; }
             #resultSection, #resultSection * { visibility: visible; }
             #resultSection { position: absolute; left: 0; right: 0; margin: auto; width: fit-content; }
-            #backBtn, #printBtn { display: none !important; }
+            #backBtn { display: none !important; }
         }
 
         #backBtn {
             position: fixed; top: 10px; left: 10px; font-size: 24px; color: blue;
             background: none; border: none; cursor: pointer; display: none;
         }
-
-        
     </style>
 </head>
 <body>
@@ -46,12 +44,13 @@
     <p><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></p>
 </div>
 
+<div id="errorMsg" style="display:none; color: red; text-align: center; margin-top: 20px;"></div>
+
 <div id="resultSection" style="display:none;">
     <button id="backBtn" onclick="goBack()">←</button>
     <h3 id="schoolName" style="color: #007bff; text-align: center;"></h3>
     <div id="result"></div>
 </div>
-<div id="errorMsg" style="display:none; color: red; text-align: center; margin-top: 20px;"></div>
 
 <!-- Hidden inputs populated via URL -->
 <input type="hidden" id="roll1">
@@ -137,7 +136,6 @@ async function checkResult() {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('resultSection').style.display = 'block';
     document.getElementById('backBtn').style.display = 'block';
-    document.getElementById('printBtn').style.display = 'block';
 
     if (students.length > 0) {
         document.getElementById('schoolName').innerText = students[0].school;
@@ -208,19 +206,16 @@ window.onload = async function () {
     const errorMsg = document.getElementById('errorMsg');
     errorMsg.style.display = 'none';
 
-    // Check for valid range
     if (isNaN(roll1) || isNaN(roll2) || (roll2 - roll1 > 80)) {
         errorMsg.innerText = "Roll number range must be 80 or less.";
         errorMsg.style.display = 'block';
         return;
     }
 
-    // Check if API has data for first roll number
     const testUrl = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll1}&year=${year}&wb_id=${wb_id}&source=${source}`;
     try {
         const res = await fetch(testUrl);
         const data = await res.json();
-
         if (!data || data.status === "fail") {
             errorMsg.innerText = `No data found for Roll No. ${roll1}`;
             errorMsg.style.display = 'block';
@@ -232,7 +227,6 @@ window.onload = async function () {
         return;
     }
 
-    // Proceed if all checks pass
     document.getElementById('roll1').value = roll1;
     document.getElementById('roll2').value = roll2;
     document.getElementById('year').value = year;
