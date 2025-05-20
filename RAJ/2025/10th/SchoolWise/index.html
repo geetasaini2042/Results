@@ -1,25 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        /* existing styles... */
-
-        @media screen and (max-width: 768px) {
-            table.enhancedTable {
-                transform: scale(0.9); /* 50% zoom out */
-                transform-origin: top left;
-                width: 200%;
-            }
-
-            table.enhancedTable th, table.enhancedTable td {
-                font-size: 10px;
-                white-space: nowrap;
-            }
-        }
-    </style>
     <title>Live School Result Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,18 +50,25 @@
             100% { opacity: 0; }
         }
 
-        table.enhancedTable {
+        .table-container {
+            overflow-x: auto;
             width: 100%;
+            margin-top: 20px;
+        }
+
+        table.enhancedTable {
+            min-width: 1000px;
+            width: max-content;
             border-collapse: collapse;
             font-size: 12px;
-            table-layout: fixed;
-            word-wrap: break-word;
+            table-layout: auto;
         }
 
         table.enhancedTable th, table.enhancedTable td {
             border: 1px solid #ccc;
             padding: 6px;
             text-align: center;
+            white-space: nowrap;
         }
 
         table.enhancedTable th {
@@ -102,23 +92,15 @@
         @media print {
             body {
                 font-size: 10pt;
-                text-align: center;
             }
-
             #backBtn, #inputSection, #print {
                 display: none !important;
             }
-
-            #schoolName {
-                display: block;
-                text-align: center;
-                font-size: 16pt;
-                font-weight: bold;
-                margin-bottom: 20px;
-            }
-
             table {
                 page-break-inside: avoid;
+            }
+            #schoolName {
+                text-align: center !important;
             }
         }
     </style>
@@ -142,7 +124,7 @@
 
 <div id="resultSection" style="display:none;">
     <button id="backBtn" onclick="goBack()">←</button>
-    <h3 id="schoolName" style="color: #007bff;"></h3>
+    <h3 id="schoolName" style="color: #007bff; text-align: center;"></h3>
     <div id="result"></div>
 </div>
 
@@ -179,6 +161,7 @@ async function checkResult() {
     const subjectSums = Object.fromEntries(subjects.map(s => [s, 0]));
     const maxSubjectMarks = Object.fromEntries(subjects.map(s => [s, 0]));
     let totalMarksSum = 0;
+    let studentCount = 0;
 
     document.getElementById('loading').style.display = 'block';
     document.getElementById('inputSection').style.display = 'none';
@@ -224,6 +207,7 @@ async function checkResult() {
 
         totalMarksSum += student.total;
         students.push(student);
+        studentCount++;
     }
 
     document.getElementById('loading').style.display = 'none';
@@ -235,7 +219,7 @@ async function checkResult() {
         document.getElementById('schoolName').innerText = students[0].school;
     }
 
-    document.getElementById('result').innerHTML = generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMarksSum, students.length);
+    document.getElementById('result').innerHTML = generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMarksSum, studentCount);
 }
 
 function goBack() {
@@ -255,8 +239,8 @@ function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMa
     const rankMap = {};
     let rank = 1;
     students.forEach(stu => {
-        const total = stu.total;
-        if (!rankMap[total]) rankMap[total] = rank;
+        const t = stu.total;
+        if (!rankMap[t]) rankMap[t] = rank;
         rank++;
     });
 
@@ -277,8 +261,8 @@ function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMa
     html += `<td>${totalMarksSum}</td><td>-</td><td>-</td></tr>`;
 
     html += `<tr style='font-weight:bold;'><td colspan='4'>Max Marks</td>`;
-    subjects.forEach(() => html += `<td>100</td>`);
-    html += `<td>${students.length * 100}</td><td>-</td><td>-</td></tr>`;
+    subjects.forEach(() => html += `<td>${studentCount * 100}</td>`);
+    html += `<td>${studentCount * subjects.length * 100}</td><td>-</td><td>-</td></tr>`;
 
     html += `<tr style='background-color:#d9edf7; font-weight:bold;'><td colspan='4'>Subject %</td>`;
     subjects.forEach(sub => {
@@ -287,7 +271,8 @@ function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMa
     });
     const overall = (totalMarksSum / (studentCount * subjects.length * 100)) * 100;
     html += `<td colspan='3'><strong>Overall: ${overall.toFixed(2)}%</strong></td></tr></table>`;
-    return html;
+
+    return `<div class="table-container">${html}</div>`;
 }
 
 function printResult() {
