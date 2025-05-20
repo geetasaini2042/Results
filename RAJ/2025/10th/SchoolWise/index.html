@@ -94,7 +94,7 @@
       <strong>Result कैसे देखें:</strong><br>
       1. नीचे School का पहला और आखिरी Roll Number दर्ज करें<br>
       2. "Check Result" बटन पर क्लिक करें<br>
-      3. बोट आपको मार्कशीट की PDF भेजेगा
+      3. आपको कुछ समय मे Result Table दिखाई देगी.
     </div>
 
     <label for="roll1">First Roll Number:</label>
@@ -111,12 +111,11 @@
     function submitResult() {
       const roll1 = document.getElementById("roll1").value.trim();
       const roll2 = document.getElementById("roll2").value.trim();
-      const adMsg = document.getElementById("adMsg");
 
       const isValidRoll = roll => /^\d{7}$/.test(roll);
 
       if (!isValidRoll(roll1) || !isValidRoll(roll2)) {
-        adMsg.textContent = "दोनों Roll Number 7-digit के होने चाहिए।";
+        alert("Please Enter Correct Roll Numbers!");
         return;
       }
 
@@ -124,17 +123,21 @@
       const r2 = parseInt(roll2, 10);
 
       if (r2 < r1) {
-        adMsg.textContent = "Last Roll Number, First Roll Number से बड़ा होना चाहिए।";
+        alert("Please Enter a Correct Roll Numbers Range!");
         return;
       }
 
       if ((r2 - r1) > 80) {
-        adMsg.textContent = "Roll Number के बीच का अंतर 80 से ज़्यादा नहीं होना चाहिए।";
+        alert("You Can get only 80 Students's Result With one!");
         return;
       }
 
-      // Everything is valid, redirect
-      window.location.href = `get.html?roll_no1=${r1}&roll_no2=${r2}`;
+      // Show rewarded interstitial ad
+      show_9336786().then(() => {
+        window.location.href = `get.html?roll_no1=${r1}&roll_no2=${r2}`;
+      }).catch(() => {
+        alert("Ad Faild! Please try again!");
+      });
     }
   </script>
 </body>
