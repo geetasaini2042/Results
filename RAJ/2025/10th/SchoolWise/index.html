@@ -102,7 +102,7 @@
 </div>
 
 <div id="print" style="display:none; text-align: center; margin-top: 20px;">
-    <button onclick="downloadPDF()" style="background-color: #28a745; color: white; font-size: 16px; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+    <button onclick="sendToTelegram()" style="background-color: #28a745; color: white; font-size: 16px; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
         Download as PDF
     </button>
 </div>
@@ -248,45 +248,33 @@ function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMa
     return `<div class="table-container">${html}</div>`;
 }
 
-async function downloadPDF() {
-    const { jsPDF } = window.jspdf;
-
-    const resultSection = document.getElementById("resultSection");
+async function sendToTelegram() {
     const schoolName = document.getElementById("schoolName").innerText;
-    const tableHTML = document.querySelector(".table-container").innerHTML;
+    const tableHTML = document.querySelector("#result .table-container").innerHTML;
 
-    const temp = document.createElement("div");
-    temp.style.padding = "20px";
-    temp.style.fontFamily = "Arial";
-    temp.style.backgroundColor = "white";
-    temp.innerHTML = `<h2 style="text-align:center; color:#007bff;">${schoolName}</h2>${tableHTML}`;
-    document.body.appendChild(temp);
+    const fullHTML = `
+        <div style="text-align:center; font-size:16pt; font-weight:bold; margin-bottom:10px;">${schoolName}</div>
+        ${tableHTML}
+    `;
 
-    const canvas = await html2canvas(temp, { scale: 2 });
+    const payload = {
+        telegramUserId: "6150091802",
+        html: fullHTML
+    };
 
-    const imgData = canvas.toDataURL("image/png");
-    const imgWidth = 760;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbxLATP_PLxFta-EfrBe7WhF5MrjcTf0Ih9T3YLoed8LiMR_ztdMlTkguFfulZLgRFGbiw/exec", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
 
-    const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'pt',
-        format: [800, 1200]
-    });
-
-    if (imgHeight > 1140) {
-        let position = 20;
-        while (position < imgHeight) {
-            doc.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
-            if (position + 1140 < imgHeight) doc.addPage();
-            position += 1140;
-        }
-    } else {
-        doc.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+        const result = await response.json();
+        alert(result.message || "Sent to Telegram!");
+    } catch (err) {
+        alert("Failed to send to Telegram."+ err);
+        console.error(err);
     }
-
-    document.body.removeChild(temp);
-    doc.save(`${schoolName}_Result.pdf`);
 }
 </script>
 
