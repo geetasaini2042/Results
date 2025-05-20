@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* existing styles... */
+
+        @media screen and (max-width: 768px) {
+            table.enhancedTable {
+                transform: scale(0.5); /* 50% zoom out */
+                transform-origin: top left;
+                width: 200%;
+            }
+
+            table.enhancedTable th, table.enhancedTable td {
+                font-size: 10px;
+                white-space: nowrap;
+            }
+        }
+    </style>
     <title>Live School Result Viewer</title>
     <style>
         body {
