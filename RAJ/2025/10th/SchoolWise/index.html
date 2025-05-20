@@ -4,19 +4,14 @@
     <title>Live School Result Viewer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+        body { font-family: Arial, sans-serif; }
 
         #inputSection, #loading, #resultSection {
             text-align: center;
             margin-top: 40px;
         }
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-        }
+        button { padding: 10px 20px; font-size: 16px; }
 
         #backBtn {
             position: fixed;
@@ -30,17 +25,8 @@
             display: none;
         }
 
-        .green {
-            color: green;
-            font-weight: bold;
-        }
-
-        .dot {
-            animation: blink 1s infinite;
-            font-size: 24px;
-            color: blue;
-        }
-
+        .green { color: green; font-weight: bold; }
+        .dot { animation: blink 1s infinite; font-size: 24px; color: blue; }
         .dot:nth-child(2) { animation-delay: 0.2s; }
         .dot:nth-child(3) { animation-delay: 0.4s; }
 
@@ -61,7 +47,6 @@
             width: max-content;
             border-collapse: collapse;
             font-size: 12px;
-            table-layout: auto;
         }
 
         table.enhancedTable th, table.enhancedTable td {
@@ -76,34 +61,22 @@
             color: white;
         }
 
-        table.enhancedTable tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+        table.enhancedTable tr:nth-child(even) { background-color: #f9f9f9; }
+        table.enhancedTable tr:hover { background-color: #f1f1f1; }
 
-        table.enhancedTable tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .fail {
-            color: red;
-            font-weight: bold;
-        }
+        .fail { color: red; font-weight: bold; }
 
         @media print {
-            body {
-                font-size: 10pt;
-            }
-            #backBtn, #inputSection, #print {
-                display: none !important;
-            }
-            table {
-                page-break-inside: avoid;
-            }
-            #schoolName {
-                text-align: center !important;
-            }
+            body { font-size: 10pt; }
+            #backBtn, #inputSection, #print { display: none !important; }
+            table { page-break-inside: avoid; }
+            #schoolName { text-align: center !important; }
         }
     </style>
+
+    <!-- JS Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -129,8 +102,8 @@
 </div>
 
 <div id="print" style="display:none; text-align: center; margin-top: 20px;">
-    <button onclick="printResult()" style="background-color: #28a745; color: white; font-size: 16px; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-        Print Result
+    <button onclick="downloadPDF()" style="background-color: #28a745; color: white; font-size: 16px; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+        Download as PDF
     </button>
 </div>
 
@@ -275,16 +248,45 @@ function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMa
     return `<div class="table-container">${html}</div>`;
 }
 
-function printResult() {
-    const printContent = document.getElementById('resultSection').innerHTML;
-    const win = window.open('', '', 'height=700,width=900');
-    win.document.write('<html><head><title>Print Result</title>');
-    win.document.write('<style>body{font-family:Arial;text-align:center;} table{width:100%;border-collapse:collapse;font-size:10pt;} th,td{border:1px solid #333;padding:6px;text-align:center;} th{background-color:#007bff;color:#fff;} .green{color:green;font-weight:bold;} .fail{color:red;font-weight:bold;}</style>');
-    win.document.write('</head><body>');
-    win.document.write(printContent);
-    win.document.write('</body></html>');
-    win.document.close();
-    win.print();
+async function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+
+    const resultSection = document.getElementById("resultSection");
+    const schoolName = document.getElementById("schoolName").innerText;
+    const tableHTML = document.querySelector(".table-container").innerHTML;
+
+    const temp = document.createElement("div");
+    temp.style.padding = "20px";
+    temp.style.fontFamily = "Arial";
+    temp.style.backgroundColor = "white";
+    temp.innerHTML = `<h2 style="text-align:center; color:#007bff;">${schoolName}</h2>${tableHTML}`;
+    document.body.appendChild(temp);
+
+    const canvas = await html2canvas(temp, { scale: 2 });
+
+    const imgData = canvas.toDataURL("image/png");
+    const imgWidth = 760;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'pt',
+        format: [800, 1200]
+    });
+
+    if (imgHeight > 1140) {
+        let position = 20;
+        while (position < imgHeight) {
+            doc.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
+            if (position + 1140 < imgHeight) doc.addPage();
+            position += 1140;
+        }
+    } else {
+        doc.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+    }
+
+    document.body.removeChild(temp);
+    doc.save(`${schoolName}_Result.pdf`);
 }
 </script>
 
