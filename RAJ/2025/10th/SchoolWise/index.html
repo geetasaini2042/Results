@@ -3,15 +3,22 @@
 <head>
     <title>Live School Result Viewer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; }
+        body {
+            font-family: Arial, sans-serif;
+        }
 
         #inputSection, #loading, #resultSection {
             text-align: center;
             margin-top: 40px;
         }
 
-        button { padding: 10px 20px; font-size: 16px; }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
 
         #backBtn {
             position: fixed;
@@ -25,8 +32,17 @@
             display: none;
         }
 
-        .green { color: green; font-weight: bold; }
-        .dot { animation: blink 1s infinite; font-size: 24px; color: blue; }
+        .green {
+            color: green;
+            font-weight: bold;
+        }
+
+        .dot {
+            animation: blink 1s infinite;
+            font-size: 24px;
+            color: blue;
+        }
+
         .dot:nth-child(2) { animation-delay: 0.2s; }
         .dot:nth-child(3) { animation-delay: 0.4s; }
 
@@ -47,6 +63,7 @@
             width: max-content;
             border-collapse: collapse;
             font-size: 12px;
+            table-layout: auto;
         }
 
         table.enhancedTable th, table.enhancedTable td {
@@ -61,22 +78,34 @@
             color: white;
         }
 
-        table.enhancedTable tr:nth-child(even) { background-color: #f9f9f9; }
-        table.enhancedTable tr:hover { background-color: #f1f1f1; }
+        table.enhancedTable tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 
-        .fail { color: red; font-weight: bold; }
+        table.enhancedTable tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .fail {
+            color: red;
+            font-weight: bold;
+        }
 
         @media print {
-            body { font-size: 10pt; }
-            #backBtn, #inputSection, #print { display: none !important; }
-            table { page-break-inside: avoid; }
-            #schoolName { text-align: center !important; }
+            body {
+                font-size: 10pt;
+            }
+            #backBtn, #inputSection, #print {
+                display: none !important;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+            #schoolName {
+                text-align: center !important;
+            }
         }
     </style>
-
-    <!-- JS Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -102,8 +131,8 @@
 </div>
 
 <div id="print" style="display:none; text-align: center; margin-top: 20px;">
-    <button onclick="sendToTelegram()" style="background-color: #28a745; color: white; font-size: 16px; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-        Download as PDF
+    <button onclick="downloadPDF()" style="background-color: #28a745; color: white; font-size: 16px; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+        Print Result
     </button>
 </div>
 
@@ -248,33 +277,47 @@ function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMa
     return `<div class="table-container">${html}</div>`;
 }
 
-async function sendToTelegram() {
-    const schoolName = document.getElementById("schoolName").innerText;
-    const tableHTML = document.querySelector("#result .table-container").innerHTML;
 
-    const fullHTML = `
-        <div style="text-align:center; font-size:16pt; font-weight:bold; margin-bottom:10px;">${schoolName}</div>
-        ${tableHTML}
-    `;
+async function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [800, 1200]
+    });
 
-    const payload = {
-        telegramUserId: "6150091802",
-        html: fullHTML
-    };
+    const resultSection = document.getElementById('resultSection');
 
-    try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbxLATP_PLxFta-EfrBe7WhF5MrjcTf0Ih9T3YLoed8LiMR_ztdMlTkguFfulZLgRFGbiw/exec", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
+    // Clone for clean rendering
+    const clone = resultSection.cloneNode(true);
+    clone.style.width = '750px';
+    clone.style.margin = 'auto';
+    clone.style.padding = '20px';
 
-        const result = await response.json();
-        alert(result.message || "Sent to Telegram!");
-    } catch (err) {
-        alert("Failed to send to Telegram."+ err);
-        console.error(err);
-    }
+    // Remove buttons
+    clone.querySelector("#backBtn")?.remove();
+    clone.querySelector("#print")?.remove();
+
+    const container = document.createElement('div');
+    container.style.width = '800px';
+    container.appendChild(clone);
+    document.body.appendChild(container);
+
+    // Render using html2canvas
+    const canvas = await html2canvas(clone, {
+        scale: 2,
+        useCORS: true
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = 800;
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save('School_Result.pdf');
+
+    document.body.removeChild(container);
 }
 </script>
 
