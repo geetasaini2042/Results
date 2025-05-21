@@ -27,10 +27,6 @@ function submitResult() {
   ad.textContent = "Loading ad...";
 
   const tryOpenLink = () => {
-    const resultUrl = `https://rajeduboard.rajasthan.gov.in/RESULT2022/SEV/Roll_Output.asp`;
-    const formData = new URLSearchParams();
-    formData.append("roll_no", roll);
-
     // Create a backend that creates a temp result page and redirect there
     const redirectUrl = `https://sainipankaj12.serv00.net/Result/Server3.php?roll_no=${roll}`;
 
