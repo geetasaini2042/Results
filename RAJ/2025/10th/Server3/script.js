@@ -1,7 +1,7 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/10th/Server3/";
+const redirectBase = "https://sainipankaj12.serv00.net/Result/Server3.php?roll_no=";
 const user = tg.initDataUnsafe.user;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
   }
 
-  document.querySelector("button").addEventListener("click", submitResult);
+  document.querySelector("button").addEventListener("click", handleSubmit);
 });
 
-function submitResult() {
+function handleSubmit() {
   const roll = document.getElementById("roll").value.trim();
   const btn = document.querySelector("button");
   const ad = document.getElementById("adMsg");
@@ -22,28 +22,31 @@ function submitResult() {
     return;
   }
 
+  if (!/^\d{7}$/.test(roll)) {
+    alert("Roll number must be exactly 7 digits.");
+    return;
+  }
+
   btn.innerText = "Please wait...";
   btn.disabled = true;
   ad.textContent = "Loading ad...";
 
-  const tryOpenLink = () => {
-    // Create a backend that creates a temp result page and redirect there
-    const redirectUrl = `https://sainipankaj12.serv00.net/Result/Server3.php?roll_no=${roll}`;
-
-    tg.openLink(redirectUrl);
-    btn.innerText = "Check Result";
-    btn.disabled = false;
-    ad.textContent = "";
+  const redirectNow = () => {
+    window.location.href = `${redirectBase}${roll}`;
   };
 
   if (typeof show_9336786 === "function") {
     show_9336786()
-      .catch((err) => console.warn("Ad error:", err))
+      .catch(err => {
+        console.warn("Ad failed:", err);
+      })
       .finally(() => {
-        tryOpenLink();
+        ad.textContent = "Redirecting to your result...";
+        setTimeout(redirectNow, 800); // small delay after ad
       });
   } else {
-    ad.textContent = "Ad not available, opening result...";
-    tryOpenLink();
+    console.warn("Ad function not found.");
+    ad.textContent = "Ad not available. Redirecting...";
+    setTimeout(redirectNow, 800);
   }
 }
