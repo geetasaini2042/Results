@@ -55,7 +55,7 @@ function submitForm(roll) {
   const form = document.createElement("form");
   form.method = "POST";
   form.action = "https://rajeduboard.rajasthan.gov.in/RESULT2022/SEV/Roll_Output.asp";
-  form.target = "_blank";
+  form.target = "_self";
 
   const input = document.createElement("input");
   input.type = "hidden";
