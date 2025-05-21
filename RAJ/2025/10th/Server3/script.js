@@ -1,7 +1,7 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-const resultUrlBase = "https://rajeduboard.rajasthan.gov.in/RESULT2022/SEV/Roll_Output.asp";
+const checkAnotherUrl = "https://geetasaini2042.github.io/Results/RAJ/2025/10th/Server3/";
 const user = tg.initDataUnsafe.user;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,57 +9,45 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
   }
 
-  document.querySelector("button").addEventListener("click", handleSubmit);
+  document.querySelector("button").addEventListener("click", submitResult);
 });
 
-function handleSubmit() {
+function submitResult() {
   const roll = document.getElementById("roll").value.trim();
   const btn = document.querySelector("button");
-  const adMsg = document.getElementById("adMsg");
+  const ad = document.getElementById("adMsg");
 
-  if (!/^\d{7}$/.test(roll)) {
-    alert("Please enter a valid 7-digit roll number.");
+  if (roll === "") {
+    alert("Please enter your roll number.");
     return;
   }
 
-  btn.disabled = true;
   btn.innerText = "Please wait...";
-  adMsg.textContent = "Loading ad...";
+  btn.disabled = true;
+  ad.textContent = "Loading ad...";
 
-  const showIframe = () => {
-    adMsg.textContent = "";
-    document.querySelector(".instructions").style.display = "none";
-    document.querySelector("label").style.display = "none";
-    document.querySelector("input").style.display = "none";
-    document.querySelector("button").style.display = "none";
+  const tryOpenLink = () => {
+    const resultUrl = `https://rajeduboard.rajasthan.gov.in/RESULT2022/SEV/Roll_Output.asp`;
+    const formData = new URLSearchParams();
+    formData.append("roll_no", roll);
 
-    const iframe = document.createElement("iframe");
-    iframe.src = resultUrlBase;
-    iframe.style.width = "100%";
-    iframe.style.height = "600px";
-    iframe.style.border = "none";
-    iframe.style.marginTop = "20px";
+    // Create a backend that creates a temp result page and redirect there
+    const redirectUrl = `https://sainipankaj12.serv00.net/Result/Server3.php?roll_no=${roll}`;
 
-    document.querySelector(".card").appendChild(iframe);
-
-    // Auto-fill roll number (only works if site allows JS injection, which likely it won't)
-    setTimeout(() => {
-      const form = iframe.contentWindow?.document?.forms?.[0];
-      if (form) {
-        form.roll_no.value = roll;
-        form.submit();
-      }
-    }, 1000);
+    tg.openLink(redirectUrl);
+    btn.innerText = "Check Result";
+    btn.disabled = false;
+    ad.textContent = "";
   };
 
   if (typeof show_9336786 === "function") {
     show_9336786()
-      .catch((e) => {
-        console.warn("Ad error:", e);
-      })
-      .finally(showIframe);
+      .catch((err) => console.warn("Ad error:", err))
+      .finally(() => {
+        tryOpenLink();
+      });
   } else {
-    console.warn("Ad function not found");
-    showIframe();
+    ad.textContent = "Ad not available, opening result...";
+    tryOpenLink();
   }
 }
