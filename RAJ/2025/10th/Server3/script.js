@@ -2,6 +2,7 @@ let tg = window.Telegram.WebApp;
 tg.expand();
 
 const redirectBase = "https://sainipankaj12.serv00.net/Result/Server3.php?roll_no=";
+const board = "https://rajeduboard.rajasthan.gov.in/RESULT2025/SEV/Roll_Output.asp";
 const user = tg.initDataUnsafe.user;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -32,7 +33,7 @@ function handleSubmit() {
   ad.textContent = "Loading ad...";
 
   const redirectNow = () => {
-    window.location.href = `${redirectBase}${roll}`;
+    window.location.href = `${redirectBase}${roll}&url=${board}`;
   };
 
   if (typeof show_9336786 === "function") {
