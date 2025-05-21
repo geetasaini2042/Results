@@ -1,75 +1,65 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 
+const resultUrlBase = "https://rajeduboard.rajasthan.gov.in/RESULT2022/SEV/Roll_Output.asp";
+const user = tg.initDataUnsafe.user;
+
 document.addEventListener("DOMContentLoaded", () => {
-  const user = tg.initDataUnsafe?.user;
-  if (user?.first_name) {
+  if (user && user.first_name) {
     document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
   }
 
-  const rollInput = document.getElementById("roll");
-  const button = document.querySelector("button");
-  const adMsg = document.getElementById("adMsg");
-
-  button.addEventListener("click", () => {
-    const roll = rollInput.value.trim();
-
-    if (!validateRoll(roll)) return;
-
-    adMsg.textContent = "Please wait, showing ad...";
-
-    button.disabled = true;
-    button.innerText = "Loading...";
-
-    if (typeof show_9336786 === "function") {
-      show_9336786()
-        .catch(err => console.warn("Ad error:", err))
-        .finally(() => {
-          submitForm(roll);
-          resetButton(button);
-        });
-    } else {
-      console.warn("Ad function not found. Proceeding without ad.");
-      submitForm(roll);
-      resetButton(button);
-    }
-  });
+  document.querySelector("button").addEventListener("click", handleSubmit);
 });
 
-function validateRoll(roll) {
+function handleSubmit() {
+  const roll = document.getElementById("roll").value.trim();
+  const btn = document.querySelector("button");
+  const adMsg = document.getElementById("adMsg");
+
   if (!/^\d{7}$/.test(roll)) {
-    alert("Please enter a valid 7-digit Roll Number.");
-    return false;
+    alert("Please enter a valid 7-digit roll number.");
+    return;
   }
 
-  const num = parseInt(roll, 10);
-  if (num < 1100001 || num > 2484100) {
-    alert("Roll Number is not in valid range.");
-    return false;
+  btn.disabled = true;
+  btn.innerText = "Please wait...";
+  adMsg.textContent = "Loading ad...";
+
+  const showIframe = () => {
+    adMsg.textContent = "";
+    document.querySelector(".instructions").style.display = "none";
+    document.querySelector("label").style.display = "none";
+    document.querySelector("input").style.display = "none";
+    document.querySelector("button").style.display = "none";
+
+    const iframe = document.createElement("iframe");
+    iframe.src = resultUrlBase;
+    iframe.style.width = "100%";
+    iframe.style.height = "600px";
+    iframe.style.border = "none";
+    iframe.style.marginTop = "20px";
+
+    document.querySelector(".card").appendChild(iframe);
+
+    // Auto-fill roll number (only works if site allows JS injection, which likely it won't)
+    setTimeout(() => {
+      const form = iframe.contentWindow?.document?.forms?.[0];
+      if (form) {
+        form.roll_no.value = roll;
+        form.submit();
+      }
+    }, 1000);
+  };
+
+  if (typeof show_9336786 === "function") {
+    show_9336786()
+      .catch((e) => {
+        console.warn("Ad error:", e);
+      })
+      .finally(showIframe);
+  } else {
+    console.warn("Ad function not found");
+    showIframe();
   }
-
-  return true;
-}
-
-function submitForm(roll) {
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = "https://rajeduboard.rajasthan.gov.in/RESULT2022/SEV/Roll_Output.asp";
-  form.target = "_self";
-
-  const input = document.createElement("input");
-  input.type = "hidden";
-  input.name = "roll_no";
-  input.value = roll;
-
-  form.appendChild(input);
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
-}
-
-function resetButton(button) {
-  button.disabled = false;
-  button.innerText = "Check Result";
-  document.getElementById("adMsg").textContent = "";
 }
