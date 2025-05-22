@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Board Result</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    h2 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+    .info-table {
+      margin-bottom: 20px;
+    }
+    .failed {
+      color: red;
+      font-weight: bold;
+    }
+    .passed {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Board Examination Result - 2025</h2>
+  <div id="result"></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const rollNo = params.get('roll_no');
+
+    if (!rollNo) {
+      document.getElementById('result').innerHTML = '<p>Please provide a roll number in the URL (?roll_no=XXXXX)</p>';
+    } else {
+      fetch(`https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${rollNo}&year=2025&wb_id=89&source=1`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status !== 'success') {
+            document.getElementById('result').innerHTML = '<p>Result not found or API error.</p>';
+            return;
+          }
+
+          const info = data.data.board_result.candidate_info;
+          const subjects = data.data.board_result.subjects.filter(s => s.subject_name); // remove empty rows
+          const result = data.data.board_result.result;
+
+          const infoTable = `
+            <table class="info-table">
+              <tr><th>Candidate Name</th><td>${info["Candidate Name"]}</td></tr>
+              <tr><th>Roll No.</th><td>${info["Roll No."]}</td></tr>
+              <tr><th>Father Name</th><td>${info["Father Name"]}</td></tr>
+              <tr><th>Mother Name</th><td>${info["Mother Name"]}</td></tr>
+              <tr><th>School Name</th><td>${info["School Name"]}</td></tr>
+            </table>
+          `;
+
+          let subjectTable = `
+            <table>
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Theory</th>
+                  <th>Sessional</th>
+                  <th>Total Marks</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          for (const s of subjects) {
+            subjectTable += `
+              <tr>
+                <td>${s.subject_name}</td>
+                <td>${s.theory_1}</td>
+                <td>${s.seassional}</td>
+                <td>${s.subject_marks}</td>
+              </tr>
+            `;
+          }
+
+          subjectTable += `</tbody></table>`;
+
+          const resultSummary = `
+            <h3>Total Marks: ${result["Total Marks"]}</h3>
+            <h3 class="${result["Result"] === "Failed" ? 'failed' : 'passed'}">Result: ${result["Result"]}</h3>
+          `;
+
+          document.getElementById('result').innerHTML = infoTable + subjectTable + resultSummary;
+        })
+        .catch(error => {
+          console.error('Error fetching result:', error);
+          document.getElementById('result').innerHTML = '<p>Error fetching result data.</p>';
+        });
+    }
+  </script>
+</body>
+</html>
