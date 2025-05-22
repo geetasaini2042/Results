@@ -102,7 +102,7 @@
         })
         .catch(error => {
           console.error('Error fetching result:', error);
-          document.getElementById('result').innerHTML = '<p>Error fetching result data.</p>';
+          document.getElementById('result').innerHTML = '<p>Error fetching result data.</p>' + error;
         });
     }
   </script>
