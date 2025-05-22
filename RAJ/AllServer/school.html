@@ -169,7 +169,7 @@ function goBack() {
 function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMarksSum, studentCount) {
     let html = "<table class='enhancedTable'><tr><th>Rank</th><th>S.N.</th><th>Name</th><th>Roll No</th>";
     subjects.forEach(sub => html += `<th>${sub}</th>`);
-    html += "<th>Total</th><th>Max</th><th>%</th></tr>";
+    html += "<th>Total Marks</th><th>Max Marks</th><th>PERCENTAGE</th></tr>";
 
     students.sort((a, b) => b.total - a.total);
     const rankMap = {};
@@ -192,15 +192,15 @@ function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMa
         html += `<td>${stu.total}</td><td>${subjects.length * 100}</td><td>${stu.percentage === "Failed" ? "<span class='fail'>Failed</span>" : stu.percentage + "%"}</td></tr>`;
     });
 
-    html += `<tr style='font-weight:bold;'><td colspan='4'>Total Marks</td>`;
+    html += `<tr style='font-weight:bold;'><td colspan='4'>Subject Total Marks</td>`;
     subjects.forEach(sub => html += `<td>${subjectSums[sub]}</td>`);
     html += `<td>${totalMarksSum}</td><td>-</td><td>-</td></tr>`;
 
-    html += `<tr style='font-weight:bold;'><td colspan='4'>Max Marks</td>`;
+    html += `<tr style='font-weight:bold;'><td colspan='4'>Subject Marks</td>`;
     subjects.forEach(() => html += `<td>${studentCount * 100}</td>`);
     html += `<td>${studentCount * subjects.length * 100}</td><td>-</td><td>-</td></tr>`;
 
-    html += `<tr style='background-color:#d9edf7; font-weight:bold;'><td colspan='4'>Subject %</td>`;
+    html += `<tr style='background-color:#d9edf7; font-weight:bold;'><td colspan='4'>Subject Percentage</td>`;
     subjects.forEach(sub => {
         const percent = (subjectSums[sub] / (studentCount * 100)) * 100;
         html += `<td>${percent.toFixed(2)}%</td>`;
