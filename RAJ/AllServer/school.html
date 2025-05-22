@@ -79,13 +79,10 @@ async function checkResult() {
     const wb_id = document.getElementById('wb_id').value;
     const source = document.getElementById('source').value;
 
-    const subjects = wb_id === "88"
-        ? ['Hindi', 'English', 'Science', 'S.S.T', 'Maths', 'Sanskrit']
-        : ['Hindi (Comp.)', 'English (Comp.)', 'Physics', 'Chemistry', 'Mathematics'];
-
+    let subjects = null;
     const students = [];
-    const subjectSums = Object.fromEntries(subjects.map(s => [s, 0]));
-    const maxSubjectMarks = Object.fromEntries(subjects.map(s => [s, 0]));
+    const subjectSums = {};
+    const maxSubjectMarks = {};
     let totalMarksSum = 0;
     let studentCount = 0;
 
@@ -100,13 +97,25 @@ async function checkResult() {
 
         const result = data.data.board_result;
         const subjectsData = result.subjects;
+
+        if (!subjects) {
+            subjects = subjectsData
+                .map(s => s.subject_name?.trim())
+                .filter(name => name && name !== "" && name !== "-");
+
+            subjects.forEach(s => {
+                subjectSums[s] = 0;
+                maxSubjectMarks[s] = 0;
+            });
+        }
+
         const student = {
             name: result.candidate_info["Candidate Name"],
             roll_no: result.candidate_info["Roll No."],
             school: result.candidate_info["School Name"] || "",
             marks: {},
             total: parseInt(result.result["Total Marks"] || "0"),
-            percentage: result.result["percent"] || "Failed"
+            percentage: result.result["percent"]?.trim() || "Failed"
         };
 
         subjects.forEach((subject, i) => {
@@ -115,12 +124,12 @@ async function checkResult() {
             let practical = sub.practical;
             let finalMark;
 
-            if (theory === "" || theory === undefined) {
+            if (!theory || theory === "" || theory === "A") {
                 finalMark = "Absent";
             } else {
                 theory = parseInt(theory);
                 practical = parseInt(practical || "0");
-                finalMark = (subject === 'Physics' || subject === 'Chemistry') ? theory + practical : theory;
+                finalMark = theory + practical;
 
                 subjectSums[subject] += finalMark;
                 maxSubjectMarks[subject] = Math.max(maxSubjectMarks[subject], finalMark);
