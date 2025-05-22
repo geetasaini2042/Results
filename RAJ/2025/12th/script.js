@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 let resultSent = false;
 
 function submitResult() {
-  resultSent = false; // <-- FIXED: reset every time user submits
+  resultSent = false;
 
   const roll = document.getElementById("roll").value.trim();
   const btn = document.querySelector("button");
@@ -34,7 +34,8 @@ function submitResult() {
   const trySendResult = () => {
     if (!resultSent) {
       resultSent = true;
-      sendResultToTelegram(roll, btn, ad);
+      // Redirect after ad is shown
+      window.location.href = `get.html?roll_no=${encodeURIComponent(roll)}`;
     }
   };
 
@@ -52,7 +53,6 @@ function submitResult() {
     trySendResult();
   }
 }
-
 function sendResultToTelegram(roll, btn, ad) {
   const pdfUrl = `https://sainipankaj12.serv00.net/Result/boardresult.php?tag=raj_12th_result&roll_no=${roll}&year=2025&wb_id=89&source=3&download`;
 
