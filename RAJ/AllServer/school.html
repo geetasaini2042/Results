@@ -61,7 +61,7 @@
 
 <script>
 async function fetchResult(roll, year, wb_id, source) {
-    const url = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll}&year=${year}&wb_id=${wb_id}&source=${source}`;
+    const url = `https://manish-bhaiyas-bot.onrender.com/result?roll_no=${roll}&year=${year}&wb_id=${wb_id}&source=${source}`;
     try {
         const res = await fetch(url);
         const data = await res.json();
