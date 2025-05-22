@@ -64,7 +64,7 @@ function submitResult() {
 
 function sendResultToTelegram(roll, btn, ad) {
   const sourceUrl = `https://rj-12-science-result.indiaresults.com/rj/bser/class-12-science-result-2025/mrollresult.asp`;
-  const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
+  const getUrl = `https://manish-bhaiyas-bot.onrender.com/?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
   const savePdfUrl = `https://sainipankaj12.serv00.net/savepdf.php?url=${encodeURIComponent(getUrl)}`;
 
   fetch(getUrl)
