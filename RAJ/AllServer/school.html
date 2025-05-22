@@ -212,7 +212,7 @@ window.onload = async function () {
         return;
     }
 
-    const testUrl = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll1}&year=${year}&wb_id=${wb_id}&source=${source}`;
+    const testUrl = `https://manish-bhaiyas-bot.onrender.com/result?roll_no=${roll1}&year=${year}&wb_id=${wb_id}&source=${source}`;
     try {
         const res = await fetch(testUrl);
         const data = await res.json();
