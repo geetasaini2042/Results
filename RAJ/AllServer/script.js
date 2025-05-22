@@ -21,7 +21,7 @@ $.urlParam = function (name) {
 function getResult(rollnumber) {
   $.ajax({
     method: "GET",
-    url: "https://www.fastresult.in/board-results/rajresultapi12/api/get-12th-result",
+    url: "http://localhost:5000/get-result",
     data: {
       tag: 'raj_12th_result',
       roll_no: rollnumber,
