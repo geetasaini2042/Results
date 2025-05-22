@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -53,7 +52,6 @@
     <div id="result"></div>
 </div>
 
-<!-- Hidden inputs populated via URL -->
 <input type="hidden" id="roll1">
 <input type="hidden" id="roll2">
 <input type="hidden" id="year">
@@ -66,7 +64,7 @@ async function fetchResult(roll, year, wb_id, source) {
     try {
         const res = await fetch(url);
         const data = await res.json();
-        return data.status !== "fail" ? data : null;
+        return data.status === "success" ? data : null;
     } catch {
         return null;
     }
@@ -99,23 +97,19 @@ async function checkResult() {
         const subjectsData = result.subjects;
 
         if (!subjects) {
-    let allSubjects = subjectsData
-        .map(s => s.subject_name?.trim())
-        .filter(name => name && name !== "" && name !== "-");
+            let allSubjects = subjectsData
+                .map(s => s.subject_name?.trim())
+                .filter(name => name && name !== "" && name !== "-" && name !== "A");
 
-    if (wb_id === "88") {
-        allSubjects = allSubjects.slice(0, 6);
-    } else if (wb_id === "89") {
-        allSubjects = allSubjects.slice(0, 5);
-    }
+            if (wb_id === "88") allSubjects = allSubjects.slice(0, 6);
+            else if (wb_id === "89") allSubjects = allSubjects.slice(0, 5);
 
-    subjects = allSubjects;
-
-    subjects.forEach(s => {
-        subjectSums[s] = 0;
-        maxSubjectMarks[s] = 0;
-    });
-}
+            subjects = allSubjects;
+            subjects.forEach(s => {
+                subjectSums[s] = 0;
+                maxSubjectMarks[s] = 0;
+            });
+        }
 
         const student = {
             name: result.candidate_info["Candidate Name"],
@@ -211,14 +205,13 @@ function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMa
     return `<div class="table-container">${html}</div>`;
 }
 
-// Auto-fetch from URL
 window.onload = async function () {
     const params = new URLSearchParams(window.location.search);
     const roll1 = parseInt(params.get('roll_no1'));
     const roll2 = parseInt(params.get('roll_no2'));
-    const year = params.get('year') || '2024';
-    const wb_id = params.get('wb_id') || '88';
-    const source = params.get('source') || 'app';
+    const year = params.get('year') || '2025';
+    const wb_id = params.get('wb_id') || '89';
+    const source = params.get('source') || '1';
     const printFlag = params.has('print');
 
     const errorMsg = document.getElementById('errorMsg');
@@ -230,7 +223,7 @@ window.onload = async function () {
         return;
     }
 
-    const testUrl = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll1}&year=${year}&wb_id=${wb_id}&source=${source}`;
+    const testUrl = `https://www.fastresult.in/board-results/rajresultapi12/api/get-12th-result?tag=raj_10th_result&roll_no=${roll1}&year=${year}&wb_id=${wb_id}&source=${source}`;
     try {
         const res = await fetch(testUrl);
         const data = await res.json();
