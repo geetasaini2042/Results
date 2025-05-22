@@ -99,15 +99,23 @@ async function checkResult() {
         const subjectsData = result.subjects;
 
         if (!subjects) {
-            subjects = subjectsData
-                .map(s => s.subject_name?.trim())
-                .filter(name => name && name !== "" && name !== "-");
+    let allSubjects = subjectsData
+        .map(s => s.subject_name?.trim())
+        .filter(name => name && name !== "" && name !== "-");
 
-            subjects.forEach(s => {
-                subjectSums[s] = 0;
-                maxSubjectMarks[s] = 0;
-            });
-        }
+    if (wb_id === "88") {
+        allSubjects = allSubjects.slice(0, 6);
+    } else if (wb_id === "89") {
+        allSubjects = allSubjects.slice(0, 5);
+    }
+
+    subjects = allSubjects;
+
+    subjects.forEach(s => {
+        subjectSums[s] = 0;
+        maxSubjectMarks[s] = 0;
+    });
+}
 
         const student = {
             name: result.candidate_info["Candidate Name"],
