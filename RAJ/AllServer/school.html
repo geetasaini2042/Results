@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>School Result</title>
+    <title>Live School Result Viewer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: Arial, sans-serif; }
@@ -61,7 +61,7 @@
 
 <script>
 async function fetchResult(roll, year, wb_id, source) {
-    const url = `https://manish-bhaiyas-bot.onrender.com/result?roll_no=${roll}&year=${year}&wb_id=${wb_id}&source=${source}`;
+    const url = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll}&year=${year}&wb_id=${wb_id}&source=${source}`;
     try {
         const res = await fetch(url);
         const data = await res.json();
@@ -72,104 +72,80 @@ async function fetchResult(roll, year, wb_id, source) {
 }
 
 async function checkResult() {
-    const roll1 = document.getElementById("roll1").value.trim();
-    const roll2 = document.getElementById("roll2").value.trim();
-    const year = document.getElementById("year").value.trim();
-    const wb_id = document.getElementById("wb_id").value.trim();
-    const source = document.getElementById("source").value.trim();
+    const roll1 = parseInt(document.getElementById('roll1').value);
+    const roll2 = parseInt(document.getElementById('roll2').value);
+    const year = document.getElementById('year').value;
+    const wb_id = document.getElementById('wb_id').value;
+    const source = document.getElementById('source').value;
 
-    const resultTableBody = document.querySelector("#resultTable tbody");
-    resultTableBody.innerHTML = "";
+    const subjects = wb_id === "88"
+        ? ['Hindi', 'English', 'Science', 'S.S.T', 'Maths', 'Sanskrit']
+        : ['Hindi (Comp.)', 'English (Comp.)', 'Physics', 'Chemistry', 'Mathematics'];
 
     const students = [];
-    const subjectSums = {};
-    const maxSubjectMarks = {};
+    const subjectSums = Object.fromEntries(subjects.map(s => [s, 0]));
+    const maxSubjectMarks = Object.fromEntries(subjects.map(s => [s, 0]));
     let totalMarksSum = 0;
+    let studentCount = 0;
 
-    // Get dynamic subjects from the first student's response
-    const firstValid = (await fetchResult(roll1, year, wb_id, source))?.data?.board_result?.subjects || [];
-    const subjects = firstValid
-        .filter(sub => sub.subject_name && sub.subject_name.trim() !== "")
-        .map(sub => sub.subject_name.trim());
+    document.getElementById('loading').style.display = 'block';
 
-    if (subjects.length === 0) {
-        alert("No valid subjects found in the API response.");
-        return;
-    }
+    for (let roll = roll1; roll <= roll2; roll++) {
+        const percentDone = Math.round(((roll - roll1 + 1) / (roll2 - roll1 + 1)) * 100);
+        document.getElementById('progressText').innerText = `Processing: ${percentDone}%`;
 
-    for (let roll = parseInt(roll1); roll <= parseInt(roll2); roll++) {
-        const result = await fetchResult(roll, year, wb_id, source);
-        const data = result?.data;
+        const data = await fetchResult(roll, year, wb_id, source);
+        if (!data) continue;
 
-        if (data?.board_result?.student_name && data?.board_result?.subjects) {
-            const student = {
-                roll: data.board_result.roll_number,
-                name: data.board_result.student_name,
-                marks: {},
-                total: 0
-            };
+        const result = data.data.board_result;
+        const subjectsData = result.subjects;
+        const student = {
+            name: result.candidate_info["Candidate Name"],
+            roll_no: result.candidate_info["Roll No."],
+            school: result.candidate_info["School Name"] || "",
+            marks: {},
+            total: parseInt(result.result["Total Marks"] || "0"),
+            percentage: result.result["percent"] || "Failed"
+        };
 
-            const subjectsData = data.board_result.subjects;
+        subjects.forEach((subject, i) => {
+            const sub = subjectsData[i] || {};
+            let theory = sub.theory_seasional;
+            let practical = sub.practical;
+            let finalMark;
 
-            subjectsData.forEach(sub => {
-                const name = sub.subject_name?.trim();
-                if (!name) return;
+            if (theory === "" || theory === undefined) {
+                finalMark = "Absent";
+            } else {
+                theory = parseInt(theory);
+                practical = parseInt(practical || "0");
+                finalMark = (subject === 'Physics' || subject === 'Chemistry') ? theory + practical : theory;
 
-                let finalMark = sub.theory_seasional;
-                if (!finalMark || finalMark.trim() === "") {
-                    finalMark = "Absent";
-                } else {
-                    finalMark = parseInt(finalMark) + parseInt(sub.practical || "0");
-                    subjectSums[name] = (subjectSums[name] || 0) + finalMark;
-                    maxSubjectMarks[name] = Math.max(maxSubjectMarks[name] || 0, finalMark);
-                    student.total += finalMark;
-                }
-
-                student.marks[name] = finalMark;
-            });
-
-            totalMarksSum += student.total;
-            students.push(student);
-        }
-    }
-
-    students.sort((a, b) => b.total - a.total);
-
-    students.forEach((student, index) => {
-        const row = document.createElement("tr");
-
-        const rankCell = document.createElement("td");
-        rankCell.textContent = index + 1;
-        row.appendChild(rankCell);
-
-        const rollCell = document.createElement("td");
-        rollCell.textContent = student.roll;
-        row.appendChild(rollCell);
-
-        const nameCell = document.createElement("td");
-        nameCell.textContent = student.name;
-        row.appendChild(nameCell);
-
-        subjects.forEach(subject => {
-            const markCell = document.createElement("td");
-            const mark = student.marks[subject];
-            markCell.textContent = mark;
-            if (mark === "Absent") {
-                markCell.classList.add("absent");
-            } else if (mark === maxSubjectMarks[subject]) {
-                markCell.classList.add("highlight");
+                subjectSums[subject] += finalMark;
+                maxSubjectMarks[subject] = Math.max(maxSubjectMarks[subject], finalMark);
             }
-            row.appendChild(markCell);
+
+            student.marks[subject] = finalMark;
         });
 
-        const totalCell = document.createElement("td");
-        totalCell.textContent = student.total;
-        row.appendChild(totalCell);
+        totalMarksSum += student.total;
+        students.push(student);
+        studentCount++;
+    }
 
-        resultTableBody.appendChild(row);
-    });
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('resultSection').style.display = 'block';
+    document.getElementById('backBtn').style.display = 'block';
 
-    // Optionally display average and top marks per subject if needed
+    if (students.length > 0) {
+        document.getElementById('schoolName').innerText = students[0].school;
+    }
+
+    document.getElementById('result').innerHTML = generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMarksSum, studentCount);
+}
+
+function goBack() {
+    window.history.back();
 }
 
 function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMarksSum, studentCount) {
@@ -236,7 +212,7 @@ window.onload = async function () {
         return;
     }
 
-    const testUrl = `https://manish-bhaiyas-bot.onrender.com/result?roll_no=${roll1}&year=${year}&wb_id=${wb_id}&source=${source}`;
+    const testUrl = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll1}&year=${year}&wb_id=${wb_id}&source=${source}`;
     try {
         const res = await fetch(testUrl);
         const data = await res.json();
