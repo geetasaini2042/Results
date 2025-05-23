@@ -1,7 +1,7 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-const redirectBase = "https://sainipankaj12.serv00.net/Result/Server3.php?roll_no=";
+const redirectBase = "https://ai-bot-mr-singodiya.onrender.com/result?roll_no=";
 const board = "https://rajeduboard.rajasthan.gov.in/RESULT2025/SEV/Roll_Output.asp";
 const user = tg.initDataUnsafe.user;
 
