@@ -21,7 +21,7 @@ $.urlParam = function (name) {
 function getResult(rollnumber) {
   $.ajax({
     method: "GET",
-    url: "http://localhost:5000/get-result",
+    url: "https://manish-bhaiyas-bot.onrender.com/result?",
     data: {
       tag: 'raj_12th_result',
       roll_no: rollnumber,
