@@ -29,7 +29,7 @@ function submitResult() {
 
   btn.innerText = "Please wait...";
   btn.disabled = true;
-  ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
+  ad.textContent = "Getting Your Result Data...";
 
   const trySendResult = () => {
     if (!resultSent) {
@@ -86,10 +86,10 @@ function sendResultToTelegram(roll, btn, ad) {
           ad.innerHTML = `<span style="color: red; font-weight: bold;">Server Error: Unable to load result. Please Try again</span>`;
         })
         .finally(() => resetButton(btn));
-    } else {
-      alert(`Result Sent to Telegram`);
+    } else {      
       ad.innerHTML = `<span style="color: green;">Result Sent on your Telegram Account!</span>`;
       window.location.href = `get.html?roll_no=${roll}&year=2025&wb_id=89`;
+      alert(`Result Sent to Telegram`);
       resetButton(btn, true);
     }
   })
