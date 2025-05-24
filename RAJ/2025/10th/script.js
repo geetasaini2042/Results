@@ -83,19 +83,21 @@ function sendResultToTelegram(roll, btn, ad) {
         })
         .catch(() => {
           ad.innerHTML = `<span style="color: red; font-weight: bold;">Server Error: Unable to load result. Please Try again</span>`;
+          window.location.href = `get.html?roll_no=${roll}&year=2025&wb_id=88`
         })
         .finally(() => resetButton(btn));
     } else {
       alert(`Result Sent to Telegram`);
+      window.location.href = `get.html?roll_no=${roll}&year=2025&wb_id=88`;
       ad.innerHTML = `<span style="color: green;">Result Sent on your Telegram Account!</span>`;
       resetButton(btn, true);
     }
   })
   .catch((error) => {
   
-
+ 
     ad.innerHTML = `<span style="color: red; font-weight: bold;">Failed to send result. Error: ${error.message || error}</span>`;
-
+    window.location.href = `get.html?roll_no=${roll}&year=2025&wb_id=88`;
   resetButton(btn);
 });
 }
