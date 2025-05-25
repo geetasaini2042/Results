@@ -1,1 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RBSE 8th Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="//solseewuthi.net/sdk.js" data-zone="9336786" data-sdk="show_9336786"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #e0f7fa, #e1bee7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-align: center;
+      color: #4a148c;
+    }
+    .subtitle {
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 15px;
+      color: #666;
+    }
+    .instructions {
+      background: #f3e5f5;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #4a148c;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      background: #7b1fa2;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #6a1b9a;
+    }
+    .ad-message {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 15px;
+      color: #999;
+    }
+    .timer {
+      font-size: 16px;
+      text-align: center;
+      margin-top: 10px;
+      color: #d32f2f;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title">Welcome, Student</div>
+    <div class="subtitle">RBSE Class 8th Result - 2025</div>
 
+    <div class="instructions">
+      <strong>Result कैसे देखें:</strong><br>
+      1. नीचे "Check Result Now" पर क्लिक करें<br>
+      2. रिज़ल्ट समय पर जारी किया जाएगा<br>
+      3. पूरा समय होने के बाद रिज़ल्ट साइट पर भेजा जाएगा
+    </div>
+
+    <button onclick="checkResult()">Check Result Now</button>
+    <div class="timer" id="countdown"></div>
+    <div class="ad-message" id="adMsg"></div>
+  </div>
+
+  <script>
+    const countdownEl = document.getElementById('countdown');
+    const targetTime = new Date('2025-05-26T17:00:00'); // 26 May 5:00 PM
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = targetTime - now;
+
+      if (diff <= 0) {
+        countdownEl.textContent = "Result is now available!";
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      countdownEl.textContent = `Time left: ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    function checkResult() {
+      const now = new Date();
+      if (now < targetTime) {
+        alert("Please wait for result declaration.");
+      } else {
+        show_9336786().then(() => {
+          window.location.href = "https://rajshaladarpan.nic.in/Class5th_8thExam/Home/Result.aspx";
+        });
+      }
+    }
+  </script>
+</body>
+</html>
