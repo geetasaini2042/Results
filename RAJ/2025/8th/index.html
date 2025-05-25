@@ -64,18 +64,26 @@
     button:hover {
       background: #6a1b9a;
     }
-    .ad-message {
-      text-align: center;
-      font-size: 13px;
-      margin-top: 15px;
-      color: #999;
-    }
     .timer {
       font-size: 16px;
       text-align: center;
       margin-top: 10px;
       color: #d32f2f;
       font-weight: 600;
+    }
+    .message {
+      display: none;
+      margin-top: 15px;
+      text-align: center;
+      color: #d32f2f;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .ad-message {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 15px;
+      color: #999;
     }
   </style>
 </head>
@@ -93,12 +101,14 @@
 
     <button onclick="checkResult()">Check Result Now</button>
     <div class="timer" id="countdown"></div>
+    <div class="message" id="messageBox"></div>
     <div class="ad-message" id="adMsg"></div>
   </div>
 
   <script>
     const countdownEl = document.getElementById('countdown');
-    const targetTime = new Date('2025-05-26T17:00:00'); // 26 May 5:00 PM
+    const messageBox = document.getElementById('messageBox');
+    const targetTime = new Date('2025-05-26T17:00:00');
 
     function updateCountdown() {
       const now = new Date();
@@ -106,14 +116,12 @@
 
       if (diff <= 0) {
         countdownEl.textContent = "Result is now available!";
-        return;
+      } else {
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        countdownEl.textContent = `Time left: ${hours}h ${minutes}m ${seconds}s`;
       }
-
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      countdownEl.textContent = `Time left: ${hours}h ${minutes}m ${seconds}s`;
     }
 
     setInterval(updateCountdown, 1000);
@@ -121,9 +129,12 @@
 
     function checkResult() {
       const now = new Date();
+      messageBox.style.display = "block";
+
       if (now < targetTime) {
-        alert("Please wait for result declaration.");
+        messageBox.textContent = "Please wait for result declaration.";
       } else {
+        messageBox.textContent = "Redirecting to result site...";
         show_9336786().then(() => {
           window.location.href = "https://rajshaladarpan.nic.in/Class5th_8thExam/Home/Result.aspx";
         });
