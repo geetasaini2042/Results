@@ -174,7 +174,7 @@
       setTimeout(() => {
         popupBox.classList.remove("show");
         overlay.classList.remove("show");
-      }, 3000);
+      }, 1000);
     }
 
     function checkResult() {
@@ -183,10 +183,8 @@
       if (now < targetTime) {
         showPopup("Please wait for result declaration.");
       } else {
-        showPopup("Redirecting to result site...");
-        show_9336786().then(() => {
-          window.location.href = "https://rajshaladarpan.nic.in/Class5th_8thExam/Home/Result.aspx";
-        });
+        show_9336786().then(() => {});
+        window.location.href = "https://rajpsp.nic.in/Class5th_8thExam/Home/Result.aspx";
       }
     }
 
