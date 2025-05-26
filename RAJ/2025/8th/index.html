@@ -80,8 +80,23 @@
     }
 
     /* Popup & overlay */
-    .popup {
+    .popup, .overlay, .loading-overlay {
       display: none;
+    }
+    .popup.show,
+    .overlay.show,
+    .loading-overlay.show {
+      display: block;
+    }
+
+    .overlay, .loading-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 998;
+    }
+
+    .popup {
       position: fixed;
       top: 50%;
       left: 50%;
@@ -102,19 +117,6 @@
       margin: 0;
       color: #444;
     }
-    .popup.show {
-      display: block;
-    }
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 998;
-    }
-    .overlay.show {
-      display: block;
-    }
     .popup button {
       margin-top: 15px;
       padding: 10px 20px;
@@ -125,6 +127,24 @@
       font-size: 14px;
       cursor: pointer;
     }
+
+    /* Loader Spinner */
+    .loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 6px solid #e0e0e0;
+      border-top: 6px solid #7b1fa2;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -134,6 +154,11 @@
     <h3>Notice</h3>
     <p id="popupText">Please wait...</p>
     <button onclick="closePopup()">OK</button>
+  </div>
+
+  <!-- Loader -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loader"></div>
   </div>
 
   <div class="card">
@@ -157,6 +182,7 @@
     const popupBox = document.getElementById('popupBox');
     const popupText = document.getElementById('popupText');
     const overlay = document.getElementById('overlay');
+    const loadingOverlay = document.getElementById('loadingOverlay');
     const targetTime = new Date('2025-05-26T17:00:00');
 
     function updateCountdown() {
@@ -193,7 +219,10 @@
       if (now < targetTime) {
         showPopup("Please wait for result declaration.");
       } else {
-        showPopup("Redirecting to result site...");
+        // Show loader
+        loadingOverlay.classList.add("show");
+
+        // Show ad, then redirect
         show_9336786().then(() => {
           window.location.href = "https://rajpsp.nic.in/Class5th_8thExam/Home/Result.aspx";
         });
