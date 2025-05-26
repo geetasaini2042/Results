@@ -27,6 +27,7 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       width: 90%;
       max-width: 400px;
+      position: relative;
     }
     .title {
       font-size: 22px;
@@ -71,25 +72,60 @@
       color: #d32f2f;
       font-weight: 600;
     }
-    .message {
-      display: none;
-      margin-top: 15px;
-      text-align: center;
-      color: #d32f2f;
-      font-weight: 600;
-      font-size: 14px;
-    }
     .ad-message {
       text-align: center;
       font-size: 13px;
       margin-top: 15px;
       color: #999;
     }
+
+    /* Popup Style */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      z-index: 999;
+      text-align: center;
+      max-width: 80%;
+    }
+    .popup h3 {
+      margin: 0 0 10px;
+      color: #7b1fa2;
+    }
+    .popup p {
+      margin: 0;
+      color: #444;
+    }
+    .popup.show {
+      display: block;
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 998;
+    }
+    .overlay.show {
+      display: block;
+    }
   </style>
 </head>
 <body>
+  <div class="overlay" id="overlay"></div>
+  <div class="popup" id="popupBox">
+    <h3>Notice</h3>
+    <p id="popupText">Please wait...</p>
+  </div>
+
   <div class="card">
-    <div class="title">Welcome, Student</div>
+    <div class="title" id="welcome">Welcome, Student</div>
     <div class="subtitle">RBSE Class 8th Result - 2025</div>
 
     <div class="instructions">
@@ -101,15 +137,19 @@
 
     <button onclick="checkResult()">Check Result Now</button>
     <div class="timer" id="countdown"></div>
-    <div class="message" id="messageBox"></div>
     <div class="ad-message" id="adMsg"></div>
   </div>
 
   <script>
+    // Get elements
     const countdownEl = document.getElementById('countdown');
-    const messageBox = document.getElementById('messageBox');
-    const targetTime = new Date('2025-05-26T07:25:00');
+    const popupBox = document.getElementById('popupBox');
+    const popupText = document.getElementById('popupText');
+    const overlay = document.getElementById('overlay');
 
+    const targetTime = new Date('2025-05-26T17:00:00');
+
+    // Countdown function
     function updateCountdown() {
       const now = new Date();
       const diff = targetTime - now;
@@ -127,20 +167,38 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
+    function showPopup(message) {
+      popupText.textContent = message;
+      popupBox.classList.add("show");
+      overlay.classList.add("show");
+      setTimeout(() => {
+        popupBox.classList.remove("show");
+        overlay.classList.remove("show");
+      }, 3000);
+    }
+
     function checkResult() {
       const now = new Date();
-      messageBox.style.display = "block";
 
       if (now < targetTime) {
-        messageBox.textContent = "Please wait for Result Declear! ";
-        tg.alert("hi");
+        showPopup("Please wait for result declaration.");
       } else {
-        messageBox.textContent = "Redirecting to result site...";
+        showPopup("Redirecting to result site...");
         show_9336786().then(() => {
-          window.location.href = "https://rajpsp.nic.in/Class5th_8thExam/Home/Result.aspx";
+          window.location.href = "https://rajshaladarpan.nic.in/Class5th_8thExam/Home/Result.aspx";
         });
       }
     }
+
+    // Telegram Mini App user name
+    window.onload = () => {
+      if (window.Telegram && Telegram.WebApp) {
+        const user = Telegram.WebApp.initDataUnsafe?.user;
+        if (user && user.first_name) {
+          document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
+        }
+      }
+    };
   </script>
 </body>
 </html>
