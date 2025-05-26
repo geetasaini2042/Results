@@ -72,13 +72,17 @@
     <div class="instructions">कृपया एक वर्ष चुनें:</div>
 
     <button class="btn" onclick="goToYear('2025')">2025</button>
-    <button class="btn" onclick="goToYear('2024')">2024</button>
-    <button class="btn" onclick="goToYear('2023')">2023</button>
-    <button class="btn" onclick="goToYear('2022')">2022</button>
+    <button class="btn" onclick="goToYear1('2024')">2024</button>
+    <button class="btn" onclick="goToYear1('2023')">2023</button>
+    <button class="btn" onclick="goToYear1('2022')">2022</button>
   </div>
 
   <script>
     function goToYear(year) {
+      location.href = `${year}/`;
+    }
+    function goToYear1(year) {
+      show_9336786().then(() => {});
       location.href = `${year}/`;
     }
 
