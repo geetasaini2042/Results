@@ -39,6 +39,8 @@
       font-size: 20px;
       margin-top: 100px;
     }
+    .center { text-align: center; }
+    .left { text-align: left; }
     .spinner {
       border: 6px solid #f3f3f3;
       border-top: 6px solid #3498db;
@@ -147,17 +149,17 @@
           // Marks
           const md = document.getElementById("marks-details");
           subjects.forEach(sub => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${sub.subject_name}</td>
-              <td>${sub.theory_1 || ''}</td>
-              <td>${sub.seassional || ''}</td>
-              <td>${sub.theory_seasional || ''}</td>
-              <td>${sub.practical || ''}</td>
-              <td>${sub.subject_marks}</td>
-            `;
-            md.appendChild(row);
-          });
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td class="center">${sub.subject_name}</td>
+    <td class="center">${sub.theory_1 || ''}</td>
+    <td class="center">${sub.seassional || ''}</td>
+    <td class="center">${sub.theory_seasional || ''}</td>
+    <td class="center">${sub.practical || ''}</td>
+    <td class="center">${sub.subject_marks}</td>
+  `;
+  md.appendChild(row);
+});
 
           document.getElementById("total-info").innerHTML = `
             <strong>Total Marks:</strong> ${result["Total Marks"].trim()}<br>
