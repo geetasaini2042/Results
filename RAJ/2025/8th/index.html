@@ -79,7 +79,7 @@
       color: #999;
     }
 
-    /* Popup Style */
+    /* Popup & overlay */
     .popup {
       display: none;
       position: fixed;
@@ -115,13 +115,25 @@
     .overlay.show {
       display: block;
     }
+    .popup button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #7b1fa2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+  <!-- Popup -->
   <div class="overlay" id="overlay"></div>
   <div class="popup" id="popupBox">
     <h3>Notice</h3>
     <p id="popupText">Please wait...</p>
+    <button onclick="closePopup()">OK</button>
   </div>
 
   <div class="card">
@@ -130,9 +142,9 @@
 
     <div class="instructions">
       <strong>Result कैसे देखें:</strong><br>
-      1. नीचे "Check Result Now" पर क्लिक करें<br>
-      2. रिज़ल्ट समय पर जारी किया जाएगा<br>
-      3. पूरा समय होने के बाद रिज़ल्ट साइट पर भेजा जाएगा
+      1. "Check Result Now" बटन पर क्लिक करें<br>
+      2. रिज़ल्ट 26 मई शाम 5 बजे जारी किया जाएगा<br>
+      3. समय पूरा होने पर रिज़ल्ट साइट पर भेजा जाएगा
     </div>
 
     <button onclick="checkResult()">Check Result Now</button>
@@ -141,15 +153,12 @@
   </div>
 
   <script>
-    // Get elements
     const countdownEl = document.getElementById('countdown');
     const popupBox = document.getElementById('popupBox');
     const popupText = document.getElementById('popupText');
     const overlay = document.getElementById('overlay');
-
     const targetTime = new Date('2025-05-26T17:00:00');
 
-    // Countdown function
     function updateCountdown() {
       const now = new Date();
       const diff = targetTime - now;
@@ -171,10 +180,11 @@
       popupText.textContent = message;
       popupBox.classList.add("show");
       overlay.classList.add("show");
-      setTimeout(() => {
-        popupBox.classList.remove("show");
-        overlay.classList.remove("show");
-      }, 500);
+    }
+
+    function closePopup() {
+      popupBox.classList.remove("show");
+      overlay.classList.remove("show");
     }
 
     function checkResult() {
@@ -183,12 +193,13 @@
       if (now < targetTime) {
         showPopup("Please wait for result declaration.");
       } else {
-        show_9336786().then(() => {});
-        window.location.href = "https://rajpsp.nic.in/Class5th_8thExam/Home/Result.aspx";
+        showPopup("Redirecting to result site...");
+        show_9336786().then(() => {
+          window.location.href = "https://rajpsp.nic.in/Class5th_8thExam/Home/Result.aspx";
+        });
       }
     }
 
-    // Telegram Mini App user name
     window.onload = () => {
       if (window.Telegram && Telegram.WebApp) {
         const user = Telegram.WebApp.initDataUnsafe?.user;
