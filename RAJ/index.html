@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RBSE Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #e0f7fa, #e1bee7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #4a148c;
+    }
+    .subtitle {
+      font-size: 14px;
+      margin-bottom: 15px;
+      color: #666;
+    }
+    .instructions {
+      background: #f3e5f5;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #4a148c;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #7b1fa2;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background: #6a1b9a;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title" id="welcome">Welcome, Student</div>
+    <div class="subtitle" id="subtitle">RBSE Result - Year Selection</div>
+
+    <div class="instructions" id="instructions">
+      कृपया एक वर्ष चुनें:
+    </div>
+
+    <div id="year-selection">
+      <button class="btn" onclick="selectYear('2025')">2025</button>
+      <button class="btn" onclick="selectYear('2024')">2024</button>
+      <button class="btn" onclick="selectYear('2023')">2023</button>
+      <button class="btn" onclick="selectYear('2022')">2022</button>
+    </div>
+
+
+  <script>
+    let selectedYear = null;
+
+    function selectYear(year) {
+      selectedYear = year;
+      document.getElementById('year-selection').style.display = 'none';
+      document.getElementById('subtitle').textContent = `RBSE Result - ${year}`;
+    }
+
+    function goToClass(className) {
+      if (selectedYear && className) {
+        location.href = `${selectedYear}/`;
+      }
+    }
+
+    window.onload = function () {
+      if (window.Telegram && Telegram.WebApp) {
+        const user = Telegram.WebApp.initDataUnsafe.user;
+        if (user && user.first_name) {
+          const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
+          document.getElementById("welcome").textContent = `Welcome, ${fullName}`;
+        }
+      }
+    };
+  </script>
+</body>
+</html>
