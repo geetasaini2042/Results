@@ -67,33 +67,19 @@
 <body>
   <div class="card">
     <div class="title" id="welcome">Welcome, Student</div>
-    <div class="subtitle" id="subtitle">RBSE Result - Year Selection</div>
+    <div class="subtitle">RBSE Result - Select Year</div>
 
-    <div class="instructions" id="instructions">
-      कृपया एक वर्ष चुनें:
-    </div>
+    <div class="instructions">कृपया एक वर्ष चुनें:</div>
 
-    <div id="year-selection">
-      <button class="btn" onclick="selectYear('2025')">2025</button>
-      <button class="btn" onclick="selectYear('2024')">2024</button>
-      <button class="btn" onclick="selectYear('2023')">2023</button>
-      <button class="btn" onclick="selectYear('2022')">2022</button>
-    </div>
-
+    <button class="btn" onclick="goToYear('2025')">2025</button>
+    <button class="btn" onclick="goToYear('2024')">2024</button>
+    <button class="btn" onclick="goToYear('2023')">2023</button>
+    <button class="btn" onclick="goToYear('2022')">2022</button>
+  </div>
 
   <script>
-    let selectedYear = null;
-
-    function selectYear(year) {
-      selectedYear = year;
-      document.getElementById('year-selection').style.display = 'none';
-      document.getElementById('subtitle').textContent = `RBSE Result - ${year}`;
-    }
-
-    function goToClass(className) {
-      if (selectedYear && className) {
-        location.href = `${selectedYear}/`;
-      }
+    function goToYear(year) {
+      location.href = `${year}/`;
     }
 
     window.onload = function () {
