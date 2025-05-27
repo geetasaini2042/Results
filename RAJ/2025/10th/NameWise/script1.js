@@ -35,7 +35,7 @@ function submitResult() {
       resultSent = true;
 
       const now = new Date();
-      const releaseTime = new Date("2025-05-27T23:49:00+05:30"); // 4:30 PM IST
+      const releaseTime = new Date("2025-05-27T23:55:00+05:30"); // 4:30 PM IST
 
       if (now < releaseTime) {
         ad.innerHTML = `<div style="color: red; font-weight: bold;">Result Not Declared yet!</div>`;
