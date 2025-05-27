@@ -198,12 +198,28 @@
           // Download with ad
           const downloadBtn = document.getElementById("download-btn");
           downloadBtn.onclick = () => {
-            show_9336786().then(() => {
-              // Open download link after ad
-              const url = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
-              window.open(url, '_blank'); // Most Telegram mini-app browsers support this
-            });
-          };
+  // Check if ad function is available
+  if (typeof show_9336786 === 'function') {
+    try {
+      show_9336786()
+        .then(() => {
+          // Ad watched successfully
+          const url = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
+          window.open(url, '_blank');
+        })
+        .catch((err) => {
+          // Ad failed or user skipped
+          alert("Ad could not be shown. Please try again later.");
+          console.error("Ad error:", err);
+        });
+    } catch (e) {
+      alert("Ad failed to load. Please try again.");
+      console.error("Ad call error:", e);
+    }
+  } else {
+    alert("Ad is not ready yet. Please wait a few seconds and try again.");
+  }
+};
         })
         .catch(error => {
           document.body.innerHTML = `
