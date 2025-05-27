@@ -88,7 +88,7 @@ function sendResultToTelegram(roll, btn, ad) {
         .finally(() => resetButton(btn));
     } else {
       alert(`Result Sent to Telegram`);
-      window.location.href = `get.html?roll_no=${roll}&year=2025&wb_id=88`;
+      //window.location.href = `get.html?roll_no=${roll}&year=2025&wb_id=88`;
       ad.innerHTML = `<span style="color: green;">Result Sent on your Telegram Account!</span>`;
       resetButton(btn, true);
     }
