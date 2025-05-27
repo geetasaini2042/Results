@@ -2,7 +2,7 @@ let tg = window.Telegram.WebApp;
 tg.expand();
 
 const user = tg.initDataUnsafe.user;
-const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2025/mname-results.aspx`;
+const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2024/mname-results.aspx`;
 
 document.addEventListener("DOMContentLoaded", () => {
   if (user && user.first_name) {
@@ -42,7 +42,8 @@ function submitResult() {
         resetButton(btn);
       } else {
         const encodedName = encodeURIComponent(name);
-        const targetUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result.php?name=${encodedName}&page=1&url=${encodeURIComponent(sourceUrl)}`;
+        const targetUrl = `https://ai-bot-mr-singodiya.onrender.com/result-1?name=${name}&page=1&url=${sourceUrl}`//https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2024/mname-results.aspx
+        //const targetUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result.php?name=${encodedName}&page=1&url=${encodeURIComponent(sourceUrl)}`;
         window.location.href = targetUrl;
       }
     }
