@@ -132,28 +132,6 @@
     const wbId = params.get('wb_id');
     const year = params.get('year');
 
-    function handlePdfDownload() {
-      if (typeof show_9336786 === 'function') {
-        try {
-          show_9336786()
-            .then(() => {
-              // After successful ad view
-              const url = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
-              window.open(url, '_blank');
-            })
-            .catch((err) => {
-              alert("Ad failed to load. Please try again.");
-              console.error("Ad error:", err);
-            });
-        } catch (e) {
-          alert("Ad is not ready yet. Please wait.");
-          console.error("Ad error:", e);
-        }
-      } else {
-        alert("Ad is not ready yet. Please wait a few seconds and try again.");
-      }
-    }
-
     if (!rollNo || !wbId || !year) {
       document.body.innerHTML = "<h3>Error Fetching Your Result!.</h3>";
     } else {
@@ -217,6 +195,41 @@
         });
     }
   </script>
+  <script>
+  function handlePdfDownload() {
+    // Disable button while processing
+    const btn = document.getElementById("download-btn");
+    btn.disabled = true;
+    btn.innerText = "Loading Ad...";
 
+    const tryAd = () => {
+      if (typeof show_9336786 === "function") {
+        show_9336786()
+          .then(() => {
+            // Ad watched successfully
+            alert("Ad watched successfully. Download starting...");
+            const url = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
+            window.open(url, "_blank");
+          })
+          .catch(err => {
+            alert("Ad failed to load. Please try again.");
+            console.error("Ad error:", err);
+          })
+          .finally(() => {
+            btn.disabled = false;
+            btn.innerText = "Download as PDF";
+          });
+      } else {
+        // Ad SDK not ready yet
+        alert("Ad is still loading. Please wait a few seconds then try again.");
+        btn.disabled = false;
+        btn.innerText = "Download as PDF";
+      }
+    };
+
+    // Try after short delay to ensure SDK is ready
+    setTimeout(tryAd, 500); // Delay to let ad load
+  }
+</script>
 </body>
 </html>
