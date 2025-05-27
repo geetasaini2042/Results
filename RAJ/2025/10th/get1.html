@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <script src='//libtl.com/sdk.js' data-zone='9336786' data-sdk='show_9336786'></script>
   <title>Student Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -59,14 +60,12 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Button container */
     .button-container {
       display: none;
       text-align: center;
       margin-top: 30px;
     }
 
-    /* Buttons */
     .action-button {
       background-color: #007BFF;
       color: white;
@@ -132,8 +131,6 @@
     <button id="download-btn" class="action-button">Download as PDF</button>
   </div>
 
-  
-
   <script>
     const params = new URLSearchParams(window.location.search);
     const rollNo = params.get('roll_no');
@@ -141,7 +138,7 @@
     const year = params.get('year');
 
     if (!rollNo || !wbId || !year) {
-      document.body.innerHTML = "<h3>Error Fetching Your Result!</h3>";
+      document.body.innerHTML = "<h3>Error Fetching Your Result!.</h3>";
     } else {
       const apiUrl = `https://manish-bhaiyas-bot.onrender.com/result?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
 
@@ -153,7 +150,6 @@
           const result = res.result;
           const subjects = res.subjects.filter(s => s.subject_name && s.subject_marks);
 
-          // Student details
           const sd = document.getElementById("student-details");
           sd.innerHTML = `
             <tr>
@@ -165,7 +161,6 @@
             <tr><td colspan="6" class="left"><strong>School:</strong> ${info["School Name"]}</td></tr>
           `;
 
-          // Marks
           const md = document.getElementById("marks-details");
           subjects.forEach(sub => {
             const row = document.createElement("tr");
@@ -186,19 +181,21 @@
             <strong>Result:</strong> ${result.Result}
           `;
 
-          // Show content
           document.getElementById("loader").style.display = "none";
           document.getElementById("table-container").style.display = "block";
           document.querySelector("h2").style.display = "block";
           document.getElementById("button-container").style.display = "block";
 
-          // Ad + PDF Download
-          document.getElementById("download-btn").addEventListener("click", () => {
-            show_9336786().then(() => {
-              const downloadUrl = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
+          // Telegram-compatible download
+          const downloadBtn = document.getElementById("download-btn");
+          downloadBtn.onclick = () => {
+            const downloadUrl = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
+            if (window.Telegram && Telegram.WebApp) {
+              Telegram.WebApp.openLink(downloadUrl);
+            } else {
               window.open(downloadUrl, '_blank');
-            });
-          });
+            }
+          };
         })
         .catch(error => {
           document.body.innerHTML = `
@@ -221,5 +218,6 @@
         });
     }
   </script>
+
 </body>
 </html>
