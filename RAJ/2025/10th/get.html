@@ -39,8 +39,6 @@
       font-size: 20px;
       margin-top: 100px;
     }
-    .center { text-align: center; }
-    .left { text-align: left; }
     .spinner {
       border: 6px solid #f3f3f3;
       border-top: 6px solid #3498db;
@@ -56,10 +54,15 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Button */
-    #back-btn {
+    /* Button container */
+    .button-container {
       display: none;
-      margin: 30px auto;
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    /* Buttons */
+    .action-button {
       background-color: #007BFF;
       color: white;
       padding: 10px 20px;
@@ -67,9 +70,16 @@
       border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
+      margin: 0 10px;
     }
-    #back-btn:hover {
+    .action-button:hover {
       background-color: #0056b3;
+    }
+    #download-btn {
+      background-color: #28a745;
+    }
+    #download-btn:hover {
+      background-color: #1e7e34;
     }
   </style>
 </head>
@@ -112,7 +122,10 @@
     </table>
   </div>
 
-  <button id="back-btn" onclick="history.back()">Check Another Result</button>
+  <div class="button-container" id="button-container">
+    <button id="back-btn" class="action-button" onclick="history.back()">Check Another Result</button>
+    <button id="download-btn" class="action-button">Download as PDF</button>
+  </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -123,7 +136,6 @@
     if (!rollNo || !wbId || !year) {
       document.body.innerHTML = "<h3>Error Fetching Your Result!.</h3>";
     } else {
-     // const apiUrl = `https://getbyroll.onrender.com/result?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
       const apiUrl = `https://manish-bhaiyas-bot.onrender.com/result?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
 
       fetch(apiUrl)
@@ -149,17 +161,17 @@
           // Marks
           const md = document.getElementById("marks-details");
           subjects.forEach(sub => {
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td class="left">${sub.subject_name}</td>
-    <td class="center">${sub.theory_1 || '-'}</td>
-    <td class="center">${sub.seassional || '-'}</td>
-    <td class="center">${sub.theory_seasional || '-'}</td>
-    <td class="center">${sub.practical || '-'}</td>
-    <td class="center">${sub.subject_marks}</td>
-  `;
-  md.appendChild(row);
-});
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td class="left">${sub.subject_name}</td>
+              <td class="center">${sub.theory_1 || '-'}</td>
+              <td class="center">${sub.seassional || '-'}</td>
+              <td class="center">${sub.theory_seasional || '-'}</td>
+              <td class="center">${sub.practical || '-'}</td>
+              <td class="center">${sub.subject_marks}</td>
+            `;
+            md.appendChild(row);
+          });
 
           document.getElementById("total-info").innerHTML = `
             <strong>Total Marks:</strong> ${result["Total Marks"].trim()}<br>
@@ -167,16 +179,22 @@
             <strong>Result:</strong> ${result.Result}
           `;
 
-          // Show result, hide loader
+          // Show result and buttons
           document.getElementById("loader").style.display = "none";
           document.getElementById("table-container").style.display = "block";
           document.querySelector("h2").style.display = "block";
-          document.getElementById("back-btn").style.display = "block";
+          document.getElementById("button-container").style.display = "block";
+
+          // Download button action
+          const downloadBtn = document.getElementById("download-btn");
+          downloadBtn.onclick = () => {
+            const downloadUrl = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
+            window.open(downloadUrl, '_blank');
+          };
         })
         .catch(error => {
           document.body.innerHTML = `
             <div style="text-align:center; margin-top:100px; font-family:Arial, sans-serif;">
-              
               <h3 style="margin-top: 20px;">Please enter a correct Roll Number.</h3>
               <button onclick="history.back()" style="
                 margin-top: 20px;
