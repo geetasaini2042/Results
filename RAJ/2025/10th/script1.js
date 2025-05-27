@@ -35,7 +35,7 @@ function submitResult() {
     if (!resultSent) {
       resultSent = true;
       // Ad ke turant baad redirect
-      window.location.href = `get.html?roll_no=${roll}&year=2024&wb_id=88`;
+      window.location.href = `get.html?roll_no=${roll}&year=2025&wb_id=88`;
     }
   };
 
