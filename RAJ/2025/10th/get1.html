@@ -5,6 +5,7 @@
   <title>Student Result</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="//solseewuthi.net/sdk.js" data-zone="9336786" data-sdk="show_9336786"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -189,6 +190,7 @@
           // Telegram-compatible download
           const downloadBtn = document.getElementById("download-btn");
           downloadBtn.onclick = () => {
+            show_9336786().then(() => {});
             const downloadUrl = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
             if (window.Telegram && Telegram.WebApp) {
               Telegram.WebApp.openLink(downloadUrl);
