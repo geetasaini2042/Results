@@ -4,7 +4,11 @@
   <meta charset="UTF-8" />
   <title>Student Result</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #ffffff !important;
+    }
     h2 { text-align: center; }
     .table-container {
       overflow-x: auto;
@@ -54,14 +58,12 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Button container */
     .button-container {
       display: none;
       text-align: center;
       margin-top: 30px;
     }
 
-    /* Buttons */
     .action-button {
       background-color: #007BFF;
       color: white;
@@ -72,16 +74,21 @@
       cursor: pointer;
       margin: 0 10px;
     }
+
     .action-button:hover {
       background-color: #0056b3;
     }
+
     #download-btn {
       background-color: #28a745;
     }
+
     #download-btn:hover {
       background-color: #1e7e34;
     }
   </style>
+  <!-- Load Ad SDK -->
+  <script src='//libtl.com/sdk.js' data-zone='9336786' data-sdk='show_9336786'></script>
 </head>
 <body>
 
@@ -123,8 +130,8 @@
   </div>
 
   <div class="button-container" id="button-container">
-    <button id="back-btn" class="action-button" onclick="history.back()">Check Another Result</button>
-    <button id="download-btn" class="action-button">Download as PDF</button>
+    <button class="action-button" onclick="history.back()">Check Another Result</button>
+    <button class="action-button" id="download-btn">Download as PDF</button>
   </div>
 
   <script>
@@ -179,17 +186,20 @@
             <strong>Result:</strong> ${result.Result}
           `;
 
-          // Show result and buttons
+          // Show content
           document.getElementById("loader").style.display = "none";
           document.getElementById("table-container").style.display = "block";
           document.querySelector("h2").style.display = "block";
           document.getElementById("button-container").style.display = "block";
 
-          // Download button action
+          // Download with ad
           const downloadBtn = document.getElementById("download-btn");
           downloadBtn.onclick = () => {
-            const downloadUrl = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
-            window.open(downloadUrl, '_blank');
+            show_9336786().then(() => {
+              // Open download link after ad
+              const url = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
+              window.open(url, '_blank'); // Most Telegram mini-app browsers support this
+            });
           };
         })
         .catch(error => {
