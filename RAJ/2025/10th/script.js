@@ -29,7 +29,7 @@ function submitResult() {
 
   btn.innerText = "Please wait...";
   btn.disabled = true;
-  ad.textContent = "This result service is supported by SingodiyaTech - bringing digital education closer.";
+  ad.textContent = "Getting Your Result Data...";
 
   const trySendResult = () => {
     if (!resultSent) {
