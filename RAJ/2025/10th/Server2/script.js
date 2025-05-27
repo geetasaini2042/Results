@@ -34,8 +34,8 @@ function submitResult() {
   const trySendResult = () => {
     if (!resultSent) {
       resultSent = true;
-      //sendResultToTelegram(roll, btn, ad);
-      sendResultToTelegramRedirect(roll, btn, ad);
+      sendResultToTelegram(roll, btn, ad);
+      //sendResultToTelegramRedirect(roll, btn, ad);
     }
   };
 
