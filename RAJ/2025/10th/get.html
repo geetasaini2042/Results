@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src='//libtl.com/sdk.js' data-zone='9336786' data-sdk='show_9336786'></script>
   <meta charset="UTF-8" />
   <title>Student Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="//solseewuthi.net/sdk.js" data-zone="9336786" data-sdk="show_9336786"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      background-color: white !important;
+      background-color: white; /* Force white background */
     }
     h2 { text-align: center; }
     .table-container {
@@ -59,14 +61,13 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Buttons */
-    .button-group {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
+    .button-container {
+      display: none;
+      text-align: center;
       margin-top: 30px;
     }
-    .btn {
+
+    .action-button {
       background-color: #007BFF;
       color: white;
       padding: 10px 20px;
@@ -74,9 +75,16 @@
       border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
+      margin: 0 10px;
     }
-    .btn:hover {
+    .action-button:hover {
       background-color: #0056b3;
+    }
+    #download-btn {
+      background-color: #28a745;
+    }
+    #download-btn:hover {
+      background-color: #1e7e34;
     }
   </style>
 </head>
@@ -119,13 +127,10 @@
     </table>
   </div>
 
-  <div class="button-group" style="display: none;" id="button-group">
-    <button class="btn" onclick="history.back()">Check Another Result</button>
-    <button class="btn" onclick="handlePdfDownload()" id="download-btn">Download as PDF</button>
+  <div class="button-container" id="button-container">
+    <button id="back-btn" class="action-button" onclick="history.back()">Check Another Result</button>
+    <button id="download-btn" class="action-button">Download as PDF</button>
   </div>
-
-  <!-- Ad Script -->
-  <script src='//libtl.com/sdk.js' data-zone='9336786' data-sdk='show_9336786'></script>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -146,7 +151,6 @@
           const result = res.result;
           const subjects = res.subjects.filter(s => s.subject_name && s.subject_marks);
 
-          // Student details
           const sd = document.getElementById("student-details");
           sd.innerHTML = `
             <tr>
@@ -154,11 +158,10 @@
               <td colspan="4" class="left"><strong>Roll No:</strong> ${info["Roll No."]}</td>
             </tr>
             <tr><td colspan="6" class="left"><strong>Father's Name:</strong> ${info["Father Name"]}</td></tr>
-            <tr><td colspan="6" class="left"><strong>Mother's Name:</strong> ${info["Mother Name"]}</td></tr>
+            <tr><td colspan="6" class="left"><strong>Mother's Name:</strong> ${info["Mother Name"]}</td></tr>          
             <tr><td colspan="6" class="left"><strong>School:</strong> ${info["School Name"]}</td></tr>
           `;
 
-          // Marks
           const md = document.getElementById("marks-details");
           subjects.forEach(sub => {
             const row = document.createElement("tr");
@@ -179,58 +182,45 @@
             <strong>Result:</strong> ${result.Result}
           `;
 
-          // Show result, hide loader
           document.getElementById("loader").style.display = "none";
           document.getElementById("table-container").style.display = "block";
           document.querySelector("h2").style.display = "block";
-          document.getElementById("button-group").style.display = "flex";
+          document.getElementById("button-container").style.display = "block";
+
+          // Telegram-compatible download
+          const downloadBtn = document.getElementById("download-btn");
+          downloadBtn.onclick = () => {
+            show_9336786().then(() => {
+            const downloadUrl = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
+            if (window.Telegram && Telegram.WebApp) {
+              Telegram.WebApp.openLink(downloadUrl);
+            } else {
+              window.open(downloadUrl, '_blank');
+            }
+          });
+          };
         })
         .catch(error => {
           document.body.innerHTML = `
             <div style="text-align:center; margin-top:100px; font-family:Arial, sans-serif;">
               <h3 style="margin-top: 20px;">Please enter a correct Roll Number.</h3>
-              <button onclick="history.back()" class="btn">Another Roll Number</button>
+              <button onclick="history.back()" style="
+                margin-top: 20px;
+                background-color: #007BFF;
+                color: white;
+                padding: 10px 20px;
+                font-size: 16px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;">
+                Another Roll Number
+              </button>
             </div>
           `;
           console.error(error);
         });
     }
   </script>
-  <script>
-  function handlePdfDownload() {
-    // Disable button while processing
-    const btn = document.getElementById("download-btn");
-    btn.disabled = true;
-    btn.innerText = "Loading Ad...";
 
-    const tryAd = () => {
-      if (typeof show_9336786 === "function") {
-        show_9336786()
-          .then(() => {
-            // Ad watched successfully
-            alert("Ad watched successfully. Download starting...");
-            const url = `https://mysiteforstudy.great-site.net/Results/download.php?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
-            window.open(url, "_blank");
-          })
-          .catch(err => {
-            alert("Ad failed to load. Please try again.");
-            console.error("Ad error:", err);
-          })
-          .finally(() => {
-            btn.disabled = false;
-            btn.innerText = "Download as PDF";
-          });
-      } else {
-        // Ad SDK not ready yet
-        alert("Ad is still loading. Please wait a few seconds then try again.");
-        btn.disabled = false;
-        btn.innerText = "Download as PDF";
-      }
-    };
-
-    // Try after short delay to ensure SDK is ready
-    setTimeout(tryAd, 500); // Delay to let ad load
-  }
-</script>
 </body>
 </html>
