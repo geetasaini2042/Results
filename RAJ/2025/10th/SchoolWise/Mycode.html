@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Live School Result Viewer</title>
+    <title>School Result</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: Arial, sans-serif; }
@@ -72,7 +72,8 @@
 
 <script>
 async function fetchResult(roll, year, wb_id, source) {
-    const url = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll}&year=${year}&wb_id=${wb_id}&source=${source}`;
+    //const url = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll}&year=${year}&wb_id=${wb_id}&source=${source}`;
+    const url = `https://manish-bhaiyas-bot.onrender.com/result?roll_no=${roll}&year=${year}&wb_id=${wb_id}`;
     try {
         const res = await fetch(url);
         const data = await res.json();
@@ -226,7 +227,8 @@ window.onload = async function () {
     }
 
     // Check if API has data for first roll number
-    const testUrl = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll1}&year=${year}&wb_id=${wb_id}&source=${source}`;
+   // const testUrl = `https://result.appanalytics.co.in/api/get-result?tag=raj_10th_result&roll_no=${roll1}&year=${year}&wb_id=${wb_id}&source=${source}`;
+    const testUrl = `https://manish-bhaiyas-bot.onrender.com/result?roll_no=${roll1}&year=${year}&wb_id=${wb_id}`;
     try {
         const res = await fetch(testUrl);
         const data = await res.json();
