@@ -43,8 +43,8 @@ function submitResult() {
       } else {
         const encodedName = encodeURIComponent(name);
         //const targetUrl = `https://ai-bot-mr-singodiya.onrender.com/result-1?name=${name}&page=1&url=${sourceUrl}` ;//https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2024/mname-results.aspx
-        //const targetUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result.php?name=${encodedName}&page=1&url=${encodeURIComponent(sourceUrl)}`;
-        const targetUrl = `https://mysiteforstudy.great-site.net/Results/result.php?name=${encodedName}&page=1&url=${encodeURIComponent(sourceUrl)}`;
+        const targetUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result.php?name=${encodedName}&page=1&url=${encodeURIComponent(sourceUrl)}`;
+        //const targetUrl = `https://mysiteforstudy.great-site.net/Results/result.php?name=${encodedName}&page=1&url=${encodeURIComponent(sourceUrl)}`;
         window.location.href = targetUrl;
       }
     }
