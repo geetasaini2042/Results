@@ -106,45 +106,44 @@
     <button onclick="submitResult()">Check Result</button>
     <div class="ad-message" id="adMsg"></div>
   </div>
-  <script>
-  
-    const tg = window.Telegram.WebApp;
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    // Get user ID
-    const user_id = tg.initDataUnsafe.user.id;
-  </script>
-  <script>
-    function submitResult() {
-      const roll1 = document.getElementById("roll1").value.trim();
-      const roll2 = document.getElementById("roll2").value.trim();
+<script>
+  const tg = window.Telegram.WebApp;
 
-      const isValidRoll = roll => /^\d{7}$/.test(roll);
+  function submitResult() {
+    const user_id = tg.initDataUnsafe?.user?.id || "unknown";
 
-      if (!isValidRoll(roll1) || !isValidRoll(roll2)) {
-        alert("Please Enter Correct Roll Numbers!");
-        return;
-      }
+    const roll1 = document.getElementById("roll1").value.trim();
+    const roll2 = document.getElementById("roll2").value.trim();
 
-      const r1 = parseInt(roll1, 10);
-      const r2 = parseInt(roll2, 10);
+    const isValidRoll = roll => /^\d{7}$/.test(roll);
 
-      if (r2 < r1) {
-        alert("Please Enter a Correct Roll Numbers Range!");
-        return;
-      }
-
-      if ((r2 - r1) > 80) {
-        alert("You Can get only 80 Students's Result With one!");
-        return;
-      }
-
-      // Show rewarded interstitial ad
-      show_9336786().then(() => {
-        window.location.href = `https://geetasaini2042.github.io/Results/RAJ/AllServer/ok.html?roll_no1=${r1}&roll_no2=${r2}&year=2025&wb_id=88&user_id=${user_id}`;
-      }).catch(() => {
-        alert("Ad Faild! Please try again!");
-      });
+    if (!isValidRoll(roll1) || !isValidRoll(roll2)) {
+      alert("Please Enter Correct Roll Numbers!");
+      return;
     }
-  </script>
+
+    const r1 = parseInt(roll1, 10);
+    const r2 = parseInt(roll2, 10);
+
+    if (r2 < r1) {
+      alert("Please Enter a Correct Roll Numbers Range!");
+      return;
+    }
+
+    if ((r2 - r1) > 80) {
+      alert("You Can get only 80 Students's Result With one!");
+      return;
+    }
+
+    // Show rewarded interstitial ad
+    show_9336786().then(() => {
+      window.location.href = `https://geetasaini2042.github.io/Results/RAJ/AllServer/ok.html?roll_no1=${r1}&roll_no2=${r2}&year=2025&wb_id=88&user_id=${user_id}`;
+    }).catch(() => {
+      alert("Ad Failed! Please try again!");
+    });
+  }
+</script>
 </body>
 </html>
