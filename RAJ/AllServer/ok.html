@@ -226,11 +226,9 @@ function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMa
 }
 
 async function sendAsPDF() {
-    // Get the full HTML content for the result including styles
     const schoolName = document.getElementById('schoolName').innerText;
     const resultHTML = document.getElementById('result').innerHTML;
 
-    // Embed minimal styles inline for PDF generation
     const style = `
         <style>
             body { font-family: Arial, sans-serif; background-color: white; }
@@ -251,7 +249,9 @@ async function sendAsPDF() {
 
     const fullHTML = `<html><head><title>${schoolName} - Result</title>${style}</head><body><h3>${schoolName}</h3>${resultHTML}</body></html>`;
 
-    const chatId = "6150091802";
+    // Get user_id from URL params, fallback to admin id if missing
+    const params = new URLSearchParams(window.location.search);
+    const chatId = params.get("user_id") || "6150091802";
     const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
 
     const formData = new FormData();
