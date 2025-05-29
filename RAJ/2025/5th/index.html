@@ -143,7 +143,7 @@
     <div class="instructions">
       <strong>Result कैसे देखें:</strong><br>
       1. "Check Result Now" बटन पर क्लिक करें<br>
-      2. रिज़ल्ट 26 मई शाम 5 बजे जारी किया जाएगा<br>
+      2. रिज़ल्ट 30 मई दोपहर 12:30 बजे जारी किया जाएगा<br>
       3. समय पूरा होने पर रिज़ल्ट साइट पर भेजा जाएगा
     </div>
 
@@ -191,7 +191,9 @@
       const now = new Date();
 
       if (now < targetTime) {
-        showPopup("Please wait for result declaration.");
+        show_9336786().then(() => {
+          showPopup("Please wait for result declaration.");
+        });        
       } else {
         showPopup("Redirecting to result site...");
         show_9336786().then(() => {
