@@ -94,6 +94,36 @@
       text-align: center;
       max-width: 80%;
     }
+    /* Loader Spinner */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 998;
+}
+
+.loading-overlay.show {
+  display: block;
+}
+
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 6px solid #e0e0e0;
+  border-top: 6px solid #7b1fa2;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
     .popup h3 {
       margin: 0 0 10px;
       color: #7b1fa2;
@@ -139,7 +169,10 @@
   <div class="card">
     <div class="title" id="welcome">Welcome, Student</div>
     <div class="subtitle">RBSE Class 5th Result - 2025</div>
-
+    <!-- Loader -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loader"></div>
+</div>
     <div class="instructions">
       <strong>Result कैसे देखें:</strong><br>
       1. "Check Result Now" बटन पर क्लिक करें<br>
@@ -154,6 +187,7 @@
 
   <script>
     const countdownEl = document.getElementById('countdown');
+    const loadingOverlay = document.getElementById('loadingOverlay');
     const popupBox = document.getElementById('popupBox');
     const popupText = document.getElementById('popupText');
     const overlay = document.getElementById('overlay');
@@ -191,13 +225,16 @@
       const now = new Date();
 
       if (now < targetTime) {
+        loadingOverlay.classList.add("show");
         show_9336786().then(() => {
           showPopup("Please wait for result declaration.");
+          loadingOverlay.classList.remove("show");
         });        
       } else {
-        showPopup("Redirecting to result site...");
+        loadingOverlay.classList.add("show");
         show_9336786().then(() => {
           window.location.href = "https://rajpsp.nic.in/Class5th_8thExam/Home/Result.aspx";
+          loadingOverlay.classList.remove("show");
         });
       }
     }
