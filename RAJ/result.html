@@ -139,8 +139,8 @@
             row.innerHTML = `
               <td>${sub.subject_name}</td>
               <td>${sub.theory_seasional || sub.theory_1 || ''}</td>
-              <td>${sub.seassional || ''}</td>
-              <td>${sub.practical || ''}</td>
+              <td>${sub.seassional || '-'}</td>
+              <td>${sub.practical || '-'}</td>
               <td>${sub.subject_marks}</td>
             `;
             md.appendChild(row);
