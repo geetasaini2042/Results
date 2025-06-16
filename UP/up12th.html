@@ -88,7 +88,7 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const rollNo = params.get('roll_no');
-    const wbId = params.get('wb_id');
+    const wbId = 101;
     const year = params.get('year');
 
     if (!rollNo || !wbId || !year) {
@@ -136,8 +136,8 @@
 
           const totalInfo = `
             <strong>Result:</strong> ${result.result || "N/A"}<br>
-            <strong>Marks Obtained:</strong> ${result.marks_obtained || "-"} / ${result.marks_total || "-"}<br>
-            <strong>Percentage:</strong> ${campaign.percentage || "0"}%<br>
+            <strong>Marks Obtained:</strong> ${result.marks_obtained || "-"}<br>
+            <strong>Percentage:</strong> ${campaign.percentage || "-"}%<br>
             <strong>Division:</strong> ${result.division || "-"}
           `;
           document.getElementById("total-info").innerHTML = totalInfo;
