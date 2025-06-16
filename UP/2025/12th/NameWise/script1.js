@@ -2,7 +2,7 @@ let tg = window.Telegram.WebApp;
 tg.expand();
 
 const user = tg.initDataUnsafe.user;
-const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2025/mname-results.aspx`;
+const sourceUrl = `https://up-board-12th-result.indiaresults.com/up/upmsp/class-12th-exam-result-2025/mname-results.aspx`;
 
 document.addEventListener("DOMContentLoaded", () => {
   if (user && user.first_name) {
