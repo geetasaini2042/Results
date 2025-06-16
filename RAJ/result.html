@@ -96,7 +96,7 @@
     const year = params.get('year');
 
     if (!rollNo || !wbId || !year) {
-      document.body.innerHTML = "<h3>Error Fetching Your Result!.</h3>";
+      document.body.innerHTML = "<h3>Error Fetching Your Result!</h3>";
     } else {
       const apiUrl = `https://manish-bhaiyas-bot.onrender.com/result?roll_no=${rollNo}&wb_id=${wbId}&year=${year}`;
 
@@ -110,16 +110,27 @@
 
           // Student details
           const sd = document.getElementById("student-details");
-          sd.innerHTML = `
+          let studentRows = `
             <tr>
               <td colspan="2" class="left"><strong>Roll No:</strong> ${info["Roll No."]}</td>
               <td colspan="3" class="left"><strong>Name:</strong> ${info["Candidate Name"]}</td>
             </tr>
-            <tr><td colspan="5" class="left"><strong>Father's Name:</strong> ${info["Father Name"]}</td></tr>
-            <tr><td colspan="5" class="left"><strong>Mother's Name:</strong> ${info["Mother Name"]}</td></tr>
-            <tr><td colspan="5" class="left"><strong>Group:</strong> ${info["Group"]}</td></tr>
-            <tr><td colspan="5" class="left"><strong>School:</strong> ${info["School Name"]}</td></tr>
           `;
+
+          if (info["Father Name"]) {
+            studentRows += `<tr><td colspan="5" class="left"><strong>Father's Name:</strong> ${info["Father Name"]}</td></tr>`;
+          }
+          if (info["Mother Name"]) {
+            studentRows += `<tr><td colspan="5" class="left"><strong>Mother's Name:</strong> ${info["Mother Name"]}</td></tr>`;
+          }
+          if (info["Group"]) {
+            studentRows += `<tr><td colspan="5" class="left"><strong>Group:</strong> ${info["Group"]}</td></tr>`;
+          }
+          if (info["School Name"]) {
+            studentRows += `<tr><td colspan="5" class="left"><strong>School:</strong> ${info["School Name"]}</td></tr>`;
+          }
+
+          sd.innerHTML = studentRows;
 
           // Marks
           const md = document.getElementById("marks-details");
@@ -148,7 +159,7 @@
           document.getElementById("back-btn").style.display = "block";
         })
         .catch(error => {
-          document.body.innerHTML = "<h3>Error fetching data. Please check Your Roll Number!.</h3>";
+          document.body.innerHTML = "<h3>Error fetching data. Please check Your Roll Number!</h3>";
           console.error(error);
         });
     }
