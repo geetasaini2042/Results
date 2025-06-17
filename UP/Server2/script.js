@@ -123,7 +123,8 @@ function sendResultToTelegram(roll, btn, ad) {
     .then(res => res.json())
     .then(response => {
       if (!response || response.ok !== true) {
-        ad.innerHTML = `<span style="color: red; font-weight: bold;">Telegram Error: Could not send result.</span>`;
+        const errorMsg = response?.description || "Unknown error";
+        ad.innerHTML = `<span style="color: red; font-weight: bold;">Telegram Error: ${errorMsg}</span>`;
         resetButton(btn);
       } else {
         alert(`Result Sent to Telegram`);
