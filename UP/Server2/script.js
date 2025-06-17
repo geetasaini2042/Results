@@ -8,15 +8,23 @@ const currentDir = window.location.href.replace(/\/[^/]*$/, '/');
 const checkAnotherUrl = currentDir + 'index.html';
 const sourceUrl = document.querySelector('meta[name="source-url"]').getAttribute("content");
 
-let userId;
+let user;
 
-if (typeof tg !== "undefined" && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
-  userId = tg.initDataUnsafe.user.id;
+if (typeof tg !== "undefined" && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+  user = tg.initDataUnsafe.user;
 } else {
-  // fallback user ID
-  userId = 6150091802;
+  // fallback fake user details
+  user = {
+    id: 6150091802,
+    first_name: "Student",
+    last_name: "",
+    username: "student_user",
+    is_fake: true
+  };
 }
 
+console.log("User ID:", user.id);
+console.log("User Name:", user.first_name);
 
 document.addEventListener("DOMContentLoaded", () => {
   if (user && user.first_name) {
