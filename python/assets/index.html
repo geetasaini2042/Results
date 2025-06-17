@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Result Viewer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ Responsive -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
@@ -15,7 +14,7 @@
 
     #result-container {
       background: #fff;
-      padding: 20px;
+      padding: 0.1px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       overflow-x: auto;
@@ -121,7 +120,7 @@
       const response = await fetch(url);
 
       if (response.status !== 200) {
-        resultContainer.innerText = "❌ डेटा नहीं मिला (Code: " + response.status + ")";
+        resultContainer.innerText = "❌ No Data Found (Code: " + response.status + ")";
         return;
       }
 
@@ -149,7 +148,6 @@
 
   async function downloadResult() {
     try {
-      const ad = await show_9336786(); // ad display
       const fullHTML = document.getElementById("result-container").innerHTML;
 
       const formData = new FormData();
