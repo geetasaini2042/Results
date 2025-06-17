@@ -3,6 +3,7 @@
 <head>
   <title>Result Viewer</title>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ Responsive Meta -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -15,12 +16,13 @@
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      overflow-x: auto;
+      overflow-x: auto; /* ✅ Table ko scroll hone de */
     }
     table {
       border-collapse: collapse;
       width: 100%;
       margin-bottom: 20px;
+      table-layout: auto; /* ✅ Table wrapping issues solve */
     }
     td, th {
       border: 1px solid #ccc;
@@ -102,7 +104,6 @@
       const allTables = doc.querySelectorAll("table");
       const resultContainer = document.getElementById("result-container");
 
-      // Clear loading text
       resultContainer.innerHTML = "";
 
       allTables.forEach(table => {
