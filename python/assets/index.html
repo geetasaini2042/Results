@@ -5,9 +5,9 @@
   <title>Result Viewer</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-<body style="background:#f2f2f2; padding:20px; margin:0; font-family:Arial,sans-serif;">
+<body style="background:#f2f2f2; font-family:Arial,sans-serif;">
 
-<div id="result-container">📡</div>
+<div id="result-container">📡 Just a Second...</div>
 
 <div style="display:flex; justify-content:space-between; padding:20px 16px 0 16px; box-sizing:border-box; margin-top:20px;">
   <div onclick="history.back()" title="Back" style="background:#007bff; color:#fff; border-radius:50%; width:56px; height:56px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 8px rgba(0,0,0,0.2); cursor:pointer; transition:0.3s;">
@@ -38,12 +38,12 @@
 
   async function fetchResult() {
     const resultContainer = document.getElementById("result-container");
-    resultContainer.innerHTML = "📡";
+    resultContainer.innerHTML = "📡 Just a second...";
 
     try {
       const response = await fetch(url);
       if (response.status !== 200) {
-        resultContainer.innerText = "❌";
+        resultContainer.innerText = "❌ Data Not Found. Please Chack Your Roll Number";
         return;
       }
 
@@ -60,7 +60,7 @@
       });
 
       if (resultContainer.innerHTML.trim() === "") {
-        resultContainer.innerText = "❌";
+        resultContainer.innerText = "❌ Data Not Found";
       }
     } catch (error) {
       resultContainer.innerText = "⚠️";
