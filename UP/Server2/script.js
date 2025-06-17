@@ -70,9 +70,10 @@ function submitResult() {
     trySendResult();
   }
 }
+
 function sendResultToTelegramRedirect(roll, btn, ad) {
   //const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
-  const getUrl = `https://geetasaini2042.github.io/Results/python/assets/?roll_no=${roll}&url=${sourceUrl}`;
+  const getUrl = `https://geetasaini2042.github.io/Results/python/assets/?roll_no=${roll}&url=${sourceUrl}&web_url=${encodeURIComponent(checkAnotherUrl)}`;
 
   ad.innerHTML = `<span style="color: green;">Please Wait...</span>`;
   btn.innerText = "Redirecting...";
