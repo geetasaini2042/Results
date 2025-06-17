@@ -8,7 +8,15 @@ const currentDir = window.location.href.replace(/\/[^/]*$/, '/');
 const checkAnotherUrl = currentDir + 'index.html';
 const sourceUrl = document.querySelector('meta[name="source-url"]').getAttribute("content");
 
-const user = tg.initDataUnsafe.user;
+let userId;
+
+if (typeof tg !== "undefined" && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
+  userId = tg.initDataUnsafe.user.id;
+} else {
+  // fallback user ID
+  userId = 6150091802;
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
   if (user && user.first_name) {
