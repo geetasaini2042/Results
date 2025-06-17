@@ -4,83 +4,20 @@
   <meta charset="UTF-8">
   <title>Result Viewer</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 20px;
-      margin: 0;
-    }
-
-    #result-container {
-      background: #fff;
-      padding: 0.1px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      overflow-x: auto;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-
-    td, th {
-      border: 1px solid #ccc;
-      padding: 8px;
-    }
-
-    th {
-      background: #efefef;
-    }
-
-    .circle-btns {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px 16px 0 16px;
-      box-sizing: border-box;
-      margin-top: 20px;
-    }
-
-    .circle-btn {
-      background: #007bff;
-      color: white;
-      border-radius: 50%;
-      width: 56px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .circle-btn:hover {
-      background: #0056b3;
-    }
-
-    .circle-btn svg {
-      width: 24px;
-      height: 24px;
-      fill: white;
-    }
-  </style>
 </head>
-<body>
+<body style="background:#f2f2f2; padding:20px; margin:0; font-family:Arial,sans-serif;">
 
-<div id="result-container">📡</div>
+<div id="result-container">📡 Just a Second...</div>
 
-<div class="circle-btns">
-  <div class="circle-btn" onclick="history.back()" title="Back">
-    <svg viewBox="0 0 24 24">
+<div style="display:flex; justify-content:space-between; padding:20px 16px 0 16px; box-sizing:border-box; margin-top:20px;">
+  <div onclick="history.back()" title="Back" style="background:#007bff; color:#fff; border-radius:50%; width:56px; height:56px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 8px rgba(0,0,0,0.2); cursor:pointer; transition:0.3s;">
+    <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:white;">
       <path d="M15 18l-6-6 6-6"/>
     </svg>
   </div>
 
-  <div class="circle-btn" onclick="downloadResult()" title="Download">
-    <svg viewBox="0 0 24 24">
+  <div onclick="downloadResult()" title="Download" style="background:#007bff; color:#fff; border-radius:50%; width:56px; height:56px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 8px rgba(0,0,0,0.2); cursor:pointer; transition:0.3s;">
+    <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:white;">
       <path d="M5 20h14v-2H5v2zm7-18l-6 6h4v6h4v-6h4l-6-6z"/>
     </svg>
   </div>
