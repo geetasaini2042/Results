@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Result Viewer</title>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+      margin-bottom: 100px;
+    }
+    #result-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow-x: auto;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    td, th {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+    th {
+      background: #efefef;
+    }
+    .circle-btns {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 15px;
+      z-index: 999;
+    }
+    .circle-btn {
+      background: #007bff;
+      color: white;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .circle-btn:hover {
+      background: #0056b3;
+    }
+    .circle-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Result Details</h2>
+<div id="result-container">Loading result...</div>
+
+<!-- Circle Buttons -->
+<div class="circle-btns">
+  <!-- Back Button -->
+  <div class="circle-btn" onclick="history.back()" title="Back">
+    <svg viewBox="0 0 24 24">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </div>
+
+  <!-- Download Button -->
+  <div class="circle-btn" onclick="downloadResult()" title="Download">
+    <svg viewBox="0 0 24 24">
+      <path d="M5 20h14v-2H5v2zm7-18l-6 6h4v6h4v-6h4l-6-6z"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Ad SDK -->
+<script src='//libtl.com/sdk.js' data-zone='9336786' data-sdk='show_9336786'></script>
+
+<script>
+  const chatId = new URLSearchParams(window.location.search).get("chat_id") || "6150091802"; // fallback chat_id
+  const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
+
+  async function fetchResult() {
+    const url = "https://manish-bhaiyas-bot.onrender.com/?roll_no=1250001916&url=https://up-board-10th-result.indiaresults.com/up/upmsp/class-10th-exam-result-2025/mrollresult.asp";
+    
+    try {
+      const response = await fetch(url);
+      const html = await response.text();
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+
+      const allTables = doc.querySelectorAll("table");
+      const resultContainer = document.getElementById("result-container");
+
+      // Clear loading text
+      resultContainer.innerHTML = "";
+
+      allTables.forEach(table => {
+        if (!table.closest("td table, td > table")) {
+          resultContainer.innerHTML += table.outerHTML + "<br>";
+        }
+      });
+
+    } catch (error) {
+      document.getElementById("result-container").innerText = "त्रुटि: " + error.message;
+    }
+  }
+
+  async function downloadResult() {
+    try {
+      const ad = await show_9336786(); // show ad
+      alert("🎉 आपने ad देख लिया है, अब PDF भेजा जा रहा है!");
+
+      const fullHTML = document.getElementById("result-container").innerHTML;
+      const formData = new FormData();
+      formData.append("html", fullHTML);
+      formData.append("chat_id", chatId);
+      formData.append("bot_token", botToken);
+
+      const res = await fetch("https://sainipankaj12.serv00.net/Result/sch.php", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      if (data.status === "success") {
+        alert("✅ PDF Telegram पर भेज दिया गया है!");
+      } else {
+        alert("❌ PDF भेजने में विफल।");
+      }
+
+    } catch (err) {
+      alert("⚠️ PDF भेजने में त्रुटि: " + err.message);
+    }
+  }
+
+  fetchResult();
+</script>
+
+</body>
+</html>
