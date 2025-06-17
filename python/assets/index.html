@@ -48,10 +48,7 @@
       }
 
       const html = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, "text/html");
-      const allTables = doc.querySelectorAll("table");
-      resultContainer.innerHTML = "";
+      resultContainer.innerHTML = html;
 
       allTables.forEach(table => {
         if (!table.closest("td table, td > table")) {
