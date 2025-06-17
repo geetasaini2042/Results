@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UPMSP 10th Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="script.js" defer></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="//solseewuthi.net/sdk.js" data-zone="9336786" data-sdk="show_9336786"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e0f2f1, #fce4ec);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 420px;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-align: center;
+      color: #6a1b9a;
+    }
+    .server {
+      font-size: 13px;
+      text-align: center;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #888;
+    }
+    .instructions {
+      background: #f3e5f5;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #4a148c;
+      line-height: 1.5;
+    }
+    label {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #333;
+      display: block;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    input:focus {
+      border-color: #7b1fa2;
+    }
+    button {
+      margin-top: 22px;
+      width: 100%;
+      padding: 14px;
+      background: #7b1fa2;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+      background: #6a1b9a;
+      transform: translateY(-2px);
+    }
+    .ad-message {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 16px;
+      color: #666;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title" id="welcome">Welcome, Student</div>
+    <div class="server">Server 2</div>
+    <div class="subtitle">UP BOARD Class 10th Result - 2025</div>
+
+    <div class="instructions">
+      <strong>Result कैसे देखें:</strong><br>
+      1. नीचे अपना रोल नंबर दर्ज करें<br>
+      2. "Check Result" बटन पर क्लिक करें<br>
+      3. आपको अपना Result स्क्रीन पर दिखाई देगा.
+    </div>
+
+    <label for="roll">Roll Number:</label>
+    <input type="tel" id="roll" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 1234567">
+
+    <button>Check Result</button>
+    <div class="ad-message" id="adMsg"></div>
+  </div>
+</body>
+</html>
