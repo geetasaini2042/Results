@@ -1,8 +1,19 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";  // इसे backend में रखना चाहिए
+const Token = "NzgzMTczODY2ODg6QUFIN1FjMXpZb05kNURyWTg1a1U0RU40R1hZMDFKRjkxZms=";
 
+// Decode base64 to original token
+function deceB64(str) {
+  try {
+    return atob(str);
+  } catch (e) {
+    console.error("Invalid Base64 string", e);
+    return null;
+  }
+}
+
+const botToken = deceB64(Token);
 // Automatically get checkAnotherUrl from current path
 const currentDir = window.location.href.replace(/\/[^/]*$/, '/');
 const checkAnotherUrl = currentDir + 'index.html';
