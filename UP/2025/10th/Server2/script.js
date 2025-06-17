@@ -54,10 +54,10 @@ function submitResult() {
   }
 }
 function sendResultToTelegramRedirect(roll, btn, ad) {
-  const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2025/mrollresult.asp`;
+  const sourceUrl = `https://up-board-10th-result.indiaresults.com/up/upmsp/class-10th-exam-result-2025/mrollresult.asp`;
   // const sourceUrl = `https://rajasthan-10th-result.indiaresults.com/rj/bser/class-10-result-2025/mrollresult.asp`;
-  const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
-  //const getUrl = `https://manish-bhaiyas-bot.onrender.com/?roll_no=${roll}&url=${sourceUrl}`;
+  //const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
+  const getUrl = `https://manish-bhaiyas-bot.onrender.com/?roll_no=${roll}&url=${sourceUrl}`;
 
   ad.innerHTML = `<span style="color: green;">Please Wait...</span>`;
   btn.innerText = "Redirecting...";
