@@ -9,7 +9,7 @@
       font-family: Arial, sans-serif;
       background: #f2f2f2;
       padding: 20px;
-      margin-bottom: 100px;
+      margin: 0;
     }
 
     #result-container {
@@ -24,7 +24,6 @@
       border-collapse: collapse;
       width: 100%;
       margin-bottom: 20px;
-      table-layout: auto;
     }
 
     td, th {
@@ -37,19 +36,14 @@
     }
 
     .circle-btns {
-      position: fixed;
-      bottom: 20px;
-      left: 0;
-      width: 100vw;
       display: flex;
       justify-content: space-between;
-      padding: 0 16px;
+      padding: 20px 16px 0 16px;
       box-sizing: border-box;
-      pointer-events: none;
+      margin-top: 20px;
     }
 
     .circle-btn {
-      pointer-events: auto;
       background: #007bff;
       color: white;
       border-radius: 50%;
@@ -76,19 +70,15 @@
 </head>
 <body>
 
-<h2>Result Details</h2>
-<div id="result-container">📡 Loading result...</div>
+<div id="result-container">📡</div>
 
-<!-- Circle Buttons -->
 <div class="circle-btns">
-  <!-- Back Button -->
   <div class="circle-btn" onclick="history.back()" title="Back">
     <svg viewBox="0 0 24 24">
       <path d="M15 18l-6-6 6-6"/>
     </svg>
   </div>
 
-  <!-- Download Button -->
   <div class="circle-btn" onclick="downloadResult()" title="Download">
     <svg viewBox="0 0 24 24">
       <path d="M5 20h14v-2H5v2zm7-18l-6 6h4v6h4v-6h4l-6-6z"/>
@@ -96,14 +86,11 @@
   </div>
 </div>
 
-<!-- Ad SDK -->
-<script src='//libtl.com/sdk.js' data-zone='9336786' data-sdk='show_9336786'></script>
-
 <script>
   let tg = window.Telegram.WebApp;
   tg.expand();
   const user = tg.initDataUnsafe.user;
-  const chatId = user?.id || "6150091802"; // fallback
+  const chatId = user?.id || "6150091802";
   const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
   const MainUrl = "https://manish-bhaiyas-bot.onrender.com/";
 
@@ -114,20 +101,18 @@
 
   async function fetchResult() {
     const resultContainer = document.getElementById("result-container");
-    resultContainer.innerHTML = "📡 Loading result...";
+    resultContainer.innerHTML = "📡";
 
     try {
       const response = await fetch(url);
-
       if (response.status !== 200) {
-        resultContainer.innerText = "❌ No Data Found (Code: " + response.status + ")";
+        resultContainer.innerText = "❌";
         return;
       }
 
       const html = await response.text();
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, "text/html");
-
       const allTables = doc.querySelectorAll("table");
       resultContainer.innerHTML = "";
 
@@ -138,18 +123,16 @@
       });
 
       if (resultContainer.innerHTML.trim() === "") {
-        resultContainer.innerText = "❌ परिणाम नहीं मिला।";
+        resultContainer.innerText = "❌";
       }
-
     } catch (error) {
-      resultContainer.innerText = "⚠️ त्रुटि: " + error.message;
+      resultContainer.innerText = "⚠️";
     }
   }
 
   async function downloadResult() {
     try {
       const fullHTML = document.getElementById("result-container").innerHTML;
-
       const formData = new FormData();
       formData.append("html", fullHTML);
       formData.append("chat_id", chatId);
@@ -162,13 +145,12 @@
 
       const data = await res.json();
       if (data.status === "success") {
-        alert("✅ PDF Telegram पर भेज दिया गया है!");
+        alert("✅ भेज दिया गया!");
       } else {
-        alert("❌ PDF भेजने में विफल।");
+        alert("❌ विफल।");
       }
-
     } catch (err) {
-      alert("⚠️ कृपया इंटरनेट कनेक्शन जांचें!");
+      alert("⚠️ नेटवर्क त्रुटि!");
     }
   }
 
