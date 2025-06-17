@@ -35,14 +35,17 @@
     .circle-btns {
   position: fixed;
   bottom: 20px;
-  width: 100%;
+  left: 0;
+  width: 100vw;
   display: flex;
   justify-content: space-between;
-  padding: 0 20px;
-  pointer-events: none; /* prevent blocking UI accidentally */
+  padding: 0 16px;
+  box-sizing: border-box;
+  pointer-events: none;
 }
+
 .circle-btn {
-  pointer-events: auto; /* allow click */
+  pointer-events: auto;
   background: #007bff;
   color: white;
   border-radius: 50%;
