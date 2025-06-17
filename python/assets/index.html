@@ -88,7 +88,10 @@
 <script src='//libtl.com/sdk.js' data-zone='9336786' data-sdk='show_9336786'></script>
 
 <script>
-  const chatId = new URLSearchParams(window.location.search).get("chat_id") || "6150091802"; // fallback chat_id
+  let tg = window.Telegram.WebApp;
+  tg.expand();
+  const user = tg.initDataUnsafe.user;
+  const chatId = user.id || "6150091802"; // fallback chat_id
   const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
 
   async function fetchResult() {
