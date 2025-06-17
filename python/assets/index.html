@@ -74,6 +74,9 @@
       formData.append("html", fullHTML);
       formData.append("chat_id", chatId);
       formData.append("bot_token", botToken);
+      formData.append("file_name", "Student Result");
+      formData.append("file_caption", "🎊Here is your Result File.😊😊🎊");
+      
 
       const res = await fetch("https://sainipankaj12.serv00.net/Result/sch.php", {
         method: "POST",
@@ -82,12 +85,14 @@
 
       const data = await res.json();
       if (data.status === "success") {
-        alert("✅ भेज दिया गया!");
+        Telegram.WebApp.openTelegramLink("https://t.me/apps_premiumBot");
+        Telegram.WebApp.close();
+        
       } else {
-        alert("❌ विफल।");
+        alert("❌Sending Faild Try again...");
       }
     } catch (err) {
-      alert("⚠️ नेटवर्क त्रुटि!");
+      alert("⚠️ No internet Connection");
     }
   }
 
