@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
-  <title>Result Viewer</title>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ Responsive Meta -->
+  <title>Result Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ Responsive -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
@@ -12,67 +12,73 @@
       padding: 20px;
       margin-bottom: 100px;
     }
+
     #result-container {
       background: #fff;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      overflow-x: auto; /* ✅ Table ko scroll hone de */
+      overflow-x: auto;
     }
+
     table {
       border-collapse: collapse;
       width: 100%;
       margin-bottom: 20px;
-      table-layout: auto; /* ✅ Table wrapping issues solve */
+      table-layout: auto;
     }
+
     td, th {
       border: 1px solid #ccc;
       padding: 8px;
     }
+
     th {
       background: #efefef;
     }
-    .circle-btns {
-  position: fixed;
-  bottom: 20px;
-  left: 0;
-  width: 100vw;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 16px;
-  box-sizing: border-box;
-  pointer-events: none;
-}
 
-.circle-btn {
-  pointer-events: auto;
-  background: #007bff;
-  color: white;
-  border-radius: 50%;
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: 0.3s;
-}
-.circle-btn:hover {
-  background: #0056b3;
-}
-.circle-btn svg {
-  width: 24px;
-  height: 24px;
-  fill: white;
-}
+    .circle-btns {
+      position: fixed;
+      bottom: 20px;
+      left: 0;
+      width: 100vw;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 16px;
+      box-sizing: border-box;
+      pointer-events: none;
+    }
+
+    .circle-btn {
+      pointer-events: auto;
+      background: #007bff;
+      color: white;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .circle-btn:hover {
+      background: #0056b3;
+    }
+
+    .circle-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
     }
   </style>
 </head>
 <body>
 
 <h2>Result Details</h2>
-<div id="result-container">Loading result...</div>
+<div id="result-container">📡 Loading result...</div>
 
 <!-- Circle Buttons -->
 <div class="circle-btns">
@@ -98,51 +104,54 @@
   let tg = window.Telegram.WebApp;
   tg.expand();
   const user = tg.initDataUnsafe.user;
-  const chatId = user.id || "6150091802"; // fallback chat_id
+  const chatId = user?.id || "6150091802"; // fallback
   const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
   const MainUrl = "https://manish-bhaiyas-bot.onrender.com/";
-  //const MainUrl = "https://getbyroll.onrender.com/";
-  
+
   const params = new URLSearchParams(window.location.search);
   const rollNo = params.get("roll_no");
   const resultUrl = params.get("url");
   const url = `${MainUrl}?roll_no=${encodeURIComponent(rollNo)}&url=${encodeURIComponent(resultUrl)}`;
 
   async function fetchResult() {
-  try {
-    const response = await fetch(url);
-
-    // ✅ Check if status is NOT 200
-    if (response.status !== 200) {
-      document.getElementById("result-container").innerText = "❌ डेटा नहीं मिला (Code: " + response.status + ")";
-      return;
-    }
-
-    const html = await response.text();
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-
-    const allTables = doc.querySelectorAll("table");
     const resultContainer = document.getElementById("result-container");
+    resultContainer.innerHTML = "📡 Loading result...";
 
-    resultContainer.innerHTML = "";
+    try {
+      const response = await fetch(url);
 
-    allTables.forEach(table => {
-      if (!table.closest("td table, td > table")) {
-        resultContainer.innerHTML += table.outerHTML + "<br>";
+      if (response.status !== 200) {
+        resultContainer.innerText = "❌ डेटा नहीं मिला (Code: " + response.status + ")";
+        return;
       }
-    });
 
-  } catch (error) {
-    document.getElementById("result-container").innerText = "⚠️ त्रुटि: " + error.message;
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+
+      const allTables = doc.querySelectorAll("table");
+      resultContainer.innerHTML = "";
+
+      allTables.forEach(table => {
+        if (!table.closest("td table, td > table")) {
+          resultContainer.innerHTML += table.outerHTML + "<br>";
+        }
+      });
+
+      if (resultContainer.innerHTML.trim() === "") {
+        resultContainer.innerText = "❌ परिणाम नहीं मिला।";
+      }
+
+    } catch (error) {
+      resultContainer.innerText = "⚠️ त्रुटि: " + error.message;
+    }
   }
-}
 
   async function downloadResult() {
     try {
-      const ad = await show_9336786(); // show ad
+      const ad = await show_9336786(); // ad display
       const fullHTML = document.getElementById("result-container").innerHTML;
+
       const formData = new FormData();
       formData.append("html", fullHTML);
       formData.append("chat_id", chatId);
@@ -161,7 +170,7 @@
       }
 
     } catch (err) {
-      alert("⚠️Please Chack Your Internet Connection!");
+      alert("⚠️ कृपया इंटरनेट कनेक्शन जांचें!");
     }
   }
 
