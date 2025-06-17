@@ -108,29 +108,36 @@
   const resultUrl = params.get("url");
   const url = `${MainUrl}?roll_no=${encodeURIComponent(rollNo)}&url=${encodeURIComponent(resultUrl)}`;
 
-  async function fetchResult() {    
-    try {
-      const response = await fetch(url);
-      const html = await response.text();
+  async function fetchResult() {
+  try {
+    const response = await fetch(url);
 
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, "text/html");
-
-      const allTables = doc.querySelectorAll("table");
-      const resultContainer = document.getElementById("result-container");
-
-      resultContainer.innerHTML = "";
-
-      allTables.forEach(table => {
-        if (!table.closest("td table, td > table")) {
-          resultContainer.innerHTML += table.outerHTML + "<br>";
-        }
-      });
-
-    } catch (error) {
-      document.getElementById("result-container").innerText = "त्रुटि: " + error.message;
+    // ✅ Check if status is NOT 200
+    if (response.status !== 200) {
+      document.getElementById("result-container").innerText = "❌ डेटा नहीं मिला (Code: " + response.status + ")";
+      return;
     }
+
+    const html = await response.text();
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    const allTables = doc.querySelectorAll("table");
+    const resultContainer = document.getElementById("result-container");
+
+    resultContainer.innerHTML = "";
+
+    allTables.forEach(table => {
+      if (!table.closest("td table, td > table")) {
+        resultContainer.innerHTML += table.outerHTML + "<br>";
+      }
+    });
+
+  } catch (error) {
+    document.getElementById("result-container").innerText = "⚠️ त्रुटि: " + error.message;
   }
+}
 
   async function downloadResult() {
     try {
