@@ -4,6 +4,7 @@
   <title>Result Viewer</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ Responsive Meta -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -32,33 +33,36 @@
       background: #efefef;
     }
     .circle-btns {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      display: flex;
-      gap: 15px;
-      z-index: 999;
-    }
-    .circle-btn {
-      background: #007bff;
-      color: white;
-      border-radius: 50%;
-      width: 56px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .circle-btn:hover {
-      background: #0056b3;
-    }
-    .circle-btn svg {
-      width: 24px;
-      height: 24px;
-      fill: white;
+  position: fixed;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  pointer-events: none; /* prevent blocking UI accidentally */
+}
+.circle-btn {
+  pointer-events: auto; /* allow click */
+  background: #007bff;
+  color: white;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: 0.3s;
+}
+.circle-btn:hover {
+  background: #0056b3;
+}
+.circle-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: white;
+}
     }
   </style>
 </head>
@@ -93,10 +97,15 @@
   const user = tg.initDataUnsafe.user;
   const chatId = user.id || "6150091802"; // fallback chat_id
   const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
+  const MainUrl = "https://manish-bhaiyas-bot.onrender.com/";
+  const MainUrl = "https://getbyroll.onrender.com/";
+  
+  const params = new URLSearchParams(window.location.search);
+  const rollNo = params.get("roll_no");
+  const resultUrl = params.get("url");
+  const url = `${MainUrl}?roll_no=${encodeURIComponent(rollNo)}&url=${encodeURIComponent(resultUrl)}`;
 
-  async function fetchResult() {
-    const url = "https://manish-bhaiyas-bot.onrender.com/?roll_no=1250001916&url=https://up-board-10th-result.indiaresults.com/up/upmsp/class-10th-exam-result-2025/mrollresult.asp";
-    
+  async function fetchResult() {    
     try {
       const response = await fetch(url);
       const html = await response.text();
@@ -123,8 +132,6 @@
   async function downloadResult() {
     try {
       const ad = await show_9336786(); // show ad
-      alert("🎉 आपने ad देख लिया है, अब PDF भेजा जा रहा है!");
-
       const fullHTML = document.getElementById("result-container").innerHTML;
       const formData = new FormData();
       formData.append("html", fullHTML);
@@ -144,7 +151,7 @@
       }
 
     } catch (err) {
-      alert("⚠️ PDF भेजने में त्रुटि: " + err.message);
+      alert("⚠️Please Chack Your Internet Connection!");
     }
   }
 
