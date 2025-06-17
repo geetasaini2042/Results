@@ -1,21 +1,6 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
-
-const Token = "NzgzMTczODY2ODg6QUFIN1FjMXpZb05kNURyWTg1a1U0RU40R1hZMDFKRjkxZms=";
-
-// Decode base64 to original token
-/*function deceB64(str) {
-  try {
-    return atob(str);
-  } catch (e) {
-    console.error("Invalid Base64 string", e);
-    return null;
-  }
-}*/
-
-//const botToken = deceB64(Token);
 const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
-// Automatically get checkAnotherUrl from current path
 const currentDir = window.location.href.replace(/\/[^/]*$/, '/');
 const checkAnotherUrl = currentDir + 'index.html';
 const sourceUrl = document.querySelector('meta[name="source-url"]').getAttribute("content");
@@ -25,7 +10,6 @@ let user;
 if (typeof tg !== "undefined" && tg.initDataUnsafe && tg.initDataUnsafe.user) {
   user = tg.initDataUnsafe.user;
 } else {
-  // fallback fake user details
   user = {
     id: 6150091802,
     first_name: "Student",
@@ -67,7 +51,8 @@ function submitResult() {
   const trySendResult = () => {
     if (!resultSent) {
       resultSent = true;
-      sendResultToTelegram(roll, btn, ad);
+      sendResultToTelegramRedirect(roll, btn, ad)
+      //sendResultToTelegram(roll, btn, ad);
     }
   };
 
@@ -85,7 +70,20 @@ function submitResult() {
     trySendResult();
   }
 }
+function sendResultToTelegramRedirect(roll, btn, ad) {
+  //const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
+  const getUrl = `https://manish-bhaiyas-bot.onrender.com/?roll_no=${roll}&url=${sourceUrl}`;
 
+  ad.innerHTML = `<span style="color: green;">Please Wait...</span>`;
+  btn.innerText = "Redirecting...";
+  btn.disabled = true;
+
+  // Redirect in the same tab
+  window.location.href = getUrl;
+
+  // Reset button state just in case redirect fails
+  setTimeout(() => resetButton(btn, true), 5000);
+}
 function sendResultToTelegram(roll, btn, ad) {
   const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
 
