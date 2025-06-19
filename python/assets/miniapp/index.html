@@ -1,0 +1,110 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Board Result</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="//libtl.com/sdk.js" data-zone="9336786" data-sdk="show_9336786"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      color: #333;
+    }
+    #container {
+      display: none;
+      padding: 2rem;
+    }
+    .description {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .info {
+      margin: 1rem 0;
+      font-weight: bold;
+    }
+    .button {
+      background-color: #ff5722;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .button:hover {
+      background-color: #e64a19;
+    }
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #ff5722;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 2rem auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    svg {
+      width: 80px;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader" id="loader"></div>  <div id="container">
+    <svg fill="#ff5722" viewBox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10
+               10-4.48 10-10S17.52 2 12 2zm1 17.93c-2.83.48-5.64-.51-7.57-2.44C3.51 15.64 2.52 12.83
+               3 10h2.05c-.45 1.79.02 3.7 1.25 5.15A7.938 7.938 0 0012 18c1.68 0 3.24-.52 4.5-1.4l1.43 1.43
+               C16.47 19.42 14.26 20.4 12 20.93V19h-2v1.93zM13 7h-2v6h2V7z"/>
+    </svg>
+    <div class="description" id="desc">Loading Description...</div>
+    <div class="info" id="board"></div>
+    <div class="info" id="class"></div>
+    <button class="button" id="openBtn">OPEN LINK</button>
+  </div>  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const startParam = Telegram.WebApp.initDataUnsafe.start_param;
+      if (!startParam || !startParam.startsWith("id_")) return;
+
+      const id = startParam.slice(3);
+      fetch(`https://yourdomain.com/getdata.php?id=${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          document.getElementById("loader").style.display = "none";
+
+          if (data.fullUrl && data.mode === "manual") {
+            const urlParams = new URLSearchParams(data.fullUrl.split('?')[1]);
+            document.getElementById("board").innerText = urlParams.get("board") || "";
+            document.getElementById("class").innerText = urlParams.get("class") || "";
+            document.getElementById("desc").innerText = data.description || "Board Exam Result Portal";
+            document.getElementById("container").style.display = "block";
+
+            const link = urlParams.get("sourceUrl");
+            document.getElementById("openBtn").onclick = () => {
+              show_9336786().then(() => {
+                window.location.href = link;
+              });
+            };
+          } else if (data.fullUrl && data.mode === "redirect") {
+            window.location.href = data.fullUrl;
+          } else {
+            document.body.innerHTML = "<h2>Invalid Data Received</h2>";
+          }
+        })
+        .catch((err) => {
+          document.getElementById("loader").style.display = "none";
+          document.body.innerHTML = "<h2>Failed to load data</h2>";
+          console.error("Error:", err);
+        });
+    });
+  </script></body>
+</html>
