@@ -138,11 +138,12 @@
     const board = params.get('board') || 'Board';
     const className = params.get('class') || 'Class';
     const sourceUrl = params.get('sourceUrl') || '';
+    const year = params.get('year') || '';
 
     // Update content dynamically
     document.title = `${short} Result`;
-    document.getElementById('welcome').textContent = `Welcome, ${short} Student`;
-    document.getElementById('subtitle').textContent = `${board} ${className} Result - 2025`;
+    document.getElementById('welcome').textContent = `Welcome, Student`;
+    document.getElementById('subtitle').textContent = `${board} ${className} Result - ${year}`;
     document.querySelector('meta[name="source-url"]').setAttribute('content', sourceUrl);
   </script>
 </body>
