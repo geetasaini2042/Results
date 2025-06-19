@@ -3,12 +3,12 @@ tg.expand();
 const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
 const currentDir = window.location.href.replace(/\/[^/]*$/, '/');
 const checkAnotherUrl = currentDir + 'index.html';
-const sourceUrl = document.querySelector('meta[name="source-url"]').getAttribute("content");
+//const sourceUrl = document.querySelector('meta[name="source-url"]').getAttribute("content");
 const params = new URLSearchParams(window.location.search);
 const short = params.get('short') || 'Result';
 const board = params.get('board') || 'Board';
 const className = params.get('class') || 'Class';
-const sourceUrl = params.get('sourceUrl') || '';
+//const sourceUrl = params.get('sourceUrl') || '';
 const year = params.get('year') || '';
 
 let user;
