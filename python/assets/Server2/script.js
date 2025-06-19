@@ -8,7 +8,7 @@ const params = new URLSearchParams(window.location.search);
 const short = params.get('short') || 'Result';
 const board = params.get('board') || 'Board';
 const className = params.get('class') || 'Class';
-//const sourceUrl = params.get('sourceUrl') || '';
+const sourceUrl = params.get('sourceUrl') || '';
 const year = params.get('year') || '';
 
 let user;
