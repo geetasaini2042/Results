@@ -16,11 +16,13 @@
     </svg>
   </div>
 
-  <div onclick="downloadResult()" title="Download" style="background:#007bff; color:#fff; border-radius:50%; width:56px; height:56px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 8px rgba(0,0,0,0.2); cursor:pointer; transition:0.3s;">
-    <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:white;">
-      <path d="M5 20h14v-2H5v2zm7-18l-6 6h4v6h4v-6h4l-6-6z"/>
-    </svg>
-  </div>
+  <!-- Download Button (Updated) -->
+<div id="download-btn" onclick="downloadResult()" title="Download" 
+     style="display:none; background:#007bff; color:#fff; border-radius:50%; width:56px; height:56px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 8px rgba(0,0,0,0.2); cursor:pointer; transition:0.3s;">
+  <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:white;">
+    <path d="M5 20h14v-2H5v2zm7-18l-6 6h4v6h4v-6h4l-6-6z"/>
+  </svg>
+</div>
 </div>
 
 <script>
@@ -41,35 +43,44 @@
   const url = `${MainUrl}?roll_no=${encodeURIComponent(rollNo)}&url=${encodeURIComponent(resultUrl)}`;
 
   async function fetchResult() {
-    const resultContainer = document.getElementById("result-container");
-    resultContainer.innerHTML = "📡 Just a second...";
+  const resultContainer = document.getElementById("result-container");
+  const downloadBtn = document.getElementById("download-btn");
+  downloadBtn.style.display = "none";  // पहले छुपा दो
 
-    try {
-      const response = await fetch(url);
-      if (response.status !== 200) {
-        resultContainer.innerText = "❌ Data Not Found. Please Chack Your Roll Number";
-        return;
-      }
+  resultContainer.innerHTML = "📡 Just a second...";
 
-      const html = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, "text/html");
-      const allTables = doc.querySelectorAll("table");
-      resultContainer.innerHTML = "";
-
-      allTables.forEach(table => {
-        if (!table.closest("td table, td > table")) {
-          resultContainer.innerHTML += table.outerHTML + "<br>";
-        }
-      });
-
-      if (resultContainer.innerHTML.trim() === "") {
-        resultContainer.innerText = "❌ Data Not Found";
-      }
-    } catch (error) {
-      resultContainer.innerText = "⚠️";
+  try {
+    const response = await fetch(url);
+    if (response.status !== 200) {
+      resultContainer.innerText = "❌ Data Not Found. Please Check Your Roll Number";
+      return;
     }
+
+    const html = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    const allTables = doc.querySelectorAll("table");
+    resultContainer.innerHTML = "";
+
+    let tableFound = false;
+
+    allTables.forEach(table => {
+      if (!table.closest("td table, td > table")) {
+        resultContainer.innerHTML += table.outerHTML + "<br>";
+        tableFound = true;
+      }
+    });
+
+    if (tableFound) {
+      downloadBtn.style.display = "flex"; // ✅ बटन दिखाओ
+    } else {
+      resultContainer.innerText = "❌ Data Not Found";
+    }
+
+  } catch (error) {
+    resultContainer.innerText = "⚠️";
   }
+}
 
   async function downloadResult() {
     try {
