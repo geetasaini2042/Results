@@ -5,14 +5,10 @@
   <meta charset="UTF-8">
   <title id="page-title">Result</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Dynamic source-url -->
-  <meta id="source-url-meta" name="source-url" content="">
-
   <!-- External scripts -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="//solseewuthi.net/sdk.js" data-zone="9336786" data-sdk="show_9336786"></script>
-
+  <script src="https://geetasaini2042.github.io/Results/python/assets/Server2/script.js"></script>
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
@@ -130,21 +126,5 @@
     <div class="ad-message" id="adMsg"></div>
   </div>
 
-  <!-- Dynamic logic -->
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const short = params.get('short') || 'Result';
-    const board = params.get('board') || 'Board';
-    const className = params.get('class') || 'Class';
-    const sourceUrl = params.get('sourceUrl') || '';
-    const year = params.get('year') || '';
-
-    // Update content dynamically
-    document.title = `${short} Result`;
-    document.getElementById('welcome').textContent = `Welcome, Student`;
-    document.getElementById('subtitle').textContent = `${board} ${className} Result - ${year}`;
-    document.querySelector('meta[name="source-url"]').setAttribute('content', sourceUrl);
-  </script>
-  <script src="https://geetasaini2042.github.io/Results/python/assets/Server2/script.js"></script>
-</body>
+ </body>
 </html>
