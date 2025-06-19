@@ -4,6 +4,12 @@ const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
 const currentDir = window.location.href.replace(/\/[^/]*$/, '/');
 const checkAnotherUrl = currentDir + 'index.html';
 const sourceUrl = document.querySelector('meta[name="source-url"]').getAttribute("content");
+const params = new URLSearchParams(window.location.search);
+const short = params.get('short') || 'Result';
+const board = params.get('board') || 'Board';
+const className = params.get('class') || 'Class';
+const sourceUrl = params.get('sourceUrl') || '';
+const year = params.get('year') || '';
 
 let user;
 
@@ -25,6 +31,10 @@ console.log("User Name:", user.first_name);
 document.addEventListener("DOMContentLoaded", () => {
   if (user && user.first_name) {
     document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
+    document.title = `${short} Result`;
+  //  document.getElementById('welcome').textContent = `Welcome, Student`;
+    document.getElementById('subtitle').textContent = `${board} ${className} Result - ${year}`;
+  //  document.querySelector('meta[name="source-url"]').setAttribute('content', sourceUrl);
   }
 
   document.querySelector("button").addEventListener("click", submitResult);
@@ -70,6 +80,13 @@ function submitResult() {
     trySendResult();
   }
 }
+
+// <!-- Dynamic logic -->
+  //<script>
+    
+ // </script>
+  //<script src="https://geetasaini2042.github.io/Results/python/assets/Server2/script.js"></script>
+
 
 function sendResultToTelegramRedirect(roll, btn, ad) {
   //const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
