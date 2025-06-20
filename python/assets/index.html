@@ -39,6 +39,7 @@
   const rollNo = params.get("roll_no");
   const resultUrl = params.get("url");
   const WebUrl = params.get("web_url");
+  const board = params.get("board");
 
   const url = `${MainUrl}?roll_no=${encodeURIComponent(rollNo)}&url=${encodeURIComponent(resultUrl)}`;
 
@@ -90,7 +91,7 @@
       formData.append("chat_id", chatId);
       formData.append("bot_token", botToken);
       formData.append("file_name", "Student Result");
-      formData.append("file_caption", `🎊Here is your Result File.😊😊🎊\n Roll No. : ${rollNo}`);
+      formData.append("file_caption", `🎊Here is your Result File.😊😊🎊\n Roll No. : ${rollNo} \n Board : ${board}`);
       formData.append("web_app", WebUrl);
       
 
