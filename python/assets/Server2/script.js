@@ -1,8 +1,8 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
-const currentDir = window.location.href.replace(/\/[^/]*$/, '/');
-const checkAnotherUrl = currentDir + 'index.html';
+//const currentDir = window.location.href.replace(/\/[^/]*$/, '/');
+const checkAnotherUrl =  window.location.href;
 //const sourceUrl = document.querySelector('meta[name="source-url"]').getAttribute("content");
 const params = new URLSearchParams(window.location.search);
 const short = params.get('short') || 'Result';
@@ -90,7 +90,7 @@ function submitResult() {
 
 function sendResultToTelegramRedirect(roll, btn, ad) {
   //const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
-  const getUrl = `https://geetasaini2042.github.io/Results/python/assets/?roll_no=${roll}&url=${sourceUrl}&web_url=${encodeURIComponent(checkAnotherUrl)}`;
+  const getUrl = `https://geetasaini2042.github.io/Results/python/assets/?roll_no=${roll}&url=${sourceUrl}&board=${board}&web_url=${encodeURIComponent(checkAnotherUrl)}`;
 
   ad.innerHTML = `<span style="color: green;">Please Wait...</span>`;
   btn.innerText = "Redirecting...";
