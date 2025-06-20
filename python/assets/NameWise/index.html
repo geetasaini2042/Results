@@ -4,10 +4,16 @@
   <meta charset="UTF-8">
   <title id="page-title">Result</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Telegram WebApp -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- Rewarded Ad SDK -->
   <script src="//solseewuthi.net/sdk.js" data-zone="9336786" data-sdk="show_9336786"></script>
-  <script src="https://geetasaini2042.github.io/Results/python/assets/NameWise/script.js"></script>
+
+  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
     * { box-sizing: border-box; }
     body {
@@ -111,15 +117,96 @@
       <strong>Result कैसे देखें:</strong><br>
       1. नीचे अपना नाम दर्ज करें<br>
       2. "Check Result" बटन पर क्लिक करें<br>
-      3. अपना नाम और Roll Number Confirm करे<br>
+      3. अपना नाम और Roll Number Confirm करें<br>
       4. "Get" पर Click करें 
     </div>
 
     <label for="name">Your Name:</label>
     <input type="text" id="name" placeholder="e.g. Akshay Sharma">
 
-    <button>Check Result</button>
+    <button id="checkBtn">Check Result</button>
     <div class="ad-message" id="adMsg"></div>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      let tg = window.Telegram.WebApp;
+      tg.expand();
+
+      const params = new URLSearchParams(location.search);
+      const short = params.get("short") || "Board";
+      const board = params.get("board") || "Education Board";
+      const className = params.get("class") || "Class";
+      const year = params.get("year") || "2025";
+      const sourceUrl = params.get("sourceUrl") || "";
+
+      const user = tg.initDataUnsafe.user;
+
+      if (user && user.first_name) {
+        document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
+      }
+
+      document.title = `${short} Result`;
+      document.getElementById("subtitle").textContent = `${board} ${className} Result - ${year}`;
+
+      document.getElementById("checkBtn").addEventListener("click", () => {
+        submitResult(sourceUrl);
+      });
+    });
+
+    let resultSent = false;
+
+    function submitResult(sourceUrl) {
+      resultSent = false;
+
+      const name = document.getElementById("name").value.trim();
+      const btn = document.getElementById("checkBtn");
+      const ad = document.getElementById("adMsg");
+
+      if (name === "") {
+        alert("Please enter your name");
+        return;
+      }
+
+      btn.innerText = "Please wait...";
+      btn.disabled = true;
+      ad.textContent = "Processing...";
+
+      const trySendResult = () => {
+        if (!resultSent) {
+          resultSent = true;
+
+          if (!sourceUrl) {
+            alert("Source URL not found in parameters.");
+            resetButton(btn);
+            return;
+          }
+
+          const encodedName = encodeURIComponent(name);
+          const targetUrl = `https://sainipankaj12.serv00.net/Result/Namewise/result.php?name=${encodedName}&page=1&url=${encodeURIComponent(sourceUrl)}`;
+          window.location.href = targetUrl;
+        }
+      };
+
+      if (typeof show_9336786 === "function") {
+        show_9336786()
+          .catch(err => {
+            console.warn("Ad failed:", err);
+          })
+          .finally(() => {
+            trySendResult();
+          });
+      } else {
+        console.warn("show_9336786 function not found");
+        ad.textContent = "Ad not available, proceeding...";
+        trySendResult();
+      }
+    }
+
+    function resetButton(button) {
+      button.disabled = false;
+      button.innerText = "Check Result";
+    }
+  </script>
 </body>
 </html>
