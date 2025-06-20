@@ -12,6 +12,7 @@
     .section-header { background-color: #d0e4f5; font-weight: bold; text-align: center; font-size: 18px; }
     .left { text-align: left; }
     .center { text-align: center; }
+
     #loader {
       text-align: center;
       font-size: 20px;
@@ -31,6 +32,7 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
     #back-btn {
       display: none;
       margin: 30px auto;
@@ -44,18 +46,6 @@
     }
     #back-btn:hover {
       background-color: #0056b3;
-    }
-
-    #promo {
-      display: none;
-      margin: 20px auto;
-      text-align: center;
-    }
-    #promo img {
-      width: 100%;
-      max-width: 400px;
-      border-radius: 10px;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -101,7 +91,7 @@
     const params = new URLSearchParams(window.location.search);
     const rollNo = params.get("roll_no");
     const year = params.get("year");
-    const wbId = 47;
+    const wbId = params.get("wb_id");
 
     if (!rollNo || !year) {
       document.body.innerHTML = "<h3>Missing Roll Number or Year!</h3>";
@@ -115,9 +105,10 @@
           if (!resultData) throw new Error("Invalid result structure");
 
           const info = resultData.candidate_info;
-          const subjects = resultData.first_year_subjects || [];
+          const firstYear = resultData.first_year_subjects || [];
+          const secondYear = resultData.second_year_subjects || [];
+          const allSubjects = [...firstYear, ...secondYear];
           const result = resultData.result || {};
-          const promo = resultData.result_promotional_campaigns?.[0];
 
           // Student Info
           const sd = document.getElementById("student-details");
@@ -132,9 +123,11 @@
             </tr>
           `;
 
-          // Subject Marks
+          // Subjects
           const md = document.getElementById("marks-details");
-          subjects.forEach(sub => {
+          allSubjects.forEach(sub => {
+            if (!sub.subject_name || sub.subject_name.trim() === "") return;
+
             const row = document.createElement("tr");
             row.innerHTML = `
               <td>${sub.subject_name || ""}</td>
@@ -146,7 +139,7 @@
             md.appendChild(row);
           });
 
-          // Result
+          // Result Summary
           document.getElementById("total-info").innerHTML = `
             <strong>Result Status:</strong> ${result["Result Status"] || ""} &nbsp; | &nbsp;
             <strong>CGPA:</strong> ${result.CGPA || ""}
