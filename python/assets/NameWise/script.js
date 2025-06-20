@@ -4,6 +4,7 @@ const short = params.get("short") || "Board";
 const board = params.get("board") || "Education Board";
 const className = params.get("class") || "Class";
 const sourceUrl = params.get("sourceUrl") || "";
+const year = params.get("year"); // या ज़रूरत अनुसार सेट करो
 tg.expand();
 
 const user = tg.initDataUnsafe.user;
