@@ -95,12 +95,6 @@
     </tfoot>
   </table>
 
-  <div id="promo">
-    <a id="promo-link" target="_blank">
-      <img id="promo-thumb" src="" alt="Promotion">
-    </a>
-  </div>
-
   <button id="back-btn" onclick="history.back()">Check Another Result</button>
 
   <script>
@@ -157,13 +151,6 @@
             <strong>Result Status:</strong> ${result["Result Status"] || ""} &nbsp; | &nbsp;
             <strong>CGPA:</strong> ${result.CGPA || ""}
           `;
-
-          // Promotion Banner
-          if (promo && promo.is_campaign_active && promo.data?.is_valid_data) {
-            document.getElementById("promo").style.display = "block";
-            document.getElementById("promo-thumb").src = promo.data.thumbnail;
-            document.getElementById("promo-link").href = promo.data.pop_up_url;
-          }
 
           // Show UI
           document.getElementById("loader").style.display = "none";
