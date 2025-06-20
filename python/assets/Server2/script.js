@@ -102,61 +102,6 @@ function sendResultToTelegramRedirect(roll, btn, ad) {
   // Reset button state just in case redirect fails
   setTimeout(() => resetButton(btn, true), 5000);
 }
-function sendResultToTelegram(roll, btn, ad) {
-  const getUrl = `https://sainipankaj12.serv00.net/Result/get.php?roll_no=${roll}&url=${encodeURIComponent(sourceUrl)}`;
-
-  fetch(getUrl)
-    .then(response => {
-      if (response.status === 200) {
-        const savePdfUrl = `https://sainipankaj12.serv00.net/savepdf.php?url=${encodeURIComponent(getUrl)}`;
-        
-        return fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
-          method: 'POST',
-          body: JSON.stringify({
-            chat_id: user.id,
-            document: savePdfUrl,
-            caption: `*Board:* UPMSP\n*Class:* 10th\n*Roll No:* \`${roll}\``,
-            parse_mode: "Markdown",
-            reply_markup: {
-              inline_keyboard: [[
-                { text: "Check another result", web_app: { url: checkAnotherUrl } }
-              ]]
-            }
-          }),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        });
-      } else if (response.status === 400) {
-        return response.text().then(text => {
-          ad.innerHTML = `<div style="color: red; font-weight: bold;">Result Not Declared</div>`;
-          resetButton(btn);
-          throw new Error("Handled 400 error");
-        });
-      } else {
-        throw new Error(`Unexpected status: ${response.status}`);
-      }
-    })
-    .then(res => res.json())
-    .then(response => {
-      if (!response || response.ok !== true) {
-        const errorMsg = response?.description || "Unknown error";
-        ad.innerHTML = `<span style="color: red; font-weight: bold;">Telegram Error: ${errorMsg}</span>`;
-        resetButton(btn);
-      } else {
-        alert(`Result Sent to Telegram`);
-        ad.innerHTML = `<span style="color: green;">Result Sent on your Telegram Account!</span>`;
-        resetButton(btn, true);
-      }
-    })
-    .catch((error) => {
-      if (error.message !== "Handled 400 error") {
-        ad.innerHTML = `<span style="color: red; font-weight: bold;">Failed to send result. Error: ${error.message || error}</span>`;
-        resetButton(btn);
-      }
-    });
-}
-
 function resetButton(button, again = false) {
   button.disabled = false;
   button.innerText = again ? "Check Result" : "Check Result";
