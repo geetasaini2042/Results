@@ -1,4 +1,9 @@
 let tg = window.Telegram.WebApp;
+const params = new URLSearchParams(location.search);
+const short = params.get("short") || "Board";
+const board = params.get("board") || "Education Board";
+const className = params.get("class") || "Class";
+const sourceUrl = params.get("sourceUrl") || "";
 tg.expand();
 
 const user = tg.initDataUnsafe.user;
@@ -6,6 +11,8 @@ const user = tg.initDataUnsafe.user;
 document.addEventListener("DOMContentLoaded", () => {
   if (user && user.first_name) {
     document.getElementById("welcome").textContent = `Welcome, ${user.first_name}`;
+    document.title = `${short} Result`;
+    document.getElementById("subtitle").textContent = `${board} ${className} Result - ${year}`;
   }
 
   document.querySelector("button").addEventListener("click", submitResult);
