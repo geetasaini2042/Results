@@ -150,10 +150,21 @@
     }
 
     function openWithAd() {
-      show_9336786().then(() => {
+  if (typeof show_9336786 === "function") {
+    show_9336786()
+      .then(() => {
+        window.location.href = window.sourceUrl;
+      })
+      .catch((err) => {
+        console.warn("Ad skipped or failed, redirecting anyway", err);
         window.location.href = window.sourceUrl;
       });
-    }
+  } else {
+    // If ad library failed to load
+    console.warn("Ad SDK not loaded. Redirecting without ad.");
+    window.location.href = window.sourceUrl;
+  }
+}
 
     fetchData();
   </script>
