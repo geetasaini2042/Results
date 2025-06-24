@@ -32,7 +32,10 @@
 
     .svg-bg {
       width: 100%;
+      max-height: 220px;
+      object-fit: contain;
       margin-bottom: 20px;
+      border-radius: 12px;
     }
 
     h1 {
@@ -80,7 +83,7 @@
 </head>
 <body>
   <div class="container" id="mainContent" style="display:none;">
-    <img src="https://www.svgrepo.com/show/331993/education-school-learning.svg" alt="Result" class="svg-bg">
+    <img id="resultImage" src="" alt="Result" class="svg-bg">
     <h1 id="title"></h1>
     <h2 id="heading"></h2>
     <h3 id="subtitle"></h3>
@@ -94,22 +97,22 @@
     async function fetchData() {
       let id = null;
 
-      // 1. Try from Telegram Mini App
+      // 1. Telegram से ID निकालने की कोशिश
       try {
         if (Telegram.WebApp.initDataUnsafe?.start_param?.startsWith("id_")) {
           id = Telegram.WebApp.initDataUnsafe.start_param.slice(3);
         }
       } catch (e) {
-        console.log("Telegram WebApp data not found");
+        console.log("Telegram WebApp not available.");
       }
 
-      // 2. Fallback to browser query param
+      // 2. अगर Telegram से नहीं मिली तो URL से लो
       if (!id) {
         const urlParams = new URLSearchParams(window.location.search);
         id = urlParams.get("id");
       }
 
-      // 3. Proceed if id is found
+      // 3. अगर ID मिली तो API कॉल करो
       if (id) {
         try {
           const res = await fetch(`https://sainipankaj12.serv00.net/Result/MiniApp/getdata.php?id=${id}`);
@@ -122,6 +125,10 @@
             document.getElementById("subtitle").textContent = data.subtitle;
             document.getElementById("description").textContent = data.description;
 
+            // ✅ imageUrl सपोर्ट (PNG, JPG, SVG कोई भी)
+            const img = document.getElementById("resultImage");
+            img.src = data.imageUrl || "https://via.placeholder.com/400x200.png?text=Result+Image";
+
             window.sourceUrl = data.sourceUrl;
 
             document.getElementById("loading").style.display = "none";
@@ -129,13 +136,14 @@
           } else if (data.mode === "redirect") {
             window.location.href = data.sourceUrl;
           } else {
-            document.body.innerHTML = "<p>⚠️ Invalid mode</p>";
+            document.body.innerHTML = "<p>⚠️ Invalid mode returned from server.</p>";
           }
         } catch (e) {
-          document.body.innerHTML = "<p>❌ Failed to load data.</p>";
+          console.error(e);
+          document.body.innerHTML = "<p>❌ Failed to load data from server.</p>";
         }
       } else {
-        document.body.innerHTML = "<p>❌ No ID found in URL or Telegram WebApp.</p>";
+        document.body.innerHTML = "<p>❌ No ID found in Telegram or URL.</p>";
       }
     }
 
