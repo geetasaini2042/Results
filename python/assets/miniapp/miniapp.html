@@ -31,19 +31,22 @@
     }
 
     .svg-bg {
-      width: 100%;
-      max-height: 220px;
-      object-fit: contain;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
       margin-bottom: 20px;
-      border-radius: 12px;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
     h1 {
       color: #4a148c;
+      margin: 10px 0 5px;
     }
 
     h2 {
       color: #7b1fa2;
+      margin: 5px 0;
     }
 
     .description {
@@ -97,22 +100,22 @@
     async function fetchData() {
       let id = null;
 
-      // 1. Telegram से ID निकालने की कोशिश
+      // 1. Telegram Mini App से ID निकालो
       try {
         if (Telegram.WebApp.initDataUnsafe?.start_param?.startsWith("id_")) {
           id = Telegram.WebApp.initDataUnsafe.start_param.slice(3);
         }
       } catch (e) {
-        console.log("Telegram WebApp not available.");
+        console.log("Telegram WebApp not available");
       }
 
-      // 2. अगर Telegram से नहीं मिली तो URL से लो
+      // 2. Fallback: URL से ID लो
       if (!id) {
         const urlParams = new URLSearchParams(window.location.search);
         id = urlParams.get("id");
       }
 
-      // 3. अगर ID मिली तो API कॉल करो
+      // 3. अगर ID मिली तो डेटा लो
       if (id) {
         try {
           const res = await fetch(`https://sainipankaj12.serv00.net/Result/MiniApp/getdata.php?id=${id}`);
@@ -125,9 +128,8 @@
             document.getElementById("subtitle").textContent = data.subtitle;
             document.getElementById("description").textContent = data.description;
 
-            // ✅ imageUrl सपोर्ट (PNG, JPG, SVG कोई भी)
-            const img = document.getElementById("resultImage");
-            img.src = data.imageUrl || "https://via.placeholder.com/400x200.png?text=Result+Image";
+            // ✅ गोल और छोटी इमेज सेट करो
+            document.getElementById("resultImage").src = data.imageUrl || "https://via.placeholder.com/120.png?text=Result";
 
             window.sourceUrl = data.sourceUrl;
 
