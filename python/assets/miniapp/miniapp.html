@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>Loading...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src='//libtl.com/sdk.js' data-zone='9336786' data-sdk='show_9336786'></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #e1bee7);
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 30px;
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .svg-bg {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      color: #4a148c;
+    }
+
+    h2 {
+      color: #7b1fa2;
+    }
+
+    .description {
+      font-size: 16px;
+      margin: 15px 0 25px;
+    }
+
+    .btn {
+      background-color: #7b1fa2;
+      color: #fff;
+      border: none;
+      padding: 14px 25px;
+      border-radius: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #4a148c;
+    }
+
+    .loader {
+      width: 60px;
+      height: 60px;
+      border: 5px solid #ccc;
+      border-top-color: #7b1fa2;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 30px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="mainContent" style="display:none;">
+    <img src="https://www.svgrepo.com/show/331993/education-school-learning.svg" alt="Result" class="svg-bg">
+    <h1 id="title"></h1>
+    <h2 id="heading"></h2>
+    <h3 id="subtitle"></h3>
+    <p class="description" id="description"></p>
+    <button class="btn" onclick="openWithAd()">🔓 Open Link</button>
+  </div>
+
+  <div id="loading" class="loader"></div>
+
+  <script>
+    async function fetchData() {
+      let id = null;
+
+      // 1. Try from Telegram Mini App
+      try {
+        if (Telegram.WebApp.initDataUnsafe?.start_param?.startsWith("id_")) {
+          id = Telegram.WebApp.initDataUnsafe.start_param.slice(3);
+        }
+      } catch (e) {
+        console.log("Telegram WebApp data not found");
+      }
+
+      // 2. Fallback to browser query param
+      if (!id) {
+        const urlParams = new URLSearchParams(window.location.search);
+        id = urlParams.get("id");
+      }
+
+      // 3. Proceed if id is found
+      if (id) {
+        try {
+          const res = await fetch(`https://sainipankaj12.serv00.net/Result/MiniApp/getdata.php?id=${id}`);
+          const data = await res.json();
+
+          if (data.mode === "manual") {
+            document.title = data.title;
+            document.getElementById("title").textContent = data.title;
+            document.getElementById("heading").textContent = data.heading;
+            document.getElementById("subtitle").textContent = data.subtitle;
+            document.getElementById("description").textContent = data.description;
+
+            window.sourceUrl = data.sourceUrl;
+
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("mainContent").style.display = "block";
+          } else if (data.mode === "redirect") {
+            window.location.href = data.sourceUrl;
+          } else {
+            document.body.innerHTML = "<p>⚠️ Invalid mode</p>";
+          }
+        } catch (e) {
+          document.body.innerHTML = "<p>❌ Failed to load data.</p>";
+        }
+      } else {
+        document.body.innerHTML = "<p>❌ No ID found in URL or Telegram WebApp.</p>";
+      }
+    }
+
+    function openWithAd() {
+      show_9336786().then(() => {
+        window.location.href = window.sourceUrl;
+      });
+    }
+
+    fetchData();
+  </script>
+</body>
+</html>
