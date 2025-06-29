@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Minimal PDF.js Viewer</title>
+    <style>
+      canvas {
+        border: 1px solid black;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>My Minimal PDF.js Viewer</h2>
+    <canvas id="pdf-canvas"></canvas>
+
+    <!-- Load PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+    <script>
+      // PDF.js worker
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
+
+      // PDF file URL
+      const url = 'https://storied-babka-0753af.netlify.app/Bsc/Math_group/Syllabus/Chemistry.pdf'; // <-- yahan apni PDF ka link do
+
+      // Load
+      const loadingTask = pdfjsLib.getDocument(url);
+      loadingTask.promise.then(function(pdf) {
+        console.log('PDF loaded');
+        // Load first page
+        pdf.getPage(1).then(function(page) {
+          console.log('Page loaded');
+          const scale = 1.5;
+          const viewport = page.getViewport({ scale: scale });
+
+          // Prepare canvas
+          const canvas = document.getElementById('pdf-canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          // Render
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+          };
+          page.render(renderContext);
+        });
+      }).catch(function(error){
+        console.error('Error: ' + error);
+      });
+    </script>
+  </body>
+</html>
