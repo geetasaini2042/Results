@@ -1,6 +1,6 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
-const botToken = "7831738668:AAH7Qc1zYoNd5DrY85kU4EN4GXY01JF91fk";
+const botToken = "7831738668:AAGacnSqNPFCM_9wb1fCSDhLDq-ytjh1SJg";
 //const currentDir = window.location.href.replace(/\/[^/]*$/, '/');
 const checkAnotherUrl =  window.location.href;
 //const sourceUrl = document.querySelector('meta[name="source-url"]').getAttribute("content");
