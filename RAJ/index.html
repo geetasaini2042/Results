@@ -5,6 +5,7 @@
   <title>RBSE Result</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://sad.adsgram.ai/js/sad.min.js"></script> <!-- Adsgram SDK -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
@@ -72,18 +73,21 @@
     <div class="instructions">कृपया एक वर्ष चुनें:</div>
 
     <button class="btn" onclick="goToYear('2025')">2025</button>
-    <button class="btn" onclick="goToYear1('2024')">2024</button>
-    <button class="btn" onclick="goToYear1('2023')">2023</button>
-    <button class="btn" onclick="goToYear1('2022')">2022</button>
+    <button class="btn" onclick="goToYear('2024')">2024</button>
+    <button class="btn" onclick="goToYear('2023')">2023</button>
+    <button class="btn" onclick="goToYear('2022')">2022</button>
   </div>
 
   <script>
+    const AdController = window.Adsgram.init({ blockId: "12963" });
+
     function goToYear(year) {
-      location.href = `${year}/`;
-    }
-    function goToYear1(year) {
-      show_9336786().then(() => {});
-      location.href = `${year}/`;
+      AdController.show().then(() => {
+        // Ad watched successfully
+        location.href = `${year}/`;
+      }).catch(() => {
+        alert("⚠️ Please watch the full ad to continue.");
+      });
     }
 
     window.onload = function () {
