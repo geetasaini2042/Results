@@ -63,6 +63,7 @@
 <div id="resultSection" style="display:none;">
     <button id="backBtn" onclick="goBack()">←</button>
     <h3 id="schoolName" style="color: #007bff; text-align: center;"></h3>
+    <h4 id="streamSubjects" style="color: #555; text-align: center; margin-top: -10px;"></h4>
     <div id="result"></div>
     <button id="pdfBtn" onclick="sendAsPDF()">Get as PDF</button>
 </div>
@@ -84,12 +85,25 @@ async function fetchResult(roll, year, wb_id, source) {
     }
 }
 
+// विषयों की लिस्ट बनाने के लिए फंक्शन
+function getSubjectString(subjectsData, wb_id) {
+    let allSubjects = subjectsData
+        .map(s => s.subject_name?.trim())
+        .filter(name => name && name !== "" && name !== "-");
+
+    if (wb_id === "88") {
+        allSubjects = allSubjects.slice(0, 6);
+    } else if (wb_id === "89") {
+        allSubjects = allSubjects.slice(0, 5);
+    }
+    return allSubjects.join(", ");
+}
+
 async function checkSchoolResults(initialRoll, year, wb_id, source) {
     document.getElementById('loading').style.display = 'block';
     const progressText = document.getElementById('progressText');
-    progressText.innerText = "स्कूल का डेटा खोजा जा रहा है...";
+    progressText.innerText = "स्कूल और विषय का डेटा खोजा जा रहा है...";
 
-    // सबसे पहले दिए गए रोल नंबर का डेटा निकालें ताकि स्कूल का नाम पता चल सके
     const initialData = await fetchResult(initialRoll, year, wb_id, source);
     if (!initialData) {
         document.getElementById('loading').style.display = 'none';
@@ -99,27 +113,37 @@ async function checkSchoolResults(initialRoll, year, wb_id, source) {
         return;
     }
 
-    const targetSchool = initialData.data.board_result.candidate_info["School Name"];
+    const initialResult = initialData.data.board_result;
+    const targetSchool = initialResult.candidate_info["School Name"];
+    // शुरुआती छात्र के विषयों की लिस्ट बना ली गई है
+    const targetSubjectsString = getSubjectString(initialResult.subjects, wb_id); 
+
     let allStudentsData = [initialData];
     let foundCount = 1;
-    progressText.innerText = `छात्र खोजे जा रहे हैं... अब तक मिले: ${foundCount}`;
+    progressText.innerText = `समान विषय वाले छात्र खोजे जा रहे हैं... अब तक मिले: ${foundCount}`;
 
-    // पीछे के रोल नंबर खोजना (Backwards Search)
+    // पीछे के रोल नंबर खोजना
     let currRoll = initialRoll - 1;
-    let maxTries = 1000; // सुरक्षा के लिए लिमिट
+    let maxTries = 1000;
     while (maxTries > 0) {
         const data = await fetchResult(currRoll, year, wb_id, source);
+        // यदि स्कूल बदल जाए या डेटा न मिले, तो रुक जाएं
         if (!data || data.data.board_result.candidate_info["School Name"] !== targetSchool) {
-            break; // स्कूल का नाम बदल जाए या डेटा न मिले तो रुक जाएं
+            break; 
         }
-        allStudentsData.push(data);
-        foundCount++;
-        progressText.innerText = `छात्र खोजे जा रहे हैं (पीछे)... अब तक मिले: ${foundCount}`;
+        
+        // चेक करें कि क्या इस छात्र के विषय भी वही हैं
+        const currSubjectsString = getSubjectString(data.data.board_result.subjects, wb_id);
+        if (currSubjectsString === targetSubjectsString) {
+            allStudentsData.push(data);
+            foundCount++;
+            progressText.innerText = `छात्र खोजे जा रहे हैं (पीछे)... अब तक मिले: ${foundCount}`;
+        }
         currRoll--;
         maxTries--;
     }
 
-    // आगे के रोल नंबर खोजना (Forwards Search)
+    // आगे के रोल नंबर खोजना
     currRoll = initialRoll + 1;
     maxTries = 1000;
     while (maxTries > 0) {
@@ -127,18 +151,22 @@ async function checkSchoolResults(initialRoll, year, wb_id, source) {
         if (!data || data.data.board_result.candidate_info["School Name"] !== targetSchool) {
             break; 
         }
-        allStudentsData.push(data);
-        foundCount++;
-        progressText.innerText = `छात्र खोजे जा रहे हैं (आगे)... अब तक मिले: ${foundCount}`;
+
+        const currSubjectsString = getSubjectString(data.data.board_result.subjects, wb_id);
+        if (currSubjectsString === targetSubjectsString) {
+            allStudentsData.push(data);
+            foundCount++;
+            progressText.innerText = `छात्र खोजे जा रहे हैं (आगे)... अब तक मिले: ${foundCount}`;
+        }
         currRoll++;
         maxTries--;
     }
 
     progressText.innerText = "रिजल्ट तैयार किया जा रहा है...";
-    processAndDisplayResults(allStudentsData, targetSchool, wb_id);
+    processAndDisplayResults(allStudentsData, targetSchool, targetSubjectsString, wb_id);
 }
 
-function processAndDisplayResults(apiDataArray, targetSchool, wb_id) {
+function processAndDisplayResults(apiDataArray, targetSchool, targetSubjectsString, wb_id) {
     let subjects = null;
     const students = [];
     const subjectSums = {};
@@ -146,7 +174,6 @@ function processAndDisplayResults(apiDataArray, targetSchool, wb_id) {
     let totalMarksSum = 0;
     let studentCount = 0;
 
-    // रोल नंबर के अनुसार सीधा क्रम सेट करें
     apiDataArray.sort((a, b) => parseInt(a.data.board_result.candidate_info["Roll No."]) - parseInt(b.data.board_result.candidate_info["Roll No."]));
 
     for (const data of apiDataArray) {
@@ -208,7 +235,11 @@ function processAndDisplayResults(apiDataArray, targetSchool, wb_id) {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('resultSection').style.display = 'block';
     document.getElementById('backBtn').style.display = 'block';
+    
     document.getElementById('schoolName').innerText = targetSchool;
+    // स्क्रीन पर विषय (Subjects) भी दिखेंगे ताकि पता रहे कि यह कौनसी स्ट्रीम का रिजल्ट है
+    document.getElementById('streamSubjects').innerText = `Subjects: ${targetSubjectsString}`;
+    
     document.getElementById('result').innerHTML = generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMarksSum, studentCount);
 }
 
@@ -263,12 +294,14 @@ function generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMa
 
 async function sendAsPDF() {
     const schoolName = document.getElementById('schoolName').innerText;
+    const streamSubjects = document.getElementById('streamSubjects').innerText;
     const resultHTML = document.getElementById('result').innerHTML;
 
     const style = `
         <style>
             body { font-family: Arial, sans-serif; background-color: white; }
-            h3 { color: #007bff; text-align: center; }
+            h3 { color: #007bff; text-align: center; margin-bottom: 5px; }
+            h4 { color: #555; text-align: center; margin-top: 0; }
             .table-container { overflow-x: auto; width: 100%; margin-top: 20px; }
             table.enhancedTable {
                 min-width: 1000px; border-collapse: collapse; font-size: 12px; margin: auto;
@@ -283,7 +316,7 @@ async function sendAsPDF() {
             .fail { color: red; font-weight: bold; }
         </style>`;
 
-    const fullHTML = `<html><head><title>${schoolName} - Result</title>${style}</head><body><h3>${schoolName}</h3>${resultHTML}</body></html>`;
+    const fullHTML = `<html><head><title>${schoolName} - Result</title>${style}</head><body><h3>${schoolName}</h3><h4>${streamSubjects}</h4>${resultHTML}</body></html>`;
 
     const params = new URLSearchParams(window.location.search);
     const chatId = params.get("user_id") || "6150091802";
@@ -310,12 +343,11 @@ async function sendAsPDF() {
     }
 }
 
-// URL से डेटा लेने और ऑटो-फेच करने का तरीका
 window.onload = async function () {
     const params = new URLSearchParams(window.location.search);
-    const roll = parseInt(params.get('roll_no')); // अब केवल एक roll_no चाहिए
-    const year = params.get('year') || '2026';
-    const wb_id = params.get('wb_id') || '89';
+    const roll = parseInt(params.get('roll_no'));
+    const year = params.get('year') || '2024';
+    const wb_id = params.get('wb_id') || '88';
     const source = params.get('source') || 'app';
     const printFlag = params.has('print');
 
