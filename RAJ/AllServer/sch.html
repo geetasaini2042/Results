@@ -84,8 +84,6 @@ async function fetchResult(roll, year, wb_id, source) {
         return null;
     }
 }
-
-// विषयों की लिस्ट बनाने के लिए फंक्शन
 function getSubjectString(subjectsData, wb_id) {
     let allSubjects = subjectsData
         .map(s => s.subject_name?.trim())
@@ -102,48 +100,40 @@ function getSubjectString(subjectsData, wb_id) {
 async function checkSchoolResults(initialRoll, year, wb_id, source) {
     document.getElementById('loading').style.display = 'block';
     const progressText = document.getElementById('progressText');
-    progressText.innerText = "स्कूल और विषय का डेटा खोजा जा रहा है...";
+    progressText.innerText = "Getting Your School Result...";
 
     const initialData = await fetchResult(initialRoll, year, wb_id, source);
     if (!initialData) {
         document.getElementById('loading').style.display = 'none';
         const errorMsg = document.getElementById('errorMsg');
-        errorMsg.innerText = `Roll No. ${initialRoll} का डेटा नहीं मिला।`;
+        errorMsg.innerText = `NO Result Found For Roll No. ${initialRoll} `;
         errorMsg.style.display = 'block';
         return;
     }
 
     const initialResult = initialData.data.board_result;
     const targetSchool = initialResult.candidate_info["School Name"];
-    // शुरुआती छात्र के विषयों की लिस्ट बना ली गई है
     const targetSubjectsString = getSubjectString(initialResult.subjects, wb_id); 
 
     let allStudentsData = [initialData];
     let foundCount = 1;
-    progressText.innerText = `समान विषय वाले छात्र खोजे जा रहे हैं... अब तक मिले: ${foundCount}`;
-
-    // पीछे के रोल नंबर खोजना
+    progressText.innerText = `Getting Result for Your School... Total Got: ${foundCount}`;
     let currRoll = initialRoll - 1;
     let maxTries = 1000;
     while (maxTries > 0) {
         const data = await fetchResult(currRoll, year, wb_id, source);
-        // यदि स्कूल बदल जाए या डेटा न मिले, तो रुक जाएं
         if (!data || data.data.board_result.candidate_info["School Name"] !== targetSchool) {
             break; 
         }
-        
-        // चेक करें कि क्या इस छात्र के विषय भी वही हैं
         const currSubjectsString = getSubjectString(data.data.board_result.subjects, wb_id);
         if (currSubjectsString === targetSubjectsString) {
             allStudentsData.push(data);
             foundCount++;
-            progressText.innerText = `छात्र खोजे जा रहे हैं (पीछे)... अब तक मिले: ${foundCount}`;
+            progressText.innerText = `Searching All Student For << ... Total Got: ${foundCount}`;
         }
         currRoll--;
         maxTries--;
     }
-
-    // आगे के रोल नंबर खोजना
     currRoll = initialRoll + 1;
     maxTries = 1000;
     while (maxTries > 0) {
@@ -156,13 +146,13 @@ async function checkSchoolResults(initialRoll, year, wb_id, source) {
         if (currSubjectsString === targetSubjectsString) {
             allStudentsData.push(data);
             foundCount++;
-            progressText.innerText = `छात्र खोजे जा रहे हैं (आगे)... अब तक मिले: ${foundCount}`;
+            progressText.innerText = `Searching All Student For >> ... Total Got: ${foundCount}`;
         }
         currRoll++;
         maxTries--;
     }
 
-    progressText.innerText = "रिजल्ट तैयार किया जा रहा है...";
+    progressText.innerText = "Preparing the result...";
     processAndDisplayResults(allStudentsData, targetSchool, targetSubjectsString, wb_id);
 }
 
@@ -237,7 +227,6 @@ function processAndDisplayResults(apiDataArray, targetSchool, targetSubjectsStri
     document.getElementById('backBtn').style.display = 'block';
     
     document.getElementById('schoolName').innerText = targetSchool;
-    // स्क्रीन पर विषय (Subjects) भी दिखेंगे ताकि पता रहे कि यह कौनसी स्ट्रीम का रिजल्ट है
     document.getElementById('streamSubjects').innerText = `Subjects: ${targetSubjectsString}`;
     
     document.getElementById('result').innerHTML = generateTable(students, subjects, subjectSums, maxSubjectMarks, totalMarksSum, studentCount);
@@ -346,8 +335,8 @@ async function sendAsPDF() {
 window.onload = async function () {
     const params = new URLSearchParams(window.location.search);
     const roll = parseInt(params.get('roll_no'));
-    const year = params.get('year') || '2024';
-    const wb_id = params.get('wb_id') || '88';
+    const year = params.get('year') || '2026';
+    const wb_id = params.get('wb_id') || '86';
     const source = params.get('source') || 'app';
     const printFlag = params.has('print');
 
@@ -355,7 +344,7 @@ window.onload = async function () {
     errorMsg.style.display = 'none';
 
     if (isNaN(roll)) {
-        errorMsg.innerText = "कृपया URL में सही roll_no पैरामीटर दें।";
+        errorMsg.innerText = "Please Enter a Correct Roll Number...";
         errorMsg.style.display = 'block';
         return;
     }
